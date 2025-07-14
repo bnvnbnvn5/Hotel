@@ -1,0 +1,252 @@
+{
+    "cityList": [
+        {
+            "name": "Hà Nội",
+            "code": "HN"
+        },
+        {
+            "name": "Hồ Chí Minh",
+            "code": "HCM"
+        },
+        {
+            "name": "Đà Nẵng",
+            "code": "DN"
+        },
+        {
+            "name": "Cần Thơ",
+            "code": "CT"
+        },
+        {
+            "name": "Hải Phòng",
+            "code": "HP"
+        },
+        {
+            "name": "Nha Trang",
+            "code": "NT"
+        },
+        {
+            "name": "Huế",
+            "code": "HUE"
+        },
+        {
+            "name": "Vinh",
+            "code": "VH"
+        },
+        {
+            "name": "Buôn Ma Thuột",
+            "code": "BMT"
+        },
+        {
+            "name": "Đà Lạt",
+            "code": "DL"
+        },
+        {
+            "name": "Quy Nhơn",
+            "code": "QN"
+        },
+        {
+            "name": "Rạch Giá",
+            "code": "RG"
+        },
+        {
+            "name": "Long Xuyên",
+            "code": "LX"
+        },
+        {
+            "name": "Cà Mau",
+            "code": "CM"
+        },
+        {
+            "name": "Vũng Tàu",
+            "code": "VT"
+        },
+        {
+            "name": "Hạ Long",
+            "code": "HL"
+        },
+        {
+            "name": "Thái Nguyên",
+            "code": "TN"
+        },
+        {
+            "name": "Bắc Ninh",
+            "code": "BN"
+        },
+        {
+            "name": "Bắc Giang",
+            "code": "BG"
+        },
+        {
+            "name": "Phú Thọ",
+            "code": "PT"
+        },
+        {
+            "name": "Thái Bình",
+            "code": "TB"
+        },
+        {
+            "name": "Nam Định",
+            "code": "ND"
+        },
+        {
+            "name": "Hải Dương",
+            "code": "HD"
+        },
+        {
+            "name": "Quảng Ninh",
+            "code": "QN"
+        },
+        {
+            "name": "Lào Cai",
+            "code": "LC"
+        },
+        {
+            "name": "Điện Biên",
+            "code": "DB"
+        },
+        {
+            "name": "Sơn La",
+            "code": "SL"
+        },
+        {
+            "name": "Yên Bái",
+            "code": "YB"
+        },
+        {
+            "name": "Tuyên Quang",
+            "code": "TQ"
+        },
+        {
+            "name": "Hòa Bình",
+            "code": "HB"
+        },
+        {
+            "name": "Hà Giang",
+            "code": "HG"
+        },
+        {
+            "name": "Cao Bằng",
+            "code": "CB"
+        },
+        {
+            "name": "Lạng Sơn",
+            "code": "LS"
+        },
+        {
+            "name": "Bắc Kạn",
+            "code": "BK"
+        },
+        {
+            "name": "Thanh Hóa",
+            "code": "TH"
+        },
+        {
+            "name": "Nghệ An",
+            "code": "NA"
+        },
+        {
+            "name": "Hà Tĩnh",
+            "code": "HT"
+        },
+        {
+            "name": "Quảng Bình",
+            "code": "QB"
+        },
+        {
+            "name": "Quảng Trị",
+            "code": "QT"
+        },
+        {
+            "name": "Phú Yên",
+            "code": "PY"
+        },
+        {
+            "name": "Bình Định",
+            "code": "BD"
+        },
+        {
+            "name": "Gia Lai",
+            "code": "GL"
+        },
+        {
+            "name": "Kon Tum",
+            "code": "KT"
+        },
+        {
+            "name": "Đắk Lắk",
+            "code": "DLK"
+        },
+        {
+            "name": "Đắk Nông",
+            "code": "DNK"
+        },
+        {
+            "name": "Lâm Đồng",
+            "code": "LD"
+        },
+        {
+            "name": "Bình Phước",
+            "code": "BP"
+        },
+        {
+            "name": "Tây Ninh",
+            "code": "TN"
+        },
+        {
+            "name": "Bình Thuận",
+            "code": "BT"
+        },
+        {
+            "name": "Ninh Thuận",
+            "code": "NT"
+        },
+        {
+            "name": "Khánh Hòa",
+            "code": "KH"
+        },
+        {
+            "name": "Phú Quốc",
+            "code": "PQ"
+        },
+        {
+            "name": "Bến Tre",
+            "code": "BT"
+        },
+        {
+            "name": "Trà Vinh",
+            "code": "TV"
+        },
+        {
+            "name": "Sóc Trăng",
+            "code": "ST"
+        },
+        {
+            "name": "Bạc Liêu",
+            "code": "BL"
+        },
+        {
+            "name": "Hậu Giang",
+            "code": "HG"
+        },
+        {
+            "name": "An Giang",
+            "code": "AG"
+        },
+        {
+            "name": "Đồng Tháp",
+            "code": "DT"
+        },
+        {
+            "name": "Tiền Giang",
+            "code": "TG"
+        },
+        {
+            "name": "Vĩnh Long",
+            "code": "VL"
+        },
+        {
+            "name": "Kiên Giang",
+            "code": "KG"
+        }
+    ]
+}

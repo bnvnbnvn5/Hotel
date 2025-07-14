@@ -1,0 +1,817 @@
+[
+    {
+        "text_id": "best_hotel_deals",
+        "en": "Best hotel deals for your holiday",
+        "vi": "Ưu đãi khách sạn tốt nhất cho kỳ nghỉ của bạn"
+    },
+    {
+        "text_id": "already_have_account",
+        "en": "Already have account? Log in",
+        "vi": "Đã có tài khoản? Đăng nhập"
+    },
+    {
+        "text_id": "get_started",
+        "en": "Get started",
+        "vi": "Bắt đầu"
+    },
+    {
+        "text_id": "plan_your_trips",
+        "en": "Plan your trips",
+        "vi": "Lên kế hoạch cho các chuyến đi của bạn"
+    },
+    {
+        "text_id": "book_one_of_your",
+        "en": "book one of your unique hotel to escape the ordinary",
+        "vi": "Đặt một trong những khách sạn độc đáo của bạn để thoát khỏi sự bình thường"
+    },
+    {
+        "text_id": "find_best_deals",
+        "en": "Find best deals",
+        "vi": "Tìm ưu đãi tốt nhất"
+    },
+    {
+        "text_id": "find_deals_for_any",
+        "en": "Find deals for any season from cosy country homes to city flats",
+        "vi": "Tìm ưu đãi cho mọi mùa từ những ngôi nhà đồng quê ấm cúng đến căn hộ thành phố"
+    },
+    {
+        "text_id": "best_travelling_all_time",
+        "en": "Best travelling all time",
+        "vi": "Du lịch tuyệt vời nhất mọi thời đại"
+    },
+    {
+        "text_id": "login",
+        "en": "Login",
+        "vi": "Đăng nhập"
+    },
+    {
+        "text_id": "create_account",
+        "en": "Create account",
+        "vi": "Tạo tài khoản"
+    },
+    {
+        "text_id": "log_with mail",
+        "en": "or log in with email",
+        "vi": "Hoặc đăng nhập bằng email"
+    },
+    {
+        "text_id": "your_mail",
+        "en": "Your email",
+        "vi": "Email của bạn"
+    },
+    {
+        "text_id": "password",
+        "en": "Password",
+        "vi": "Mật khẩu"
+    },
+    {
+        "text_id": "forgot_your_Password",
+        "en": "Forgot your Password?",
+        "vi": "Quên mật khẩu của bạn?"
+    },
+    {
+        "text_id": "resend_email_link",
+        "en": "Enter your email to receive an email to reset your password",
+        "vi": "Nhập email của bạn để nhận email đặt lại mật khẩu"
+    },
+    {
+        "text_id": "send",
+        "en": "Send",
+        "vi": "Gửi"
+    },
+    {
+        "text_id": "sign_up",
+        "en": "Sign up",
+        "vi": "Đăng ký"
+    },
+    {
+        "text_id": "first_name",
+        "en": "First name",
+        "vi": "Tên"
+    },
+    {
+        "text_id": "last_name",
+        "en": "Last name",
+        "vi": "Họ"
+    },
+    {
+        "text_id": "terms_agreed",
+        "en": "By Signing up,you agreed with our terms of Services and privacy policy",
+        "vi": "Bằng cách đăng ký, bạn đồng ý với các điều khoản dịch vụ và chính sách quyền riêng tư của chúng tôi"
+    },
+    {
+        "text_id": "explore",
+        "en": "Explore",
+        "vi": "Khám phá"
+    },
+    {
+        "text_id": "trips",
+        "en": "Trips",
+        "vi": "Chuyến đi"
+    },
+    {
+        "text_id": "profile",
+        "en": "Profile",
+        "vi": "Hồ sơ"
+    },
+    {
+        "text_id": "where_are_you_going",
+        "en": "Where are you going?",
+        "vi": "Bạn đang đi đâu?"
+    },
+    {
+        "text_id": "search_hotel",
+        "en": "Search",
+        "vi": "Tìm kiếm"
+    },
+    {
+        "text_id": "hotel_data",
+        "en": "Hotel",
+        "vi": "Khách sạn"
+    },
+    {
+        "text_id": "Backpacker_data",
+        "en": "Backpacker",
+        "vi": "Du lịch bụi"
+    },
+    {
+        "text_id": "Resort_data",
+        "en": "Resort",
+        "vi": "Khu nghỉ dưỡng"
+    },
+    {
+        "text_id": "villa_data",
+        "en": "Villa",
+        "vi": "Biệt thự"
+    },
+    {
+        "text_id": "apartment",
+        "en": "Apartment",
+        "vi": "Căn hộ"
+    },
+    {
+        "text_id": "guest_house",
+        "en": "Guest house",
+        "vi": "Nhà khách"
+    },
+    {
+        "text_id": "motel",
+        "en": "Motel",
+        "vi": "Nhà nghỉ"
+    },
+    {
+        "text_id": "accommodation",
+        "en": "Accommodation",
+        "vi": "Chỗ ở"
+    },
+    {
+        "text_id": "Bed_breakfast",
+        "en": "Bed & Breakfast",
+        "vi": "Giường và bữa sáng"
+    },
+    {
+        "text_id": "Last_search",
+        "en": "Last searches",
+        "vi": "Tìm kiếm gần đây"
+    },
+    {
+        "text_id": "clear_all",
+        "en": "Clear all",
+        "vi": "Xóa tất cả"
+    },
+    {
+        "text_id": "cape Town",
+        "en": "Cape Town",
+        "vi": "Cape Town"
+    },
+    {
+        "text_id": "five_star",
+        "en": "Extraordinary five-star outdoor activites",
+        "vi": "Các hoạt động ngoài trời năm sao tuyệt vời"
+    },
+    {
+        "text_id": "view_hotel",
+        "en": "View Hotel",
+        "vi": "Xem khách sạn"
+    },
+    {
+        "text_id": "hotel found",
+        "en": "Hotel found",
+        "vi": "Đã tìm thấy khách sạn"
+    },
+    {
+        "text_id": "filtter",
+        "en": "Filtter",
+        "vi": "Bộ lọc"
+    },
+    {
+        "text_id": "popular_destination",
+        "en": "Popular Destination",
+        "vi": "Điểm đến phổ biến"
+    },
+    {
+        "text_id": "best_deal",
+        "en": "Best Deals",
+        "vi": "Ưu đãi tốt nhất"
+    },
+    {
+        "text_id": "view_all",
+        "en": "View all",
+        "vi": "Xem tất cả"
+    },
+    {
+        "text_id": "km_to_city",
+        "en": "km to city",
+        "vi": "km đến trung tâm thành phố"
+    },
+    {
+        "text_id": "per_night",
+        "en": "/per night",
+        "vi": "/mỗi đêm"
+    },
+    {
+        "text_id": "reviews",
+        "en": "Reviews",
+        "vi": "Đánh giá"
+    },
+    {
+        "text_id": "book_now",
+        "en": "Book now",
+        "vi": "Đặt ngay"
+    },
+    {
+        "text_id": "more_details",
+        "en": "More Details",
+        "vi": "Chi tiết thêm"
+    },
+    {
+        "text_id": "summary",
+        "en": "Summary",
+        "vi": "Tóm tắt"
+    },
+    {
+        "text_id": "read_more",
+        "en": "read more",
+        "vi": "Đọc thêm"
+    },
+    {
+        "text_id": "less",
+        "en": "less",
+        "vi": "Ít hơn"
+    },
+    {
+        "text_id": "Overall_rating",
+        "en": "Overall rating",
+        "vi": "Đánh giá tổng thể"
+    },
+    {
+        "text_id": "room",
+        "en": "Room",
+        "vi": "Phòng"
+    },
+    {
+        "text_id": "service",
+        "en": "Services",
+        "vi": "Dịch vụ"
+    },
+    {
+        "text_id": "location",
+        "en": "Location",
+        "vi": "Vị trí"
+    },
+    {
+        "text_id": "price",
+        "en": "Prcie",
+        "vi": "Giá"
+    },
+    {
+        "text_id": "room_photo",
+        "en": "Photo",
+        "vi": "Ảnh"
+    },
+    {
+        "text_id": "last_update",
+        "en": "Last Update",
+        "vi": "Cập nhật lần cuối"
+    },
+    {
+        "text_id": "reply",
+        "en": "Reply",
+        "vi": "Trả lời"
+    },
+    {
+        "text_id": "My_Trips",
+        "en": "My Trip",
+        "vi": "Chuyến đi của tôi"
+    },
+    {
+        "text_id": "upcoming",
+        "en": "Upcoming",
+        "vi": "Sắp tới"
+    },
+    {
+        "text_id": "finished",
+        "en": "Finished",
+        "vi": "Đã hoàn thành"
+    },
+    {
+        "text_id": "favorites",
+        "en": "Favorites",
+        "vi": "Yêu thích"
+    },
+    {
+        "text_id": "hotel_found",
+        "en": "Hotel Found",
+        "vi": "Đã tìm thấy khách sạn"
+    },
+    {
+        "text_id": "filtter",
+        "en": "filtter",
+        "vi": "Bộ lọc"
+    },
+    {
+        "text_id": "price_text",
+        "en": "price (for 1 night)",
+        "vi": "Giá (cho 1 đêm)"
+    },
+    {
+        "text_id": "popular filter",
+        "en": "Popular filter",
+        "vi": "Bộ lọc phổ biến"
+    },
+    {
+        "text_id": "distance from city",
+        "en": "Distance from city center",
+        "vi": "Khoảng cách từ trung tâm thành phố"
+    },
+    {
+        "text_id": "type of accommodation",
+        "en": "Type of Accommodation",
+        "vi": "Loại chỗ ở"
+    },
+    {
+        "text_id": "Apply_text",
+        "en": "Apply",
+        "vi": "Áp dụng"
+    },
+    {
+        "text_id": "all_text",
+        "en": "All",
+        "vi": "Tất cả"
+    },
+    {
+        "text_id": "Home_text",
+        "en": "Home",
+        "vi": "Trang chủ"
+    },
+    {
+        "text_id": "free_breakfast",
+        "en": "Free Breakfast",
+        "vi": "Bữa sáng miễn phí"
+    },
+    {
+        "text_id": "free_Parking",
+        "en": "Free Parking",
+        "vi": "Bãi đỗ xe miễn phí"
+    },
+    {
+        "text_id": "pool_text",
+        "en": "Pool",
+        "vi": "Hồ bơi"
+    },
+    {
+        "text_id": "pet_friendlly",
+        "en": "Pet Friendlly",
+        "vi": "Thân thiện với thú cưng"
+    },
+    {
+        "text_id": "Free_Wifi",
+        "en": "Free Wifi",
+        "vi": "Wifi miễn phí"
+    },
+    {
+        "text_id": "Less_than",
+        "en": "Less than",
+        "vi": "Dưới"
+    },
+    {
+        "text_id": "km_text",
+        "en": "Km",
+        "vi": "Km"
+    },
+    {
+        "text_id": "amanda_text",
+        "en": "Amanda",
+        "vi": "Amanda"
+    },
+    {
+        "text_id": "view_edit",
+        "en": "View and Edit profile",
+        "vi": "Xem và chỉnh sửa hồ sơ"
+    },
+    {
+        "text_id": "edit_profile",
+        "en": "Edit Profile",
+        "vi": "Chỉnh sửa hồ sơ"
+    },
+    {
+        "text_id": "username_text",
+        "en": "UserName",
+        "vi": "Tên người dùng"
+    },
+    {
+        "text_id": "phone",
+        "en": "Phone",
+        "vi": "Điện thoại"
+    },
+    {
+        "text_id": "date_of_birth",
+        "en": "Date of Birth",
+        "vi": "Ngày sinh"
+    },
+    {
+        "text_id": "address_text",
+        "en": "Address",
+        "vi": "Địa chỉ"
+    },
+    {
+        "text_id": "mail_text",
+        "en": "Email",
+        "vi": "Email"
+    },
+    {
+        "text_id": "change_password",
+        "en": "Change Password",
+        "vi": "Thay đổi mật khẩu"
+    },
+    {
+        "text_id": "enter_your_new_password",
+        "en": "Enter your new password and confirm your password",
+        "vi": "Nhập mật khẩu mới và xác nhận mật khẩu"
+    },
+    {
+        "text_id": "new_password",
+        "en": "New Password",
+        "vi": "Mật khẩu mới"
+    },
+    {
+        "text_id": "confirm_password",
+        "en": "Confirm Password",
+        "vi": "Xác nhận mật khẩu"
+    },
+    {
+        "text_id": "invite_friend",
+        "en": "Invite Friend",
+        "vi": "Mời bạn bè"
+    },
+    {
+        "text_id": "invite_your_friend",
+        "en": "Invite your Friend",
+        "vi": "Mời bạn của bạn"
+    },
+    {
+        "text_id": "invite_friend_desc",
+        "en": "are you one of those who makes everything at the last moment",
+        "vi": "Bạn có phải là người luôn làm mọi thứ vào phút cuối?"
+    },
+    {
+        "text_id": "share_text",
+        "en": "Share",
+        "vi": "Chia sẻ"
+    },
+    {
+        "text_id": "credit_coupons",
+        "en": "Crdit & Coupons",
+        "vi": "Tín dụng & Phiếu giảm giá"
+    },
+    {
+        "text_id": "help_center",
+        "en": "Help Center",
+        "vi": "Trung tâm trợ giúp"
+    },
+    {
+        "text_id": "how_can_help_you",
+        "en": "How can we help",
+        "vi": "Chúng tôi có thể giúp gì cho bạn"
+    },
+    {
+        "text_id": "search_help_artical",
+        "en": "Search help articales",
+        "vi": "Tìm kiếm bài viết trợ giúp"
+    },
+    {
+        "text_id": "paying_for_a_reservation",
+        "en": "Paying for a reservation",
+        "vi": "Thanh toán cho một đặt phòng"
+    },
+    {
+        "text_id": "trust_and_safety",
+        "en": "Trust and Safety",
+        "vi": "Tin cậy và An toàn"
+    },
+    {
+        "text_id": "How do I ",
+        "en": "How do I cancel my rooms reservation?",
+        "vi": "Làm thế nào để hủy đặt phòng của tôi?"
+    },
+    {
+        "text_id": "What methods ",
+        "en": "What methods of payment does Roome accept?",
+        "vi": "Roome chấp nhận những phương thức thanh toán nào?"
+    },
+    {
+        "text_id": "I'm_a_guest_What",
+        "en": "I'm a guest. What are some safety tips I can follow?",
+        "vi": "Tôi là khách. Có những mẹo an toàn nào tôi có thể tuân theo?"
+    },
+    {
+        "text_id": "When am I charged",
+        "en": "When am I charged for a reservation?",
+        "vi": "Khi nào tôi bị tính phí cho một đặt phòng?"
+    },
+    {
+        "text_id": "How do I edit",
+        "en": "How do I edit or remove a payment method?",
+        "vi": "Làm thế nào để chỉnh sửa hoặc xóa phương thức thanh toán?"
+    },
+    {
+        "text_id": "You can cancel",
+        "en": "You can cancel a reservation any time before Or during your trip. To cancel a reservation:",
+        "vi": "Bạn có thể hủy đặt phòng bất kỳ lúc nào trước hoặc trong chuyến đi. Để hủy đặt phòng:"
+    },
+    {
+        "text_id": "GO to Trips and choose yotr trip",
+        "en": "GO to Trips and choose yotr trip Click Your home reservation Click Modify reservation",
+        "vi": "Đi đến Chuyến đi và chọn chuyến đi của bạn. Nhấp vào Đặt phòng nhà của bạn. Nhấp vào Sửa đổi đặt phòng"
+    },
+    {
+        "text_id": "You'll be taken to",
+        "en": "You'll be taken to a new page where you either change or cancel your reservation. Click the Next button under Cancel reservation to Start the cancellation process.",
+        "vi": "Bạn sẽ được chuyển đến một trang mới nơi bạn có thể thay đổi hoặc hủy đặt phòng. Nhấp vào nút Tiếp theo dưới Hủy đặt phòng để bắt đầu quá trình hủy."
+    },
+    {
+        "text_id": "If you cancel, your ",
+        "en": "If you cancel, your refund Will be determined by your host'r cancellation policy. We'll show your refund breakdown before you finalize the cancellation.",
+        "vi": "Nếu bạn hủy, khoản hoàn tiền của bạn sẽ được xác định bởi chính sách hủy của chủ nhà. Chúng tôi sẽ hiển thị chi tiết hoàn tiền trước khi bạn hoàn tất hủy."
+    },
+    {
+        "text_id": "Give feedback",
+        "en": "Give feedback",
+        "vi": "Gửi phản hồi"
+    },
+    {
+        "text_id": "Related articles",
+        "en": "Related articles",
+        "vi": "Bài viết liên quan"
+    },
+    {
+        "text_id": "Can I change",
+        "en": "Can I change a reservation as a guest?",
+        "vi": "Tôi có thể thay đổi đặt phòng với tư cách là khách không?"
+    },
+    {
+        "text_id": "HoW do I cancel",
+        "en": "HoW do I cancel a reservation request?",
+        "vi": "Làm thế nào để hủy yêu cầu đặt phòng?"
+    },
+    {
+        "text_id": "What is the",
+        "en": "What is the Resolution Center?",
+        "vi": "Trung tâm Giải quyết là gì?"
+    },
+    {
+        "text_id": "payment_text",
+        "en": "Payment",
+        "vi": "Thanh toán"
+    },
+    {
+        "text_id": "setting_text",
+        "en": "Setting",
+        "vi": "Cài đặt"
+    },
+    {
+        "text_id": "Notifications",
+        "en": "Notifications",
+        "vi": "Thông báo"
+    },
+    {
+        "text_id": "Theme Mode",
+        "en": "Theme Mode",
+        "vi": "Chế độ chủ đề"
+    },
+    {
+        "text_id": "light",
+        "en": "light",
+        "vi": "Sáng"
+    },
+    {
+        "text_id": "dark",
+        "en": "dark",
+        "vi": "Tối"
+    },
+    {
+        "text_id": "system",
+        "en": "system",
+        "vi": "Hệ thống"
+    },
+    {
+        "text_id": "Fonts",
+        "en": "Fonts",
+        "vi": "Phông chữ"
+    },
+    {
+        "text_id": "selected_fonts",
+        "en": "Selected fonts",
+        "vi": "Phông chữ đã chọn"
+    },
+    {
+        "text_id": "Color",
+        "en": "Color",
+        "vi": "Màu sắc"
+    },
+    {
+        "text_id": "Selected color",
+        "en": "Selected color",
+        "vi": "Màu đã chọn"
+    },
+    {
+        "text_id": "Language",
+        "en": "Language",
+        "vi": "Ngôn ngữ"
+    },
+    {
+        "text_id": "Selected language",
+        "en": "Selected language",
+        "vi": "Ngôn ngữ đã chọn"
+    },
+    {
+        "text_id": "Country",
+        "en": "Country",
+        "vi": "Quốc gia"
+    },
+    {
+        "text_id": "Currency",
+        "en": "Currency",
+        "vi": "Tiền tệ"
+    },
+    {
+        "text_id": "Terms of Services",
+        "en": "Terms of Services",
+        "vi": "Điều khoản dịch vụ"
+    },
+    {
+        "text_id": "Privacy Policy",
+        "en": "Privacy Policy",
+        "vi": "Chính sách quyền riêng tư"
+    },
+    {
+        "text_id": "Give Us Feedbacks",
+        "en": "Give Us Feedbacks",
+        "vi": "Gửi phản hồi cho chúng tôi"
+    },
+    {
+        "text_id": "Log out",
+        "en": "Log out",
+        "vi": "Đăng xuất"
+    },
+    {
+        "text_id": "Hello",
+        "en": "Hello",
+        "vi": "Xin chào"
+    },
+    {
+        "text_id": "room_selected",
+        "en": "Room selected",
+        "vi": "Phòng đã chọn"
+    },
+    {
+        "text_id": "number_room",
+        "en": "Number of Room",
+        "vi": "Số lượng phòng"
+    },
+    {
+        "text_id": "people_data",
+        "en": "People",
+        "vi": "Số người"
+    },
+    {
+        "text_id": "room_data",
+        "en": "Room",
+        "vi": "Phòng"
+    },
+    {
+        "text_id": "choose_date",
+        "en": "Choose Date",
+        "vi": "Chọn ngày"
+    },
+    {
+        "text_id": "Apply_date",
+        "en": "Apply",
+        "vi": "Áp dụng"
+    },
+    {
+        "text_id": "From_text",
+        "en": "From",
+        "vi": "Từ"
+    },
+    {
+        "text_id": "to_text",
+        "en": "To",
+        "vi": "Đến"
+    },
+    {
+        "text_id": "sleeps",
+        "en": "sleeps",
+        "vi": "Số người ở"
+    },
+    {
+        "text_id": "children",
+        "en": "children",
+        "vi": "Trẻ em"
+    },
+    {
+        "text_id": "enter_new_password",
+        "en": "enter new password",
+        "vi": "Nhập mật khẩu mới"
+    },
+    {
+        "text_id": "enter_confirm_password",
+        "en": "enter confirm password",
+        "vi": "Nhập xác nhận mật khẩu"
+    },
+    {
+        "text_id": "password_cannot_empty",
+        "en": "Password cannot be empty",
+        "vi": "Mật khẩu không được để trống"
+    },
+    {
+        "text_id": "valid_new_password",
+        "en": "We cannot allow less than 6 lengths of the password, please enter a valid new password",
+        "vi": "Mật khẩu phải có ít nhất 6 ký tự, vui lòng nhập mật khẩu mới hợp lệ"
+    },
+    {
+        "text_id": "valid_password",
+        "en": "We cannot allow less than 6 lengths of the password, please enter a valid password",
+        "vi": "Mật khẩu phải có ít nhất 6 ký tự, vui lòng nhập mật khẩu hợp lệ"
+    },
+    {
+        "text_id": "password_not_match",
+        "en": "Password does not match, please enter a valid password",
+        "vi": "Mật khẩu không khớp, vui lòng nhập mật khẩu hợp lệ"
+    },
+    {
+        "text_id": "enter_your_email",
+        "en": "enter your email",
+        "vi": "Nhập email của bạn"
+    },
+    {
+        "text_id": "email_cannot_empty",
+        "en": "Email cannot be empty",
+        "vi": "Email không được để trống"
+    },
+    {
+        "text_id": "enter_valid_email",
+        "en": "Please enter a valid email address, abc@xyz.com",
+        "vi": "Vui lòng nhập địa chỉ email hợp lệ, abc@xyz.com"
+    },
+    {
+        "text_id": "enter_password",
+        "en": "enter password",
+        "vi": "Nhập mật khẩu"
+    },
+    {
+        "text_id": "enter_first_name",
+        "en": "Enter first name",
+        "vi": "Nhập tên"
+    },
+    {
+        "text_id": "enter_last_name",
+        "en": "Enter first name",
+        "vi": "Nhập họ"
+    },
+    {
+        "text_id": "first_name_cannot_empty",
+        "en": "First Name cannot be empty",
+        "vi": "Tên không được để trống"
+    },
+    {
+        "text_id": "last_name_cannot_empty",
+        "en": "Last Name cannot be empty",
+        "vi": "Họ không được để trống"
+    },
+    {
+        "text_id": "home",
+        "en": "Home",
+        "vi": "Trang chủ"
+    },
+    {
+        "text_id": "welcome_home",
+        "en": "Welcome to Home!",
+        "vi": "Chào mừng đến trang chủ!"
+    },
+    {
+        "text_id": "home_description",
+        "en": "You have successfully logged in. This is your home screen.",
+        "vi": "Bạn đã đăng nhập thành công. Đây là trang chủ của bạn."
+    }
+]
