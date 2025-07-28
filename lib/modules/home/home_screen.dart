@@ -4,6 +4,10 @@ import 'package:myapp/language/appLocalizations.dart';
 import 'hotel_list_by_area_screen.dart';
 import 'hotel_search_bar.dart';
 import 'hotel_search_screen.dart';
+import 'booking_screen.dart';
+import 'package:myapp/db_helper.dart';
+import 'package:myapp/seed_data.dart';
+import 'package:myapp/widgets/hotel_card.dart';
 
 // Thêm custom ScrollBehavior để tắt overscroll glow
 class NoGlowScrollBehavior extends ScrollBehavior {
@@ -35,6 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedCity = "Hà Nội";
   String selectedDistrict = "Ba Đình";
 
+  @override
+  void initState() {
+    super.initState();
+    // seedData(); // Đã seed trong DBHelper, không cần gọi nữa
+  }
+
   final List<String> _slideImages = [
     'assets/images/Sapa.jpg',
     'assets/images/DaLatt.jpg',
@@ -45,94 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
     {"city": "Hà Nội", "image": "assets/images/city_6.jpg"},
     {"city": "Hồ Chí Minh", "image": "assets/images/city_5.jpg"},
     {"city": "Huế", "image": "assets/images/city_4.jpg"},
-  ];
-
-  final List<Map<String, dynamic>> flashSaleHotels = [
-    {
-      "name": "Honeymoon Hotel 2",
-      "city": "Hà Nội",
-      "district": "Ba Đình",
-      "rating": 4.7,
-      "reviews": 392,
-      "location": "Ba Đình",
-      "price": 449999,
-      "originalPrice": 450000,
-      "rooms": 2,
-      "time": "23:00 12/07 - 12:00 13/07",
-      "image": "assets/images/hotel_1.jpg"
-    },
-    {
-      "name": "Le Grand Hanoi Hotel",
-      "city": "Hà Nội",
-      "district": "Đống Đa",
-      "rating": 4.6,
-      "reviews": 149,
-      "location": "Đống Đa",
-      "price": 399000,
-      "originalPrice": 600000,
-      "rooms": 4,
-      "time": "23:00 12/07 - 10:00 13/07",
-      "image": "assets/images/hotel_2.png"
-    },
-  ];
-
-  final List<Map<String, dynamic>> popularHotels = [
-    {
-      "name": "Melon Hotel & Lemon Spa",
-      "city": "Hồ Chí Minh",
-      "district": "Quận 1",
-      "rating": 4.9,
-      "reviews": 27,
-      "location": "Quận 1",
-      "price": 200000,
-      "discount": 20,
-      "image": "assets/images/hotel_3.png"
-    },
-    {
-      "name": "Ocd Love Hotel",
-      "city": "Hồ Chí Minh",
-      "district": "Quận 3",
-      "rating": 4.7,
-      "reviews": 1278,
-      "location": "Quận 3",
-      "price": 245000,
-      "new": true,
-      "image": "assets/images/hotel_4.png"
-    },
-  ];
-
-  final List<Map<String, dynamic>> newHotels = [
-    {
-      "name": "Trần Gia 2",
-      "city": "Đà Nẵng",
-      "district": "Hải Châu",
-      "rating": 4.8,
-      "reviews": 2563,
-      "location": "Hải Châu",
-      "price": 200000,
-      "discount": 25,
-      "image": "assets/images/hotel_5.png"
-    },
-    {
-      "name": "Hoa Nam Hotel",
-      "city": "Đà Nẵng",
-      "district": "Sơn Trà",
-      "rating": 5.0,
-      "reviews": 3,
-      "location": "Sơn Trà",
-      "price": 280000,
-      "image": "assets/images/hotel_2.png"
-    },
-    {
-      "name": "Nguyễn Anh",
-      "city": "Cần Thơ",
-      "district": "Ninh Kiều",
-      "rating": 4.9,
-      "reviews": 3337,
-      "location": "Ninh Kiều",
-      "price": 200000,
-      "image": "assets/images/hotel_4.png"
-    },
   ];
 
   void _toggleBookingType(bool isOvernight) {
@@ -173,19 +95,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text("Vui lòng chọn khu vực", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                       TextButton(
                         onPressed: () {
-                          setState(() {
-                            selectedCity = tempCity;
-                            selectedDistrict = tempDistrict;
-                          });
-                          Navigator.pop(context);
-                          // Chuyển sang trang danh sách khách sạn
+                          Navigator.pop(context); // Đóng modal
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => HotelListByAreaScreen(
-                                city: selectedCity,
-                                district: selectedDistrict,
-                                allHotels: [...flashSaleHotels, ...popularHotels, ...newHotels],
+                                city: tempCity,
+                                district: tempDistrict,
                               ),
                             ),
                           );
@@ -357,355 +273,251 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              // 4. Danh sách khách sạn lấy từ SQLite
               SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 16),
-                    // Xóa thanh tìm kiếm thứ hai ở đây
-                    const SizedBox(height: 24),
-                    // Flash Sale Section
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: DBHelper.getHotels(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Lỗi dữ liệu: ${snapshot.error}'));
+                    }
+                    if (!snapshot.hasData) return Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator()));
+                    final hotels = snapshot.data!;
+                    final filteredHotels = hotels.where((h) => h['city'] == selectedCity && h['district'] == selectedDistrict).toList();
+                    final showHotels = filteredHotels.isNotEmpty ? filteredHotels : hotels;
+                    final flashSaleHotels = hotels.where((h) => h['isFlashSale'] == true).toList();
+                    final newHotels = hotels.where((h) => h['isNew'] == true).toList();
+                    final topRatedHotels = hotels.where((h) => h['isTopRated'] == true).toList();
+                    if (showHotels.isEmpty) return Center(child: Text('Không có khách sạn nào trong hệ thống.'));
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Flash Sale (nếu có)
+                        if (flashSaleHotels.isNotEmpty) ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Ưu đãi đặc biệt', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                TextButton(onPressed: () {}, child: Text('Xem tất cả')),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 200,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.only(left: 16),
+                              itemCount: flashSaleHotels.length,
+                              itemBuilder: (context, index) {
+                                final hotel = flashSaleHotels[index];
+                                return HotelCard(
+                                  name: hotel['name'] ?? '',
+                                  address: hotel['address'] ?? '',
+                                  image: hotel['image'] ?? 'assets/images/hotel_1.jpg',
+                                  rating: hotel['rating']?.toDouble() ?? 0,
+                                  reviews: hotel['reviews'] ?? 0,
+                                  price: hotel['price'] ?? 0,
+                                  originalPrice: hotel['originalPrice'],
+                                  district: hotel['district'],
+                                  badge: hotel['isFlashSale'] == true ? 'Nổi bật' : null,
+                                  discountLabel: hotel['discountLabel'],
+                                  timeLabel: hotel['timeLabel'] ?? '/ 2 giờ',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => BookingScreen(hotel: hotel),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                        // Popular Destination (chỉ 1 lần)
+                        const SizedBox(height: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            AppLocalizations(context).of("popular_destination"),
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 140,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.only(left: 16),
+                            itemCount: destinations.length,
+                            itemBuilder: (context, index) {
+                              final item = destinations[index];
+                              return DestinationCard(
+                                city: item["city"]!,
+                                imagePath: item["image"]!,
+                              );
+                            },
+                          ),
+                        ),
+                        // Thêm nút 'Xem tất cả' và truyền selectedCity/selectedDistrict sang HotelListByAreaScreen
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(Icons.flash_on, color: Colors.orange, size: 20),
-                              SizedBox(width: 4),
-                              Text("Flash Sale", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              Text('Khách sạn nổi bật', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => HotelListByAreaScreen(
+                                        city: selectedCity,
+                                        district: selectedDistrict,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text('Xem tất cả'),
+                              ),
                             ],
                           ),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text("Xem tất cả", style: TextStyle(color: Colors.teal)),
+                        ),
+                        SizedBox(
+                          height: 220,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.only(left: 16),
+                            itemCount: showHotels.length,
+                            itemBuilder: (context, index) {
+                              final hotel = showHotels[index];
+                              return HotelCard(
+                                name: hotel['name'] ?? '',
+                                address: hotel['address'] ?? '',
+                                image: hotel['image'] ?? 'assets/images/hotel_1.jpg',
+                                rating: hotel['rating']?.toDouble() ?? 0,
+                                reviews: hotel['reviews'] ?? 0,
+                                price: hotel['price'] ?? 0,
+                                originalPrice: hotel['originalPrice'],
+                                district: hotel['district'],
+                                badge: hotel['isFlashSale'] == true ? 'Nổi bật' : null,
+                                discountLabel: hotel['discountLabel'],
+                                timeLabel: hotel['timeLabel'] ?? '/ 2 giờ',
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BookingScreen(hotel: hotel),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                           ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => _toggleBookingType(false),
-                            child: Column(
+                        ),
+                        // Top được bình chọn
+                        if (topRatedHotels.isNotEmpty) ...[
+                          const SizedBox(height: 24),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("Theo giờ", style: TextStyle(color: !_isOvernight ? Colors.orange : Colors.black, fontWeight: FontWeight.bold)),
-                                if (!_isOvernight)
-                                  Container(height: 2, width: 40, color: Colors.orange, margin: EdgeInsets.only(top: 2)),
+                                Text('Top được bình chọn', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                TextButton(onPressed: () {}, child: Text('Xem tất cả')),
                               ],
                             ),
                           ),
-                          SizedBox(width: 16),
-                          GestureDetector(
-                            onTap: () => _toggleBookingType(true),
-                            child: Column(
+                          SizedBox(
+                            height: 180,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.only(left: 16),
+                              itemCount: topRatedHotels.length,
+                              itemBuilder: (context, index) {
+                                final hotel = topRatedHotels[index];
+                                return HotelCard(
+                                  name: hotel['name'] ?? '',
+                                  address: hotel['address'] ?? '',
+                                  image: hotel['image'] ?? 'assets/images/hotel_1.jpg',
+                                  rating: hotel['rating']?.toDouble() ?? 0,
+                                  reviews: hotel['reviews'] ?? 0,
+                                  price: hotel['price'] ?? 0,
+                                  originalPrice: hotel['originalPrice'],
+                                  district: hotel['district'],
+                                  badge: null, // No specific badge for top rated
+                                  discountLabel: null,
+                                  timeLabel: null,
+                                  cardHeight: 180,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => BookingScreen(hotel: hotel),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                        // Khách sạn mới
+                        if (newHotels.isNotEmpty) ...[
+                          const SizedBox(height: 24),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("Qua đêm", style: TextStyle(color: _isOvernight ? Colors.orange : Colors.black, fontWeight: FontWeight.bold)),
-                                if (_isOvernight)
-                                  Container(height: 2, width: 40, color: Colors.orange, margin: EdgeInsets.only(top: 2)),
+                                Text('Khách sạn mới', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                TextButton(onPressed: () {}, child: Text('Xem tất cả')),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    _isLoading
-                        ? Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator()))
-                        : SizedBox(
-                      height: 220,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(left: 16),
-                        itemCount: flashSaleHotels.length,
-                        itemBuilder: (context, index) {
-                          final hotel = flashSaleHotels[index];
-                          final price = (hotel["price"] ?? 0) as int;
-                          final originalPrice = (hotel["originalPrice"] ?? price) as int;
-                          final rooms = hotel["rooms"] ?? 1;
-                          final time = hotel["time"] ?? "";
-                          final name = hotel["name"] ?? "";
-                          final rating = hotel["rating"] ?? "";
-                          final reviews = hotel["reviews"] ?? "";
-                          final location = hotel["location"] ?? "";
-                          final image = hotel["image"] ?? "assets/images/hotel_1.jpg";
-                          final displayPrice = _isOvernight ? price * 2 : price;
-                          final displayOriginalPrice = _isOvernight ? originalPrice * 2 : originalPrice;
-                          final discountPercent = displayOriginalPrice > 0
-                              ? ((1 - displayPrice / displayOriginalPrice) * 100).round()
-                              : 0;
-                          return Container(
-                            width: 180,
-                            margin: const EdgeInsets.only(right: 16),
-                            child: Card(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              elevation: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                                    child: Image.asset(image, height: 90, width: double.infinity, fit: BoxFit.cover),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold)),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.star, size: 14, color: Colors.amber),
-                                            Text("$rating ($reviews)", style: TextStyle(fontSize: 12)),
-                                            Expanded(child: Text(" • $location", style: TextStyle(fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis)),
-                                          ],
-                                        ),
-                                        Text(time, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12)),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "${displayPrice.toString()}đ",
-                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
-                                            ),
-                                            SizedBox(width: 4),
-                                            Text(
-                                              "${displayOriginalPrice.toString()}đ",
-                                              style: TextStyle(
-                                                decoration: TextDecoration.lineThrough,
-                                                color: Colors.grey,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                            SizedBox(width: 4),
-                                            if (discountPercent > 0)
-                                              Text("-$discountPercent%", style: TextStyle(color: Colors.red, fontSize: 12)),
-                                          ],
-                                        ),
-                                        SizedBox(height: 4),
-                                        TapEffect(
-                                          onClick: () {},
-                                          child: Container(
-                                            width: double.infinity,
-                                            padding: EdgeInsets.symmetric(vertical: 8),
-                                            decoration: BoxDecoration(
-                                              color: Colors.orange,
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            alignment: Alignment.center,
-                                            child: Text("Đặt ngay", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          SizedBox(
+                            height: 180,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.only(left: 16),
+                              itemCount: newHotels.length,
+                              itemBuilder: (context, index) {
+                                final hotel = newHotels[index];
+                                return HotelCard(
+                                  name: hotel['name'] ?? '',
+                                  address: hotel['address'] ?? '',
+                                  image: hotel['image'] ?? 'assets/images/hotel_1.jpg',
+                                  rating: hotel['rating']?.toDouble() ?? 0,
+                                  reviews: hotel['reviews'] ?? 0,
+                                  price: hotel['price'] ?? 0,
+                                  originalPrice: hotel['originalPrice'],
+                                  district: hotel['district'],
+                                  badge: null, // No specific badge for new hotels
+                                  discountLabel: null,
+                                  timeLabel: null,
+                                  cardHeight: 180,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => BookingScreen(hotel: hotel),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    // Popular Destinations
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        AppLocalizations(context).of("popular_destination"),
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: 140,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(left: 16),
-                        itemCount: destinations.length,
-                        itemBuilder: (context, index) {
-                          final item = destinations[index];
-                          return DestinationCard(
-                            city: item["city"]!,
-                            imagePath: item["image"]!,
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    // Popular Hotels
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Lựa chọn phổ biến", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(AppLocalizations(context).of("view_all")),
                           ),
                         ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 220,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(left: 16),
-                        itemCount: popularHotels.length,
-                        itemBuilder: (context, index) {
-                          final hotel = popularHotels[index];
-                          final price = (hotel["price"] ?? 0) as int;
-                          final name = hotel["name"] ?? "";
-                          final rating = hotel["rating"] ?? "";
-                          final reviews = hotel["reviews"] ?? "";
-                          final location = hotel["location"] ?? "";
-                          final image = hotel["image"] ?? "assets/images/hotel_1.jpg";
-                          final discount = hotel["discount"] ?? 0;
-                          final isNew = hotel["new"] == true;
-                          return Container(
-                            width: 180,
-                            margin: const EdgeInsets.only(right: 16),
-                            child: Card(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              elevation: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                                    child: Image.asset(image, height: 90, width: double.infinity, fit: BoxFit.cover),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold)),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.star, size: 14, color: Colors.amber),
-                                            Text("$rating ($reviews)", style: TextStyle(fontSize: 12)),
-                                            Expanded(child: Text(" • $location", style: TextStyle(fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis)),
-                                          ],
-                                        ),
-                                        Text("${price.toString()}đ", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange)),
-                                        if (discount != 0)
-                                          Text("Mã giảm $discount%", style: TextStyle(color: Colors.orange, fontSize: 12)),
-                                        if (isNew)
-                                          Text("Mới mở", style: TextStyle(color: Colors.blue, fontSize: 12)),
-                                        SizedBox(height: 4),
-                                        TapEffect(
-                                          onClick: () {},
-                                          child: Container(
-                                            width: double.infinity,
-                                            padding: EdgeInsets.symmetric(vertical: 8),
-                                            decoration: BoxDecoration(
-                                              color: Colors.orange,
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            alignment: Alignment.center,
-                                            child: Text("Đặt ngay", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    // New Hotels
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Khách sạn mới", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(AppLocalizations(context).of("view_all")),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 220,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(left: 16),
-                        itemCount: newHotels.length,
-                        itemBuilder: (context, index) {
-                          final hotel = newHotels[index];
-                          final price = (hotel["price"] ?? 0) as int;
-                          final name = hotel["name"] ?? "";
-                          final rating = hotel["rating"] ?? "";
-                          final reviews = hotel["reviews"] ?? "";
-                          final location = hotel["location"] ?? "";
-                          final image = hotel["image"] ?? "assets/images/hotel_1.jpg";
-                          final discount = hotel["discount"] ?? 0;
-                          return Container(
-                            width: 180,
-                            margin: const EdgeInsets.only(right: 16),
-                            child: Card(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              elevation: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                                    child: Image.asset(image, height: 90, width: double.infinity, fit: BoxFit.cover),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold)),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.star, size: 14, color: Colors.amber),
-                                            Text("$rating ($reviews)", style: TextStyle(fontSize: 12)),
-                                            Expanded(child: Text(" • $location", style: TextStyle(fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis)),
-                                          ],
-                                        ),
-                                        Text("${price.toString()}đ", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange)),
-                                        if (discount != 0)
-                                          Text("Mã giảm $discount%", style: TextStyle(color: Colors.orange, fontSize: 12)),
-                                        SizedBox(height: 4),
-                                        TapEffect(
-                                          onClick: () {},
-                                          child: Container(
-                                            width: double.infinity,
-                                            padding: EdgeInsets.symmetric(vertical: 8),
-                                            decoration: BoxDecoration(
-                                              color: Colors.orange,
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            alignment: Alignment.center,
-                                            child: Text("Đặt ngay", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
+                        const SizedBox(height: 24),
+                      ],
+                    );
+                  },
                 ),
-              )
+              ),
             ],
           ),
         ),

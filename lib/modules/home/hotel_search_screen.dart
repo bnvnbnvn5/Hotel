@@ -14,9 +14,7 @@ class HotelSearchScreen extends StatelessWidget {
         elevation: 0.5,
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: HotelSearchBar(),
-        ),
+        child: HotelSearchBar(),
       ),
     );
   }
