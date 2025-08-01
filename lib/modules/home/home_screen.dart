@@ -39,6 +39,13 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedCity = "Hà Nội";
   String selectedDistrict = "Ba Đình";
 
+  int _selectedIndex = 0;
+  final List<_NavItem> _navItems = [
+    _NavItem(icon: Icons.home, label: 'Home'),
+    _NavItem(icon: Icons.hotel, label: 'Phòng đã đặt'),
+    _NavItem(icon: Icons.person, label: 'Tài khoản'),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -432,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           SizedBox(
-                            height: 180,
+                            height: 200,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               padding: const EdgeInsets.only(left: 16),
@@ -451,7 +458,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   badge: null, // No specific badge for top rated
                                   discountLabel: null,
                                   timeLabel: null,
-                                  cardHeight: 180,
                                   onTap: () {
                                     Navigator.push(
                                       context,
@@ -479,7 +485,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           SizedBox(
-                            height: 180,
+                            height: 200,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               padding: const EdgeInsets.only(left: 16),
@@ -498,7 +504,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   badge: null, // No specific badge for new hotels
                                   discountLabel: null,
                                   timeLabel: null,
-                                  cardHeight: 180,
                                   onTap: () {
                                     Navigator.push(
                                       context,
@@ -522,8 +527,82 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+      extendBody: true,
+      bottomNavigationBar: _buildFloatingNavBar(),
     );
   }
+
+  Widget _buildFloatingNavBar() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24, left: 24, right: 24),
+      child: Material(
+        elevation: 8,
+        borderRadius: BorderRadius.circular(32),
+        color: Colors.transparent,
+        child: Container(
+          height: 76, // tăng chiều cao bar
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.95),
+            borderRadius: BorderRadius.circular(32),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(_navItems.length, (index) {
+              final selected = _selectedIndex == index;
+              return Flexible(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    curve: Curves.easeOut,
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 0),
+                    decoration: BoxDecoration(
+                      color: selected ? Colors.teal.withOpacity(0.12) : Colors.transparent,
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.easeOut,
+                          width: selected ? 32 : 26,
+                          height: selected ? 32 : 26,
+                          child: Icon(_navItems[index].icon,
+                              color: selected ? Colors.teal : Colors.grey,
+                              size: selected ? 30 : 24),
+                        ),
+                        const SizedBox(height: 2),
+                        AnimatedDefaultTextStyle(
+                          duration: Duration(milliseconds: 200),
+                          style: TextStyle(
+                            color: selected ? Colors.teal : Colors.grey,
+                            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                            fontSize: selected ? 14 : 12,
+                          ),
+                          child: Text(_navItems[index].label),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem {
+  final IconData icon;
+  final String label;
+  const _NavItem({required this.icon, required this.label});
 }
 
 class SlideCard extends StatelessWidget {

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:myapp/db_helper.dart';
 import 'booking_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HotelSearchBar extends StatefulWidget {
   const HotelSearchBar({Key? key}) : super(key: key);
@@ -276,6 +277,23 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
     );
   }
 
+  List<String> getSuggestions(List<Map<String, dynamic>> hotels, String input) {
+    final q = input.trim().toLowerCase();
+    if (q.isEmpty) return [];
+    final nameSet = hotels.map((h) => h['name']?.toString() ?? '').where((s) => s.toLowerCase().contains(q)).toSet();
+    final citySet = hotels.map((h) => h['city']?.toString() ?? '').where((s) => s.toLowerCase().contains(q)).toSet();
+    final districtSet = hotels.map((h) => h['district']?.toString() ?? '').where((s) => s.toLowerCase().contains(q)).toSet();
+    return [...nameSet, ...citySet, ...districtSet].where((s) => s.isNotEmpty).toList();
+  }
+
+  void _openMap(String address) async {
+    final query = Uri.encodeComponent(address);
+    final googleUrl = 'https://www.google.com/maps/search/?api=1&query=$query';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -309,6 +327,39 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                     contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
                   ),
                 ),
+                // Gợi ý tìm kiếm
+                if (searchText.isNotEmpty)
+                  FutureBuilder<List<Map<String, dynamic>>>(
+                    future: DBHelper.getHotels(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return SizedBox();
+                      final suggestions = getSuggestions(snapshot.data!, searchText);
+                      if (suggestions.isEmpty) return SizedBox();
+                      return Container(
+                        margin: EdgeInsets.only(top: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade200),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                        ),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: suggestions.length,
+                          itemBuilder: (context, idx) {
+                            return ListTile(
+                              title: Text(suggestions[idx]),
+                              onTap: () {
+                                setState(() {
+                                  searchText = suggestions[idx];
+                                });
+                              },
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 SizedBox(height: 16),
                 // Nhận phòng
                 GestureDetector(
@@ -357,11 +408,13 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
               if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
               final hotels = snapshot.data!;
               final filteredHotels = hotels.where((hotel) {
-                final q = searchText.toLowerCase();
-                return hotel['name']?.toLowerCase().contains(q) == true ||
-                  hotel['address']?.toLowerCase().contains(q) == true ||
-                  hotel['city']?.toLowerCase().contains(q) == true ||
-                  hotel['district']?.toLowerCase().contains(q) == true;
+                final q = searchText.trim().toLowerCase();
+                if (q.isEmpty) return true;
+                // Nếu nhập đúng tên khách sạn (so sánh không phân biệt hoa thường)
+                if (hotel['name']?.toLowerCase() == q) return true;
+                // Nếu nhập địa điểm (city hoặc district)
+                if (hotel['city']?.toLowerCase().contains(q) == true || hotel['district']?.toLowerCase().contains(q) == true) return true;
+                return false;
               }).toList();
               if (filteredHotels.isEmpty) return Center(child: Text('Không tìm thấy khách sạn phù hợp.'));
               return ListView.builder(
@@ -382,7 +435,16 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                       ),
                       title: Text(hotel['name'] ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
                       subtitle: Text('${hotel['district']}, ${hotel['city']}'),
-                      trailing: Icon(Icons.chevron_right),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.location_on, color: Colors.orange),
+                            onPressed: () => _openMap(hotel['address'] ?? ''),
+                          ),
+                          Icon(Icons.chevron_right),
+                        ],
+                      ),
                       onTap: () {
                         Navigator.push(
                           context,

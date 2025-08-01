@@ -7,6 +7,9 @@ import 'package:myapp/providers/theme_provider.dart';
 import 'package:myapp/routes/route_names.dart';
 import 'package:myapp/widgets/common_button.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'package:myapp/seed_data.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -15,11 +18,23 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   bool isLoadText = false;
+  bool _dbSeeded = false;
   @override
   void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) =>
-        _loadAppLocalizations()); // call after first frame receiver so we have context
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initDbAndSeed();
+      _loadAppLocalizations();
+    });
+  }
+
+  Future<void> _initDbAndSeed() async {
+    final dbPath = await getDatabasesPath();
+    await deleteDatabase(join(dbPath, 'hotel_app.db'));
+    await seedData();
+    setState(() {
+      _dbSeeded = true;
+    });
   }
 
   Future<void> _loadAppLocalizations() async {
@@ -35,6 +50,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     final appTheme = Provider.of<ThemeProvider>(context);
+    if (!_dbSeeded) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Container(
       child: Scaffold(
         body: Stack(
