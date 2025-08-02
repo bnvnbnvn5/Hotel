@@ -88,24 +88,49 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   void _openMapScreen(BuildContext context, String address, String? hotelName) async {
-    try {
-      List<Location> locations = await locationFromAddress(address);
-      if (locations.isNotEmpty) {
-        final loc = locations.first;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => MapScreen(lat: loc.latitude, lng: loc.longitude, hotelName: hotelName),
+    print('Opening map for hotel: $hotelName, address: $address');
+    print('Hotel data: ${widget.hotel}');
+    
+    // Kiểm tra xem hotel có lat/lng không
+    if (widget.hotel['lat'] != null && widget.hotel['lng'] != null) {
+      print('Using lat/lng from database: ${widget.hotel['lat']}, ${widget.hotel['lng']}');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MapScreen(
+            lat: widget.hotel['lat'].toDouble(),
+            lng: widget.hotel['lng'].toDouble(),
+            hotelName: hotelName,
           ),
-        );
+        ),
+      );
+    } else {
+      print('No lat/lng found, using geocoding...');
+      // Fallback: dùng geocoding nếu không có lat/lng
+      try {
+        List<Location> locations = await locationFromAddress(address);
+        if (locations.isNotEmpty) {
+          final loc = locations.first;
+          print('Geocoding result: ${loc.latitude}, ${loc.longitude}');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => MapScreen(lat: loc.latitude, lng: loc.longitude, hotelName: hotelName),
+            ),
+          );
+        }
+      } catch (e) {
+        print('Geocoding error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Không tìm được vị trí trên bản đồ.')));
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Không tìm được vị trí trên bản đồ.')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Debug: in ra dữ liệu hotel
+    print('Hotel data: ${widget.hotel}');
+    
     final hotel = widget.hotel;
     final String name = hotel['name'] ?? 'Tên khách sạn';
     final String address = hotel['address'] ?? 'Địa chỉ';
@@ -744,190 +769,190 @@ class _HotelSearchBarForBookingState extends State<HotelSearchBarForBooking> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildTab('Theo giờ', 0),
+              SizedBox(width: 16),
+              _buildTab('Theo ngày', 1),
+            ],
+          ),
+          SizedBox(height: 8),
+          if (tabIndex == 0) ...[
+            Center(
+              child: Text('Chọn thời gian', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            ),
+            SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildTab('Theo giờ', 0),
-                SizedBox(width: 16),
-                _buildTab('Theo ngày', 1),
+                Text('Nhận phòng ', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(selectedDate != null
+                  ? selectedDate!.day.toString().padLeft(2, '0') + '/' + selectedDate!.month.toString().padLeft(2, '0') + '/' + selectedDate!.year.toString()
+                  : ''),
               ],
             ),
             SizedBox(height: 8),
-            if (tabIndex == 0) ...[
-              Center(
-                child: Text('Chọn thời gian', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-              ),
-              SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Nhận phòng ', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(selectedDate != null
-                    ? selectedDate!.day.toString().padLeft(2, '0') + '/' + selectedDate!.month.toString().padLeft(2, '0') + '/' + selectedDate!.year.toString()
-                    : ''),
-                ],
-              ),
-              SizedBox(height: 8),
-              TableCalendar(
-                firstDay: DateTime.now(),
-                lastDay: DateTime.now().add(Duration(days: 365)),
-                focusedDay: selectedDate ?? DateTime.now(),
-                selectedDayPredicate: (day) => selectedDate != null && isSameDay(day, selectedDate),
-                calendarFormat: CalendarFormat.month,
-                rangeSelectionMode: RangeSelectionMode.disabled,
-                onDaySelected: (selected, _) {
-                  setState(() {
-                    selectedDate = selected;
-                  });
-                },
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color: Colors.orange.shade200,
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.orange,
-                    shape: BoxShape.circle,
-                  ),
+            TableCalendar(
+              firstDay: DateTime.now(),
+              lastDay: DateTime.now().add(Duration(days: 365)),
+              focusedDay: selectedDate ?? DateTime.now(),
+              selectedDayPredicate: (day) => selectedDate != null && isSameDay(day, selectedDate),
+              calendarFormat: CalendarFormat.month,
+              rangeSelectionMode: RangeSelectionMode.disabled,
+              onDaySelected: (selected, _) {
+                setState(() {
+                  selectedDate = selected;
+                });
+              },
+              calendarStyle: CalendarStyle(
+                todayDecoration: BoxDecoration(
+                  color: Colors.orange.shade200,
+                  shape: BoxShape.circle,
+                ),
+                selectedDecoration: BoxDecoration(
+                  color: Colors.orange,
+                  shape: BoxShape.circle,
                 ),
               ),
-              SizedBox(height: 12),
-              Text('Giờ nhận phòng', style: TextStyle(fontWeight: FontWeight.bold)),
-              Wrap(
-                spacing: 8,
-                children: timeOptions.map((t) {
-                  final isSelected = t == selectedTime;
-                  return ChoiceChip(
-                    label: Text(t.format(context)),
-                    selected: isSelected,
-                    onSelected: (_) {
-                      setState(() {
-                        selectedTime = t;
-                      });
-                    },
-                    selectedColor: Colors.orange.shade100,
-                    labelStyle: TextStyle(color: isSelected ? Colors.orange : Colors.black),
-                  );
-                }).toList(),
-              ),
-              SizedBox(height: 12),
-              Text('Số giờ sử dụng', style: TextStyle(fontWeight: FontWeight.bold)),
-              Wrap(
-                spacing: 8,
-                children: hourOptions.map((h) {
-                  final isSelected = h == selectedHour;
-                  return ChoiceChip(
-                    label: Text('$h giờ'),
-                    selected: isSelected,
-                    onSelected: (_) {
-                      setState(() {
-                        selectedHour = h;
-                      });
-                    },
-                    selectedColor: Colors.orange.shade100,
-                    labelStyle: TextStyle(color: isSelected ? Colors.orange : Colors.black),
-                  );
-                }).toList(),
-              ),
-            ] else ...[
-              Center(
-                child: Text('Chọn ngày', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-              ),
-              SizedBox(height: 8),
-              TableCalendar(
-                firstDay: DateTime.now(),
-                lastDay: DateTime.now().add(Duration(days: 365)),
-                focusedDay: selectedRange?.start ?? DateTime.now(),
-                rangeStartDay: selectedRange?.start,
-                rangeEndDay: selectedRange?.end,
-                calendarFormat: CalendarFormat.month,
-                rangeSelectionMode: RangeSelectionMode.toggledOn,
-                onRangeSelected: (start, end, _) {
-                  setState(() {
-                    if (start != null && end != null) {
-                      selectedRange = DateTimeRange(start: start, end: end);
-                    } else if (start != null) {
-                      selectedRange = DateTimeRange(start: start, end: start);
-                    } else {
-                      selectedRange = null;
-                    }
-                  });
-                },
-                selectedDayPredicate: (day) {
-                  if (selectedRange == null) return false;
-                  return day.isAfter(selectedRange!.start.subtract(Duration(days: 1))) &&
-                         day.isBefore(selectedRange!.end.add(Duration(days: 1)));
-                },
-                calendarStyle: CalendarStyle(
-                  rangeHighlightColor: Colors.orange.shade100,
-                  rangeStartDecoration: BoxDecoration(
-                    color: Colors.orange,
-                    shape: BoxShape.circle,
-                  ),
-                  rangeEndDecoration: BoxDecoration(
-                    color: Colors.orange,
-                    shape: BoxShape.circle,
-                  ),
-                  todayDecoration: BoxDecoration(
-                    color: Colors.orange.shade200,
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.orange,
-                    shape: BoxShape.circle,
-                  ),
+            ),
+            SizedBox(height: 12),
+            Text('Giờ nhận phòng', style: TextStyle(fontWeight: FontWeight.bold)),
+            Wrap(
+              spacing: 8,
+              children: timeOptions.map((t) {
+                final isSelected = t == selectedTime;
+                return ChoiceChip(
+                  label: Text(t.format(context)),
+                  selected: isSelected,
+                  onSelected: (_) {
+                    setState(() {
+                      selectedTime = t;
+                    });
+                  },
+                  selectedColor: Colors.orange.shade100,
+                  labelStyle: TextStyle(color: isSelected ? Colors.orange : Colors.black),
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 12),
+            Text('Số giờ sử dụng', style: TextStyle(fontWeight: FontWeight.bold)),
+            Wrap(
+              spacing: 8,
+              children: hourOptions.map((h) {
+                final isSelected = h == selectedHour;
+                return ChoiceChip(
+                  label: Text('$h giờ'),
+                  selected: isSelected,
+                  onSelected: (_) {
+                    setState(() {
+                      selectedHour = h;
+                    });
+                  },
+                  selectedColor: Colors.orange.shade100,
+                  labelStyle: TextStyle(color: isSelected ? Colors.orange : Colors.black),
+                );
+              }).toList(),
+            ),
+          ] else ...[
+            Center(
+              child: Text('Chọn ngày', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            ),
+            SizedBox(height: 8),
+            TableCalendar(
+              firstDay: DateTime.now(),
+              lastDay: DateTime.now().add(Duration(days: 365)),
+              focusedDay: selectedRange?.start ?? DateTime.now(),
+              rangeStartDay: selectedRange?.start,
+              rangeEndDay: selectedRange?.end,
+              calendarFormat: CalendarFormat.month,
+              rangeSelectionMode: RangeSelectionMode.toggledOn,
+              onRangeSelected: (start, end, _) {
+                setState(() {
+                  if (start != null && end != null) {
+                    selectedRange = DateTimeRange(start: start, end: end);
+                  } else if (start != null) {
+                    selectedRange = DateTimeRange(start: start, end: start);
+                  } else {
+                    selectedRange = null;
+                  }
+                });
+              },
+              selectedDayPredicate: (day) {
+                if (selectedRange == null) return false;
+                return day.isAfter(selectedRange!.start.subtract(Duration(days: 1))) &&
+                       day.isBefore(selectedRange!.end.add(Duration(days: 1)));
+              },
+              calendarStyle: CalendarStyle(
+                rangeHighlightColor: Colors.orange.shade100,
+                rangeStartDecoration: BoxDecoration(
+                  color: Colors.orange,
+                  shape: BoxShape.circle,
+                ),
+                rangeEndDecoration: BoxDecoration(
+                  color: Colors.orange,
+                  shape: BoxShape.circle,
+                ),
+                todayDecoration: BoxDecoration(
+                  color: Colors.orange.shade200,
+                  shape: BoxShape.circle,
+                ),
+                selectedDecoration: BoxDecoration(
+                  color: Colors.orange,
+                  shape: BoxShape.circle,
                 ),
               ),
-              SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Nhận phòng: ${selectedRange != null ? DateFormat('dd/MM').format(selectedRange!.start) : ''}'),
-                  Text('Trả phòng: ${selectedRange != null ? DateFormat('dd/MM').format(selectedRange!.end) : ''}'),
-                ],
-              ),
-            ],
-            SizedBox(height: 16),
+            ),
+            SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Xóa', style: TextStyle(color: Colors.teal)),
-                ),
-                ElevatedButton(
-                  onPressed: canApply
-                      ? () {
-                          if (tabIndex == 0) {
-                            Navigator.pop(context, {
-                              'date': selectedDate,
-                              'time': selectedTime,
-                              'hour': selectedHour,
-                            });
-                          } else {
-                            Navigator.pop(context, {
-                              'range': selectedRange,
-                            });
-                          }
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: canApply ? Colors.orange : Colors.grey.shade300,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                  ),
-                  child: Text('Áp dụng'),
-                ),
+                Text('Nhận phòng: ${selectedRange != null ? DateFormat('dd/MM').format(selectedRange!.start) : ''}'),
+                Text('Trả phòng: ${selectedRange != null ? DateFormat('dd/MM').format(selectedRange!.end) : ''}'),
               ],
             ),
-            SizedBox(height: 8),
           ],
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Xóa', style: TextStyle(color: Colors.teal)),
+              ),
+              ElevatedButton(
+                onPressed: canApply
+                    ? () {
+                        if (tabIndex == 0) {
+                          Navigator.pop(context, {
+                            'date': selectedDate,
+                            'time': selectedTime,
+                            'hour': selectedHour,
+                          });
+                        } else {
+                          Navigator.pop(context, {
+                            'range': selectedRange,
+                          });
+                        }
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: canApply ? Colors.orange : Colors.grey.shade300,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                ),
+                child: Text('Áp dụng'),
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
+        ],
         ),
       ),
     );

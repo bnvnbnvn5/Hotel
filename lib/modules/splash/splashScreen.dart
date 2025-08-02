@@ -32,6 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final dbPath = await getDatabasesPath();
     await deleteDatabase(join(dbPath, 'hotel_app.db'));
     await seedData();
+    print('Database initialized with lat/lng columns');
     setState(() {
       _dbSeeded = true;
     });

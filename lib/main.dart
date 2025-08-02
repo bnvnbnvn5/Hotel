@@ -11,6 +11,13 @@ import 'package:myapp/seed_data.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // XÓA DB CŨ (chỉ dùng khi cần reset)
+  // final dbPath = await getDatabasesPath();
+  // await deleteDatabase(join(dbPath, 'hotel_app.db'));
+
+  // GỌI SEED DATA SAU KHI XÓA DB
+  // await seedData();
+
   // Cố định chế độ dọc
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

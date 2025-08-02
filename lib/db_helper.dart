@@ -21,7 +21,7 @@ class DBHelper {
           CREATE TABLE hotels (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT, address TEXT, city TEXT, district TEXT, image TEXT, rating REAL, reviews INTEGER, price INTEGER,
-            isNew INTEGER, isFlashSale INTEGER, isTopRated INTEGER
+            isNew INTEGER, isFlashSale INTEGER, isTopRated INTEGER, lat REAL, lng REAL
           );
         ''');
         await db.execute('''

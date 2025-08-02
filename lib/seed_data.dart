@@ -13,6 +13,8 @@ Future<void> seedData() async {
       'reviews': 120,
       'price': 350000,
       'isTopRated': true,
+      'lat': 21.0285,
+      'lng': 105.8542,
     },
     {
       'name': 'Khách sạn Hồ Gươm',
@@ -24,6 +26,8 @@ Future<void> seedData() async {
       'reviews': 80,
       'price': 400000,
       'isFlashSale': true,
+      'lat': 21.0278,
+      'lng': 105.8342,
     },
     {
       'name': 'Melon Hotel - Hà Đông',
@@ -36,6 +40,8 @@ Future<void> seedData() async {
       'price': 200000,
       'isFlashSale': true,
       'isNew': true,
+      'lat': 20.9721,
+      'lng': 105.7781,
     },
     {
       'name': 'Yên Hoa Hotel 2',
@@ -47,6 +53,8 @@ Future<void> seedData() async {
       'reviews': 429,
       'price': 280000,
       'isFlashSale': true,
+      'lat': 21.0368,
+      'lng': 105.7825,
     },
     {
       'name': 'New Apart Hotel',
@@ -58,6 +66,8 @@ Future<void> seedData() async {
       'reviews': 10,
       'price': 350000,
       'isNew': true,
+      'lat': 21.0122,
+      'lng': 105.8044,
     },
     {
       'name': 'Cozy Oasis',
@@ -69,6 +79,8 @@ Future<void> seedData() async {
       'reviews': 5,
       'price': 200000,
       'isNew': true,
+      'lat': 21.0368,
+      'lng': 105.7825,
     },
     {
       'name': 'A25 Hotel',
@@ -80,6 +92,8 @@ Future<void> seedData() async {
       'reviews': 1,
       'price': 245000,
       'isNew': true,
+      'lat': 21.0122,
+      'lng': 105.8044,
     },
     {
       'name': 'Trần Gia 2',
@@ -91,6 +105,8 @@ Future<void> seedData() async {
       'reviews': 2563,
       'price': 200000,
       'isTopRated': true,
+      'lat': 21.0368,
+      'lng': 105.7825,
     },
     {
       'name': 'Hoa Nam Hotel - Việt',
@@ -102,6 +118,8 @@ Future<void> seedData() async {
       'reviews': 3,
       'price': 280000,
       'isTopRated': true,
+      'lat': 21.0278,
+      'lng': 105.8342,
     },
     {
       'name': 'Nguyễn Anh',
@@ -113,6 +131,8 @@ Future<void> seedData() async {
       'reviews': 3337,
       'price': 200000,
       'isTopRated': true,
+      'lat': 21.0122,
+      'lng': 105.8044,
     },
     {
       'name': 'Flash Sale Hotel 1',
@@ -124,6 +144,8 @@ Future<void> seedData() async {
       'reviews': 100,
       'price': 250000,
       'isFlashSale': true,
+      'lat': 10.7626,
+      'lng': 106.6602,
     },
     {
       'name': 'Flash Sale Hotel 2',
@@ -135,6 +157,8 @@ Future<void> seedData() async {
       'reviews': 80,
       'price': 220000,
       'isFlashSale': true,
+      'lat': 10.7626,
+      'lng': 106.6602,
     },
     {
       'name': 'Top Rated Hotel 1',
@@ -146,6 +170,8 @@ Future<void> seedData() async {
       'reviews': 200,
       'price': 350000,
       'isTopRated': true,
+      'lat': 21.0285,
+      'lng': 105.8542,
     },
     {
       'name': 'Top Rated Hotel 2',
@@ -157,6 +183,8 @@ Future<void> seedData() async {
       'reviews': 150,
       'price': 320000,
       'isTopRated': true,
+      'lat': 21.0278,
+      'lng': 105.8342,
     },
     {
       'name': 'New Hotel 1',
@@ -168,6 +196,8 @@ Future<void> seedData() async {
       'reviews': 10,
       'price': 280000,
       'isNew': true,
+      'lat': 21.0368,
+      'lng': 105.7825,
     },
     {
       'name': 'New Hotel 2',
@@ -179,6 +209,8 @@ Future<void> seedData() async {
       'reviews': 8,
       'price': 260000,
       'isNew': true,
+      'lat': 10.7626,
+      'lng': 106.6602,
     },
   ];
 
