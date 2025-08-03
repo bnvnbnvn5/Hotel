@@ -3,11 +3,15 @@ import 'package:myapp/language/appLocalizations.dart';
 import 'package:myapp/widgets/common_appbar_view.dart';
 import 'package:myapp/widgets/common_textfield_view.dart';
 import 'package:myapp/widgets/remove_Foucuse.dart';
-import 'package:myapp/widgets/common_button.dart'; // Thêm import cho CommonButton
+import 'package:myapp/widgets/common_button.dart';
 import 'package:myapp/utils/validator.dart';
 import 'package:myapp/routes/route_names.dart';
+import 'package:myapp/db_helper.dart';
+import 'package:myapp/services/email_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'facebook_twitter_button_view.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -21,13 +25,21 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   String _errorPassword = '';
   TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   // Hàm validate email
   String _validateEmail(String email) {
     if (email.isEmpty) {
       return AppLocalizations(context).of("email_cannot_empty");
     }
-    if (!Validator.validateEmail(email)) {
+    if (!EmailService.isValidEmail(email)) {
       return AppLocalizations(context).of("enter_valid_email");
     }
     return '';
@@ -58,17 +70,57 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   // Hàm xử lý login
-  void _handleLogin() {
-    if (_validateForm()) {
-      // Logic login ở đây
-      print('Login with email: ${_emailController.text}');
-      print('Login with password: ${_passwordController.text}');
+  Future<void> _handleLogin() async {
+    if (!_validateForm()) {
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text;
+
+      // Validate user với database
+      final isValid = await DBHelper.validateUser(email, password);
       
-      // TODO: Thêm logic gọi API login
-      // Ví dụ: await authService.login(_emailController.text, _passwordController.text);
-      
-      // Chuyển đến trang Home sau khi login thành công
-      NavigationServies(context).gotoHomeScreen();
+      if (isValid) {
+        // Lấy thông tin user
+        final user = await DBHelper.getUserByEmail(email);
+        
+        if (user != null) {
+          // Lưu thông tin user vào shared preferences
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('current_user_id', user['id']);
+          await prefs.setString('user_email', user['email']);
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Đăng nhập thành công!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+
+          // Chuyển đến trang Home sau khi login thành công
+          NavigationServies(context).gotoHomeScreen();
+        }
+      } else {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Email hoặc mật khẩu không đúng'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Có lỗi xảy ra: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -139,8 +191,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 24, right: 24, bottom: 8, top: 32), // Khớp padding với IntroductionScreen
                         child: CommonButton(
-                          onTap: _handleLogin,
-                          buttonText: AppLocalizations(context).of("login"),
+                          onTap: _isLoading ? null : _handleLogin,
+                          buttonText: _isLoading ? "Đang đăng nhập..." : AppLocalizations(context).of("login"),
                           radius: 24, // Khớp góc bo tròn
                         ),
                       ),
@@ -148,8 +200,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: EdgeInsets.only(left: 24, right: 24, top: 8),
                         child: TextButton(
                           onPressed: () {
-                            // Add forgot password logic here
-                            print('Forgot Password pressed');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()),
+                            );
                           },
                           child: Text(
                             AppLocalizations(context).of("forgot_your_Password"),

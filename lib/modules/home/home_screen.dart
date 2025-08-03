@@ -5,9 +5,11 @@ import 'hotel_list_by_area_screen.dart';
 import 'hotel_search_bar.dart';
 import 'hotel_search_screen.dart';
 import 'booking_screen.dart';
+import 'booking_list_screen.dart';
 import 'package:myapp/db_helper.dart';
 import 'package:myapp/seed_data.dart';
 import 'package:myapp/widgets/hotel_card.dart';
+import '../profile/profile_screen.dart';
 
 // Thêm custom ScrollBehavior để tắt overscroll glow
 class NoGlowScrollBehavior extends ScrollBehavior {
@@ -41,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _selectedIndex = 0;
   final List<_NavItem> _navItems = [
-    _NavItem(icon: Icons.home, label: 'Home'),
+    _NavItem(icon: Icons.home, label: 'Trang chủ'),
     _NavItem(icon: Icons.hotel, label: 'Phòng đã đặt'),
     _NavItem(icon: Icons.person, label: 'Tài khoản'),
   ];
@@ -172,6 +174,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Handle navigation based on selected index
+    if (_selectedIndex == 1) {
+      return BookingListScreen(); // Show booking list screen
+    } else if (_selectedIndex == 2) {
+      return ProfileScreen(); // Show profile screen
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -555,6 +564,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() {
                       _selectedIndex = index;
                     });
+                    // Navigate to different screens based on index
+                    if (index == 1) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => BookingListScreen()),
+                      );
+                    } else if (index == 2) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => ProfileScreen()),
+                      );
+                    }
                   },
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 200),

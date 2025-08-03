@@ -1,6 +1,33 @@
 import 'package:myapp/db_helper.dart';
 
 Future<void> seedData() async {
+  // Seed users
+  final users = [
+    {
+      'email': 'admin@example.com',
+      'phone': '0123456789',
+      'password': 'Admin123',
+      'name': 'Admin User',
+    },
+    {
+      'email': 'user@example.com',
+      'phone': '0987654321',
+      'password': 'User123',
+      'name': 'Test User',
+    },
+    {
+      'email': 'demo@example.com',
+      'phone': '0369852147',
+      'password': 'Demo123',
+      'name': 'Demo User',
+    },
+  ];
+
+  // Insert users
+  for (final user in users) {
+    await DBHelper.insertUser(user);
+  }
+
   // Seed hotel
   final hotels = [
     {
@@ -245,4 +272,6 @@ Future<void> seedData() async {
   for (final r in rooms) {
     await DBHelper.insertRoom(r);
   }
+
+  print('Database seeded successfully with users and hotels!');
 }

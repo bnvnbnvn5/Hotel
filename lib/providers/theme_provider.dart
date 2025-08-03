@@ -103,4 +103,20 @@ class ThemeProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void setLightMode() async {
+    _isLightMode = true;
+    _themeModeType = ThemeModeType.light;
+    await SharedPreferencesKeys().setThemeMode(ThemeModeType.light);
+    _themeData = AppTheme.getThemeData;
+    notifyListeners();
+  }
+
+  void setDarkMode() async {
+    _isLightMode = false;
+    _themeModeType = ThemeModeType.dark;
+    await SharedPreferencesKeys().setThemeMode(ThemeModeType.dark);
+    _themeData = AppTheme.getThemeData;
+    notifyListeners();
+  }
 }

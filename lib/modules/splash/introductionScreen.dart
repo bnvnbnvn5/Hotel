@@ -8,6 +8,8 @@ import 'package:myapp/routes/route_names.dart';
 import 'package:myapp/widgets/common_button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../login/create_account_screen.dart';
+
 class IntroductionScreen extends StatefulWidget {
   @override
   _IntroductionScreenState createState() => _IntroductionScreenState();
@@ -104,13 +106,15 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
             },
           ),
           CommonButton(
-            padding:
-            const EdgeInsets.only(left: 48, right: 48, bottom: 32, top: 8),
+            padding: const EdgeInsets.only(left: 48, right: 48, bottom: 32, top: 8),
             backgroundColor: AppTheme.scaffoldBackgroundColor,
             textColor: AppTheme.primaryTextColor,
             buttonText: AppLocalizations(context).of("create_account"),
             onTap: () {
-              Scaffold();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
+              );
             },
           ),
           SizedBox(
