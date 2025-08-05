@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/providers/theme_provider.dart';
+import 'package:myapp/utils/enum.dart';
 import 'package:provider/provider.dart';
+import 'package:myapp/language/appLocalizations.dart';
 
 class LanguageScreen extends StatefulWidget {
   const LanguageScreen({Key? key}) : super(key: key);
@@ -12,15 +14,35 @@ class LanguageScreen extends StatefulWidget {
 class _LanguageScreenState extends State<LanguageScreen> {
   String _selectedLanguage = 'Tiếng Việt';
 
-  final List<Map<String, String>> _languages = [
-    {'name': 'Tiếng Việt', 'code': 'vi'},
-    {'name': 'English', 'code': 'en'},
+  final List<Map<String, dynamic>> _languages = [
+    {'name': 'Tiếng Việt', 'code': 'vi', 'type': LanguageType.vi},
+    {'name': 'English', 'code': 'en', 'type': LanguageType.en},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentLanguage();
+  }
+
+  void _loadCurrentLanguage() {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final currentLanguage = themeProvider.languageType;
+    
+    if (currentLanguage == LanguageType.vi) {
+      _selectedLanguage = 'Tiếng Việt';
+    } else {
+      _selectedLanguage = 'English';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDarkMode = !themeProvider.isLightMode;
+    
+    // Update selected language based on current theme provider
+    _loadCurrentLanguage();
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
@@ -51,7 +73,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
             child: ListTile(
               leading: Icon(
                 Icons.language,
-                color: isSelected ? Colors.orange : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                color: isSelected ? (isDarkMode ? Colors.white : Colors.black) : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
               ),
               title: Text(
                 language['name']!,
@@ -62,18 +84,21 @@ class _LanguageScreenState extends State<LanguageScreen> {
               ),
               trailing: isSelected ? Icon(
                 Icons.check,
-                color: Colors.orange,
+                color: isDarkMode ? Colors.white : Colors.black,
               ) : null,
-              onTap: () {
+              onTap: () async {
                 setState(() {
                   _selectedLanguage = language['name']!;
                 });
                 
-                // TODO: Implement language change
+                // Cập nhật ngôn ngữ thông qua ThemeProvider
+                final languageType = language['type'] as LanguageType;
+                await themeProvider.updateLanguage(languageType);
+                
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Đã chọn ngôn ngữ: ${language['name']}'),
-                    backgroundColor: Colors.orange,
+                    backgroundColor: Colors.green,
                   ),
                 );
                 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/db_helper.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:myapp/language/appLocalizations.dart';
+import 'package:myapp/utils/enum.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,11 +27,28 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic>? _currentUser;
   bool _isLoading = true;
+  String _selectedLanguage = 'Tiếng Việt';
+  String _selectedRegion = 'Hà Nội';
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedRegion = prefs.getString('selected_region') ?? 'Hà Nội';
+    
+    // Get language from ThemeProvider
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final currentLanguage = themeProvider.languageType;
+    
+    setState(() {
+      _selectedLanguage = currentLanguage == LanguageType.vi ? 'Tiếng Việt' : 'English';
+      _selectedRegion = savedRegion;
+    });
   }
 
   Future<void> _loadUserData() async {
@@ -74,19 +92,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Đăng xuất'),
-          content: Text('Bạn có chắc chắn muốn đăng xuất?'),
+          title: Text(AppLocalizations(context).of("logout")),
+          content: Text(AppLocalizations(context).of("confirm_logout")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Hủy'),
+              child: Text(AppLocalizations(context).of("cancel")),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _logout();
               },
-              child: Text('Đăng xuất', style: TextStyle(color: Colors.red)),
+              child: Text(AppLocalizations(context).of("logout"), style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -99,10 +117,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDarkMode = !themeProvider.isLightMode;
 
-    return Scaffold(
-      backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
-      body: SafeArea(
-        child: Column(
+    return SafeArea(
+      child: Column(
           children: [
             // Header với thông tin user
             Container(
@@ -114,13 +130,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                      color: (isDarkMode ? Colors.orange : Colors.black).withOpacity(0.1),
+                      color: isDarkMode ? Colors.grey[700] : Colors.grey[200],
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Icon(
                       Icons.person,
                       size: 30,
-                      color: isDarkMode ? Colors.orange : Colors.black,
+                      color: isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
                   SizedBox(width: 16),
@@ -150,14 +166,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   // Nút edit
                   IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_currentUser != null) {
-                        Navigator.push(
+                        final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => EditProfileScreen(user: _currentUser),
                           ),
                         );
+                        // Reload user data if profile was updated
+                        if (result == true) {
+                          await _loadUserData();
+                          setState(() {}); // Force rebuild UI
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Không tìm thấy thông tin người dùng')),
@@ -166,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                     icon: Icon(
                       Icons.edit,
-                      color: isDarkMode ? Colors.orange : Colors.black,
+                      color: isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
                 ],
@@ -179,10 +200,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   // Trang của tôi
-                  _buildSectionTitle('Trang của tôi', isDarkMode),
+                  _buildSectionTitle(AppLocalizations(context).of("my_page"), isDarkMode),
                   _buildMenuItem(
                     icon: Icons.favorite_border,
-                    title: 'Khách sạn yêu thích',
+                    title: AppLocalizations(context).of("favorite_hotels"),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -197,10 +218,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(height: 24),
                   
                   // Cài đặt
-                  _buildSectionTitle('Cài đặt', isDarkMode),
+                  _buildSectionTitle(AppLocalizations(context).of("settings"), isDarkMode),
                   _buildMenuItem(
                     icon: Icons.settings,
-                    title: 'Thiết lập tài khoản',
+                    title: AppLocalizations(context).of("account_settings"),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -213,7 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   _buildMenuItem(
                     icon: Icons.notifications,
-                    title: 'Thông báo',
+                    title: AppLocalizations(context).of("notifications"),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -226,43 +247,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   _buildMenuItem(
                     icon: Icons.language,
-                    title: 'Ngôn ngữ',
-                    subtitle: 'Tiếng Việt',
-                    onTap: () {
-                      Navigator.push(
+                    title: AppLocalizations(context).of("language"),
+                    subtitle: _selectedLanguage,
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => LanguageScreen(),
                         ),
                       );
+                      // Reload settings after returning from language screen
+                      await _loadSettings();
+                      setState(() {}); // Force rebuild UI
                     },
                     isDarkMode: isDarkMode,
                   ),
                   _buildMenuItem(
                     icon: Icons.palette,
-                    title: 'Giao diện',
-                    subtitle: isDarkMode ? 'Chế độ tối' : 'Chế độ sáng',
-                    onTap: () {
-                      Navigator.push(
+                    title: AppLocalizations(context).of("interface"),
+                    subtitle: isDarkMode ? AppLocalizations(context).of("dark_mode") : AppLocalizations(context).of("light_mode"),
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => ThemeSettingsScreen(),
                         ),
                       );
+                      // Force rebuild UI after theme change
+                      setState(() {});
                     },
                     isDarkMode: isDarkMode,
                   ),
                   _buildMenuItem(
                     icon: Icons.location_on,
-                    title: 'Khu vực',
-                    subtitle: 'Hà Nội',
-                    onTap: () {
-                      Navigator.push(
+                    title: AppLocalizations(context).of("region"),
+                    subtitle: _selectedRegion,
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => RegionScreen(),
                         ),
                       );
+                      // Reload settings after returning from region screen
+                      await _loadSettings();
+                      setState(() {}); // Force rebuild UI
                     },
                     isDarkMode: isDarkMode,
                   ),
@@ -329,9 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: _buildBottomBar(context, isDarkMode),
-    );
+      );
   }
 
   Widget _buildSectionTitle(String title, bool isDarkMode) {
@@ -365,7 +392,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: ListTile(
         leading: Icon(
           icon,
-          color: textColor ?? (isDarkMode ? Colors.orange : Colors.black),
+          color: textColor ?? (isDarkMode ? Colors.white : Colors.black),
         ),
         title: Text(
           title,
@@ -377,7 +404,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         subtitle: subtitle != null ? Text(
           subtitle,
           style: TextStyle(
-            color: isDarkMode ? Colors.orange : Colors.black,
+            color: isDarkMode ? Colors.grey[300] : Colors.grey[600],
             fontSize: 12,
           ),
         ) : null,
@@ -387,37 +414,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ) : null,
         onTap: onTap,
       ),
-    );
-  }
-
-  Widget _buildBottomBar(BuildContext context, bool isDarkMode) {
-    return BottomNavigationBar(
-      backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
-      selectedItemColor: isDarkMode ? Colors.orange : Colors.black,
-      unselectedItemColor: isDarkMode ? Colors.white70 : Colors.grey,
-      currentIndex: 2, // 2 là index của Profile
-      onTap: (index) {
-        if (index == 0) {
-          Navigator.pushReplacementNamed(context, '/home');
-        } else if (index == 1) {
-          Navigator.pushReplacementNamed(context, '/booking');
-        }
-        // index 2 là profile, không cần chuyển
-      },
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Trang chủ',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.book),
-          label: 'Đã đặt',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Cá nhân',
-        ),
-      ],
     );
   }
 }

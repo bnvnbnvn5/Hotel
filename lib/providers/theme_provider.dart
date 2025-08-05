@@ -87,7 +87,7 @@ class ThemeProvider extends ChangeNotifier {
     }
   }
 
-  void updateLanguage(LanguageType _language) async {
+  Future<void> updateLanguage(LanguageType _language) async {
     await SharedPreferencesKeys().setLanguageType(_language);
     _languageType = _language;
     _themeData = AppTheme.getThemeData;

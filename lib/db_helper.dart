@@ -17,7 +17,7 @@ class DBHelper {
     final path = join(dbPath, 'hotel_app.db');
     return await openDatabase(
       path,
-      version: 2, // Tăng version để thêm bảng users
+      version: 3, // Tăng version để thêm bảng favorite_hotels
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE hotels (
@@ -45,6 +45,7 @@ class DBHelper {
             created_at TEXT, updated_at TEXT, is_active INTEGER DEFAULT 1
           );
         ''');
+        await createFavoriteHotelsTable(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -56,6 +57,10 @@ class DBHelper {
               created_at TEXT, updated_at TEXT, is_active INTEGER DEFAULT 1
             );
           ''');
+        }
+        if (oldVersion < 3) {
+          // Thêm bảng favorite_hotels nếu upgrade từ version < 3
+          await createFavoriteHotelsTable(db);
         }
       },
     );
@@ -203,5 +208,86 @@ class DBHelper {
       where: 'id = ?',
       whereArgs: [userId],
     );
+  }
+
+  // Thêm bảng favorite_hotels
+  static Future<void> createFavoriteHotelsTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS favorite_hotels (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        hotel_id INTEGER NOT NULL,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id),
+        FOREIGN KEY (hotel_id) REFERENCES hotels (id),
+        UNIQUE(user_id, hotel_id)
+      )
+    ''');
+  }
+
+  // Thêm khách sạn vào danh sách yêu thích
+  static Future<bool> addToFavorites(int userId, int hotelId) async {
+    try {
+      final dbClient = await db;
+      await dbClient.insert('favorite_hotels', {
+        'user_id': userId,
+        'hotel_id': hotelId,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+      return true;
+    } catch (e) {
+      print('Error adding to favorites: $e');
+      return false;
+    }
+  }
+
+  // Xóa khách sạn khỏi danh sách yêu thích
+  static Future<bool> removeFromFavorites(int userId, int hotelId) async {
+    try {
+      final dbClient = await db;
+      await dbClient.delete(
+        'favorite_hotels',
+        where: 'user_id = ? AND hotel_id = ?',
+        whereArgs: [userId, hotelId],
+      );
+      return true;
+    } catch (e) {
+      print('Error removing from favorites: $e');
+      return false;
+    }
+  }
+
+  // Kiểm tra xem khách sạn có trong danh sách yêu thích không
+  static Future<bool> isFavorite(int userId, int hotelId) async {
+    try {
+      final dbClient = await db;
+      final result = await dbClient.query(
+        'favorite_hotels',
+        where: 'user_id = ? AND hotel_id = ?',
+        whereArgs: [userId, hotelId],
+      );
+      return result.isNotEmpty;
+    } catch (e) {
+      print('Error checking favorite: $e');
+      return false;
+    }
+  }
+
+  // Lấy danh sách khách sạn yêu thích của user
+  static Future<List<Map<String, dynamic>>> getFavoriteHotels(int userId) async {
+    try {
+      final dbClient = await db;
+      final result = await dbClient.rawQuery('''
+        SELECT h.*, fh.created_at as favorite_date
+        FROM hotels h
+        INNER JOIN favorite_hotels fh ON h.id = fh.hotel_id
+        WHERE fh.user_id = ?
+        ORDER BY fh.created_at DESC
+      ''', [userId]);
+      return result;
+    } catch (e) {
+      print('Error getting favorite hotels: $e');
+      return [];
+    }
   }
 }

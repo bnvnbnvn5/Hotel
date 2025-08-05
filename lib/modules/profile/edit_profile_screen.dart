@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/db_helper.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'change_password_screen.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final Map<String, dynamic>? user;
@@ -81,7 +82,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         SnackBar(content: Text('Cập nhật thông tin thành công!')),
       );
       
-      Navigator.pop(context);
+      // Return true to indicate successful update
+      Navigator.pop(context, true);
     } catch (e) {
       setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -119,7 +121,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 )
               : Text(
                   'Lưu',
-                  style: TextStyle(color: Colors.orange),
+                  style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
                 ),
           ),
         ],
@@ -136,13 +138,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     width: 100,
                     height: 100,
                     decoration: BoxDecoration(
-                      color: Colors.orange.withOpacity(0.1),
+                      color: isDarkMode ? Colors.grey[700] : Colors.grey[200],
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: Icon(
                       Icons.person,
                       size: 50,
-                      color: Colors.orange,
+                      color: isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
                   SizedBox(height: 16),
@@ -152,7 +154,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     },
                     child: Text(
                       'Thay đổi ảnh đại diện',
-                      style: TextStyle(color: Colors.orange),
+                      style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
                     ),
                   ),
                 ],
@@ -197,18 +199,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: () {
-                  // TODO: Navigate to change password screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChangePasswordScreen(),
+                    ),
+                  );
                 },
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 16),
-                  side: BorderSide(color: Colors.orange),
+                  side: BorderSide(color: isDarkMode ? Colors.white : Colors.black),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 child: Text(
                   'Đổi mật khẩu',
-                  style: TextStyle(color: Colors.orange),
+                  style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
                 ),
               ),
             ),
@@ -232,7 +239,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: Colors.orange),
+        prefixIcon: Icon(icon, color: isDarkMode ? Colors.white : Colors.black),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -242,7 +249,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.orange, width: 2),
+          borderSide: BorderSide(color: isDarkMode ? Colors.white : Colors.black, width: 2),
         ),
         labelStyle: TextStyle(
           color: isDarkMode ? Colors.grey[400] : Colors.grey[600],

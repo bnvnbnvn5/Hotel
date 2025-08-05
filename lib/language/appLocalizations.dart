@@ -38,8 +38,8 @@ class AppLocalizations {
     }
   }
 
-  String of(String textId) {
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+  String of(String textId, {bool listen = true}) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: listen);
     LanguageType _languageType = themeProvider.languageType ?? LanguageType.en;
 
     if (common.allTexts == null || common.allTexts!.isEmpty) {
@@ -53,6 +53,11 @@ class AppLocalizations {
       return text.isNotEmpty ? text : '#Text is Empty#';
     }
     return '#Text not found#';
+  }
+
+  // Thêm method để reload language data
+  Future<void> reload() async {
+    await load();
   }
 
   static const LocalizationsDelegate<AppLocalizations> delegate =

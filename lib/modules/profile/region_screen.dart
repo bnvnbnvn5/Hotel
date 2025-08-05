@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegionScreen extends StatefulWidget {
   const RegionScreen({Key? key}) : super(key: key);
@@ -22,6 +23,20 @@ class _RegionScreenState extends State<RegionScreen> {
     {'name': 'Phú Quốc', 'code': 'PQ'},
     {'name': 'Sapa', 'code': 'SP'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentRegion();
+  }
+
+  Future<void> _loadCurrentRegion() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedRegion = prefs.getString('selected_region') ?? 'Hà Nội';
+    setState(() {
+      _selectedRegion = savedRegion;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +72,7 @@ class _RegionScreenState extends State<RegionScreen> {
             child: ListTile(
               leading: Icon(
                 Icons.location_on,
-                color: isSelected ? Colors.orange : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                color: isSelected ? (isDarkMode ? Colors.white : Colors.black) : (isDarkMode ? Colors.grey[400] : Colors.grey[600]),
               ),
               title: Text(
                 region['name']!,
@@ -68,20 +83,27 @@ class _RegionScreenState extends State<RegionScreen> {
               ),
               trailing: isSelected ? Icon(
                 Icons.check,
-                color: Colors.orange,
+                color: isDarkMode ? Colors.white : Colors.black,
               ) : null,
-              onTap: () {
+              onTap: () async {
                 setState(() {
                   _selectedRegion = region['name']!;
                 });
                 
+                // Lưu khu vực vào SharedPreferences
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString('selected_region', region['name']!);
+                await prefs.setString('region_code', region['code']!);
+                
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Đã chọn khu vực: ${region['name']}'),
-                    backgroundColor: Colors.orange,
+                    backgroundColor: Colors.green,
                   ),
                 );
                 
+                // Force rebuild UI after region change
+                setState(() {});
                 Navigator.pop(context);
               },
             ),

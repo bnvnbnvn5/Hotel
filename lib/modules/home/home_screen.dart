@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:myapp/language/appLocalizations.dart';
+import 'package:myapp/providers/theme_provider.dart';
+import 'package:provider/provider.dart';
 import 'hotel_list_by_area_screen.dart';
 import 'hotel_search_bar.dart';
 import 'hotel_search_screen.dart';
@@ -10,6 +12,7 @@ import 'package:myapp/db_helper.dart';
 import 'package:myapp/seed_data.dart';
 import 'package:myapp/widgets/hotel_card.dart';
 import '../profile/profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Thêm custom ScrollBehavior để tắt overscroll glow
 class NoGlowScrollBehavior extends ScrollBehavior {
@@ -42,16 +45,27 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedDistrict = "Ba Đình";
 
   int _selectedIndex = 0;
-  final List<_NavItem> _navItems = [
-    _NavItem(icon: Icons.home, label: 'Trang chủ'),
-    _NavItem(icon: Icons.hotel, label: 'Phòng đã đặt'),
-    _NavItem(icon: Icons.person, label: 'Tài khoản'),
+  int? _currentUserId;
+  List<_NavItem> get _navItems => [
+    _NavItem(icon: Icons.home, label: AppLocalizations(context).of("home_title")),
+    _NavItem(icon: Icons.hotel, label: AppLocalizations(context).of("booked_rooms")),
+    _NavItem(icon: Icons.person, label: AppLocalizations(context).of("account_title")),
   ];
 
   @override
   void initState() {
     super.initState();
     // seedData(); // Đã seed trong DBHelper, không cần gọi nữa
+    _loadCurrentUser();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getInt('current_user_id');
+    print('Loading user ID: $userId'); // Debug
+    setState(() {
+      _currentUserId = userId;
+    });
   }
 
   final List<String> _slideImages = [
@@ -76,6 +90,62 @@ class _HomeScreenState extends State<HomeScreen> {
         _isLoading = false;
       });
     });
+  }
+
+  Future<void> _handleFavoriteChanged(int hotelId, bool isFavorite) async {
+    print('Current user ID: $_currentUserId'); // Debug
+    if (_currentUserId == null) {
+      // Thử load lại user ID
+      await _loadCurrentUser();
+      if (_currentUserId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(AppLocalizations(context).of("please_login_to_add_favorite"))),
+              );
+        return;
+      }
+    }
+
+    try {
+      if (isFavorite) {
+        await DBHelper.addToFavorites(_currentUserId!, hotelId);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đã thêm vào danh sách yêu thích')),
+        );
+      } else {
+        await DBHelper.removeFromFavorites(_currentUserId!, hotelId);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đã xóa khỏi danh sách yêu thích')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Có lỗi xảy ra: $e')),
+      );
+    }
+  }
+
+  Widget _buildHotelCard(Map<String, dynamic> hotel) {
+    return HotelCard(
+      name: hotel['name'] ?? '',
+      address: hotel['address'] ?? '',
+      image: hotel['image'] ?? 'assets/images/hotel_1.jpg',
+      rating: hotel['rating']?.toDouble() ?? 0,
+      reviews: hotel['reviews'] ?? 0,
+      price: hotel['price'] ?? 0,
+      originalPrice: hotel['originalPrice'],
+      district: hotel['district'],
+      badge: hotel['isFlashSale'] == true ? 'Nổi bật' : null,
+      discountLabel: hotel['discountLabel'],
+      timeLabel: hotel['timeLabel'] ?? '/ 2 giờ',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BookingScreen(hotel: hotel),
+          ),
+        );
+      },
+    );
   }
 
   void _showAreaPicker() async {
@@ -174,15 +244,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = !themeProvider.isLightMode;
+    
     // Handle navigation based on selected index
     if (_selectedIndex == 1) {
-      return BookingListScreen(); // Show booking list screen
+      return Scaffold(
+        backgroundColor: isDarkMode ? Colors.grey[900] : Colors.grey[50],
+        body: BookingListScreen(),
+        extendBody: true,
+        bottomNavigationBar: _buildFloatingNavBar(),
+      );
     } else if (_selectedIndex == 2) {
-      return ProfileScreen(); // Show profile screen
+      return Scaffold(
+        backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
+        body: ProfileScreen(),
+        extendBody: true,
+        bottomNavigationBar: _buildFloatingNavBar(),
+      );
     }
-
+    
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
       body: SafeArea(
         child: ScrollConfiguration(
           behavior: NoGlowScrollBehavior(),
@@ -200,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(width: 8),
                         Text(
                           "${selectedCity}, ${selectedDistrict}",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: isDarkMode ? Colors.white : Colors.black),
                         ),
                         Icon(Icons.keyboard_arrow_down, color: Colors.grey),
                       ],
@@ -212,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SliverAppBar(
                 expandedHeight: 220.0,
                 pinned: true,
-                backgroundColor: Colors.white,
+                backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
                 stretch: true,
                 elevation: 0,
                 flexibleSpace: FlexibleSpaceBar(
@@ -224,8 +307,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   background: Stack(
                     fit: StackFit.expand,
                     children: [
-                      // Lớp nền trắng phủ kín
-                      Container(color: Colors.white),
+                      // Lớp nền phủ kín
+                      Container(color: isDarkMode ? Colors.grey[900] : Colors.white),
                       // Slide ảnh
                       PageView.builder(
                         controller: _pageController,
@@ -266,25 +349,29 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(builder: (_) => HotelSearchScreen()),
                       );
                     },
-                    child: AbsorbPointer(
-                      child: TextField(
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations(context).of("where_are_you_going"),
-                          prefixIcon: Icon(Icons.search, color: Colors.grey),
-                          filled: true,
-                          fillColor: Colors.grey.shade100,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
+                                        child: Consumer<ThemeProvider>(
+                      builder: (context, themeProvider, child) {
+                        return AbsorbPointer(
+                          child: TextField(
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations(context).of("where_are_you_going"),
+                              prefixIcon: Icon(Icons.search, color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.grey.shade100,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(color: Colors.grey.shade300),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(color: Colors.grey.shade300),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                            ),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -315,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Ưu đãi đặc biệt', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                Text('Ưu đãi đặc biệt', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
                                 TextButton(onPressed: () {}, child: Text('Xem tất cả')),
                               ],
                             ),
@@ -328,39 +415,26 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemCount: flashSaleHotels.length,
                               itemBuilder: (context, index) {
                                 final hotel = flashSaleHotels[index];
-                                return HotelCard(
-                                  name: hotel['name'] ?? '',
-                                  address: hotel['address'] ?? '',
-                                  image: hotel['image'] ?? 'assets/images/hotel_1.jpg',
-                                  rating: hotel['rating']?.toDouble() ?? 0,
-                                  reviews: hotel['reviews'] ?? 0,
-                                  price: hotel['price'] ?? 0,
-                                  originalPrice: hotel['originalPrice'],
-                                  district: hotel['district'],
-                                  badge: hotel['isFlashSale'] == true ? 'Nổi bật' : null,
-                                  discountLabel: hotel['discountLabel'],
-                                  timeLabel: hotel['timeLabel'] ?? '/ 2 giờ',
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => BookingScreen(hotel: hotel),
-                                      ),
-                                    );
-                                  },
-                                );
+                                return _buildHotelCard(hotel);
                               },
                             ),
                           ),
                         ],
                         // Popular Destination (chỉ 1 lần)
                         const SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            AppLocalizations(context).of("popular_destination"),
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                          ),
+                        Consumer<ThemeProvider>(
+                          builder: (context, themeProvider, child) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                AppLocalizations(context).of("popular_destination"),
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: isDarkMode ? Colors.white : Colors.black,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(height: 12),
                         SizedBox(
@@ -384,7 +458,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Khách sạn nổi bật', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                              Text('Khách sạn nổi bật', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
                               TextButton(
                                 onPressed: () {
                                   Navigator.push(
@@ -410,27 +484,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemCount: showHotels.length,
                             itemBuilder: (context, index) {
                               final hotel = showHotels[index];
-                              return HotelCard(
-                                name: hotel['name'] ?? '',
-                                address: hotel['address'] ?? '',
-                                image: hotel['image'] ?? 'assets/images/hotel_1.jpg',
-                                rating: hotel['rating']?.toDouble() ?? 0,
-                                reviews: hotel['reviews'] ?? 0,
-                                price: hotel['price'] ?? 0,
-                                originalPrice: hotel['originalPrice'],
-                                district: hotel['district'],
-                                badge: hotel['isFlashSale'] == true ? 'Nổi bật' : null,
-                                discountLabel: hotel['discountLabel'],
-                                timeLabel: hotel['timeLabel'] ?? '/ 2 giờ',
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => BookingScreen(hotel: hotel),
-                                    ),
-                                  );
-                                },
-                              );
+                              return _buildHotelCard(hotel);
                             },
                           ),
                         ),
@@ -442,7 +496,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Top được bình chọn', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                Text('Top được bình chọn', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
                                 TextButton(onPressed: () {}, child: Text('Xem tất cả')),
                               ],
                             ),
@@ -455,27 +509,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemCount: topRatedHotels.length,
                               itemBuilder: (context, index) {
                                 final hotel = topRatedHotels[index];
-                                return HotelCard(
-                                  name: hotel['name'] ?? '',
-                                  address: hotel['address'] ?? '',
-                                  image: hotel['image'] ?? 'assets/images/hotel_1.jpg',
-                                  rating: hotel['rating']?.toDouble() ?? 0,
-                                  reviews: hotel['reviews'] ?? 0,
-                                  price: hotel['price'] ?? 0,
-                                  originalPrice: hotel['originalPrice'],
-                                  district: hotel['district'],
-                                  badge: null, // No specific badge for top rated
-                                  discountLabel: null,
-                                  timeLabel: null,
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => BookingScreen(hotel: hotel),
-                                      ),
-                                    );
-                                  },
-                                );
+                                return _buildHotelCard(hotel);
                               },
                             ),
                           ),
@@ -488,7 +522,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Khách sạn mới', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                Text('Khách sạn mới', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
                                 TextButton(onPressed: () {}, child: Text('Xem tất cả')),
                               ],
                             ),
@@ -501,27 +535,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemCount: newHotels.length,
                               itemBuilder: (context, index) {
                                 final hotel = newHotels[index];
-                                return HotelCard(
-                                  name: hotel['name'] ?? '',
-                                  address: hotel['address'] ?? '',
-                                  image: hotel['image'] ?? 'assets/images/hotel_1.jpg',
-                                  rating: hotel['rating']?.toDouble() ?? 0,
-                                  reviews: hotel['reviews'] ?? 0,
-                                  price: hotel['price'] ?? 0,
-                                  originalPrice: hotel['originalPrice'],
-                                  district: hotel['district'],
-                                  badge: null, // No specific badge for new hotels
-                                  discountLabel: null,
-                                  timeLabel: null,
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => BookingScreen(hotel: hotel),
-                                      ),
-                                    );
-                                  },
-                                );
+                                return _buildHotelCard(hotel);
                               },
                             ),
                           ),
@@ -542,6 +556,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildFloatingNavBar() {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return Padding(
       padding: const EdgeInsets.only(bottom: 24, left: 24, right: 24),
       child: Material(
@@ -551,7 +567,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
           height: 76, // tăng chiều cao bar
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.95),
+            color: isDarkMode ? Colors.grey[800]!.withOpacity(0.95) : Colors.white.withOpacity(0.95),
             borderRadius: BorderRadius.circular(32),
           ),
           child: Row(
@@ -565,24 +581,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       _selectedIndex = index;
                     });
                     // Navigate to different screens based on index
-                    if (index == 1) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => BookingListScreen()),
-                      );
-                    } else if (index == 2) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => ProfileScreen()),
-                      );
-                    }
+                    // No need to navigate, just update the selected index
                   },
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 200),
                     curve: Curves.easeOut,
                     padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 0),
                     decoration: BoxDecoration(
-                      color: selected ? Colors.teal.withOpacity(0.12) : Colors.transparent,
+                      color: selected ? (isDarkMode ? Colors.blue.withOpacity(0.12) : Colors.teal.withOpacity(0.12)) : Colors.transparent,
                       borderRadius: BorderRadius.circular(32),
                     ),
                     child: Column(
@@ -594,14 +600,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: selected ? 32 : 26,
                           height: selected ? 32 : 26,
                           child: Icon(_navItems[index].icon,
-                              color: selected ? Colors.teal : Colors.grey,
+                              color: selected ? (isDarkMode ? Colors.blue : Colors.teal) : (isDarkMode ? Colors.grey[400] : Colors.grey),
                               size: selected ? 30 : 24),
                         ),
                         const SizedBox(height: 2),
                         AnimatedDefaultTextStyle(
                           duration: Duration(milliseconds: 200),
                           style: TextStyle(
-                            color: selected ? Colors.teal : Colors.grey,
+                            color: selected ? (isDarkMode ? Colors.blue : Colors.teal) : (isDarkMode ? Colors.grey[400] : Colors.grey),
                             fontWeight: selected ? FontWeight.bold : FontWeight.normal,
                             fontSize: selected ? 14 : 12,
                           ),

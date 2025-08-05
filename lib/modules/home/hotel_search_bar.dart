@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:myapp/db_helper.dart';
 import 'booking_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../language/appLocalizations.dart';
 
 class HotelSearchBar extends StatefulWidget {
   const HotelSearchBar({Key? key}) : super(key: key);
@@ -35,14 +36,14 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
         final timeStr = selectedTime!.format(context);
         return '$timeStr, $dateStr';
       }
-      return 'Bất kỳ';
+      return AppLocalizations(context).of("any");
     } else {
       if (selectedRange != null) {
         final start = DateFormat('dd/MM').format(selectedRange!.start);
         final end = DateFormat('dd/MM').format(selectedRange!.end);
         return '$start - $end';
       }
-      return 'Bất kỳ';
+      return AppLocalizations(context).of("any");
     }
   }
 
@@ -52,43 +53,45 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
     int? tempHour = selectedHour ?? hourOptions[0];
     DateTimeRange? tempRange = selectedRange;
     bool canApply = false;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
             canApply = (tabIndex == 0 && tempDate != null && tempTime != null && tempHour != null)
               || (tabIndex == 1 && tempRange != null);
-            return Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                         return SingleChildScrollView(
+               child: Padding(
+                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                 child: Column(
+                   mainAxisSize: MainAxisSize.min,
+                   crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildTab('Theo giờ', 0, setModalState),
+                      _buildTab(AppLocalizations(context).of("by_time"), 0, setModalState),
                       SizedBox(width: 16),
-                      _buildTab('Theo ngày', 1, setModalState),
+                      _buildTab(AppLocalizations(context).of("by_date"), 1, setModalState),
                     ],
                   ),
                   SizedBox(height: 8),
                   if (tabIndex == 0) ...[
                     Center(
-                      child: Text('Chọn thời gian', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                      child: Text(AppLocalizations(context).of("select_time"), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: isDarkMode ? Colors.white : Colors.black)),
                     ),
                     SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Nhận phòng ', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text(tempDate != null
+                        Text(AppLocalizations(context).of("checkin_date").replaceAll("{date}", tempDate != null
                           ? tempDate!.day.toString().padLeft(2, '0') + '/' + tempDate!.month.toString().padLeft(2, '0') + '/' + tempDate!.year.toString()
-                          : ''),
+                          : ''), style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
                       ],
                     ),
                     SizedBox(height: 8),
@@ -106,17 +109,20 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                       },
                       calendarStyle: CalendarStyle(
                         todayDecoration: BoxDecoration(
-                          color: Colors.orange.shade200,
+                          color: isDarkMode ? Colors.blue.shade200 : Colors.orange.shade200,
                           shape: BoxShape.circle,
                         ),
                         selectedDecoration: BoxDecoration(
-                          color: Colors.orange,
+                          color: isDarkMode ? Colors.blue : Colors.orange,
                           shape: BoxShape.circle,
                         ),
+                        defaultTextStyle: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+                        weekendTextStyle: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+                        outsideTextStyle: TextStyle(color: isDarkMode ? Colors.grey[600] : Colors.grey),
                       ),
                     ),
                     SizedBox(height: 12),
-                    Text('Giờ nhận phòng', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(AppLocalizations(context).of("checkin_time"), style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
                     Wrap(
                       spacing: 8,
                       children: timeOptions.map((t) {
@@ -129,34 +135,36 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                               tempTime = t;
                             });
                           },
-                          selectedColor: Colors.orange.shade100,
-                          labelStyle: TextStyle(color: isSelected ? Colors.orange : Colors.black),
+                          selectedColor: isDarkMode ? Colors.blue.shade100 : Colors.orange.shade100,
+                          labelStyle: TextStyle(color: isSelected ? (isDarkMode ? Colors.blue : Colors.orange) : (isDarkMode ? Colors.white : Colors.black)),
+                          backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
                         );
                       }).toList(),
                     ),
                     SizedBox(height: 12),
-                    Text('Số giờ sử dụng', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(AppLocalizations(context).of("usage_duration"), style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
                     Wrap(
                       spacing: 8,
                       children: hourOptions.map((h) {
                         final isSelected = h == tempHour;
                         return ChoiceChip(
-                          label: Text('$h giờ'),
+                          label: Text('$h ${AppLocalizations(context).of("hour")}'),
                           selected: isSelected,
                           onSelected: (_) {
                             setModalState(() {
                               tempHour = h;
                             });
                           },
-                          selectedColor: Colors.orange.shade100,
-                          labelStyle: TextStyle(color: isSelected ? Colors.orange : Colors.black),
+                          selectedColor: isDarkMode ? Colors.blue.shade100 : Colors.orange.shade100,
+                          labelStyle: TextStyle(color: isSelected ? (isDarkMode ? Colors.blue : Colors.orange) : (isDarkMode ? Colors.white : Colors.black)),
+                          backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
                         );
                       }).toList(),
                     ),
                   ] else ...[
-                    Center(
-                      child: Text('Chọn ngày', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                    ),
+                                         Center(
+                       child: Text(AppLocalizations(context).of("select_date"), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: isDarkMode ? Colors.white : Colors.black)),
+                     ),
                     SizedBox(height: 8),
                     TableCalendar(
                       firstDay: DateTime.now(),
@@ -182,45 +190,48 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                         return day.isAfter(tempRange!.start.subtract(Duration(days: 1))) &&
                                day.isBefore(tempRange!.end.add(Duration(days: 1)));
                       },
-                      calendarStyle: CalendarStyle(
-                        rangeHighlightColor: Colors.orange.shade100,
-                        rangeStartDecoration: BoxDecoration(
-                          color: Colors.orange,
-                          shape: BoxShape.circle,
-                        ),
-                        rangeEndDecoration: BoxDecoration(
-                          color: Colors.orange,
-                          shape: BoxShape.circle,
-                        ),
-                        todayDecoration: BoxDecoration(
-                          color: Colors.orange.shade200,
-                          shape: BoxShape.circle,
-                        ),
-                        selectedDecoration: BoxDecoration(
-                          color: Colors.orange,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+                                             calendarStyle: CalendarStyle(
+                         rangeHighlightColor: isDarkMode ? Colors.blue.shade100 : Colors.orange.shade100,
+                         rangeStartDecoration: BoxDecoration(
+                           color: isDarkMode ? Colors.blue : Colors.orange,
+                           shape: BoxShape.circle,
+                         ),
+                         rangeEndDecoration: BoxDecoration(
+                           color: isDarkMode ? Colors.blue : Colors.orange,
+                           shape: BoxShape.circle,
+                         ),
+                         todayDecoration: BoxDecoration(
+                           color: isDarkMode ? Colors.blue.shade200 : Colors.orange.shade200,
+                           shape: BoxShape.circle,
+                         ),
+                         selectedDecoration: BoxDecoration(
+                           color: isDarkMode ? Colors.blue : Colors.orange,
+                           shape: BoxShape.circle,
+                         ),
+                         defaultTextStyle: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+                         weekendTextStyle: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+                         outsideTextStyle: TextStyle(color: isDarkMode ? Colors.grey[600] : Colors.grey),
+                       ),
                     ),
                     SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Nhận phòng: ${tempRange != null ? DateFormat('dd/MM').format(tempRange!.start) : ''}'),
-                        Text('Trả phòng: ${tempRange != null ? DateFormat('dd/MM').format(tempRange!.end) : ''}'),
-                      ],
-                    ),
+                                         Row(
+                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                       children: [
+                         Text('${AppLocalizations(context).of("checkin")}: ${tempRange != null ? DateFormat('dd/MM').format(tempRange!.start) : ''}', style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
+                         Text('${AppLocalizations(context).of("checkout")}: ${tempRange != null ? DateFormat('dd/MM').format(tempRange!.end) : ''}', style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
+                       ],
+                     ),
                   ],
                   SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text('Xóa', style: TextStyle(color: Colors.teal)),
-                      ),
+                                             TextButton(
+                         onPressed: () {
+                           Navigator.pop(context);
+                         },
+                         child: Text(AppLocalizations(context).of("clear"), style: TextStyle(color: isDarkMode ? Colors.blue : Colors.teal)),
+                       ),
                       ElevatedButton(
                         onPressed: canApply
                             ? () {
@@ -236,19 +247,20 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                                 Navigator.pop(context);
                               }
                             : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: canApply ? Colors.orange : Colors.grey.shade300,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                        ),
-                        child: Text('Áp dụng'),
+                                                 style: ElevatedButton.styleFrom(
+                           backgroundColor: canApply ? (isDarkMode ? Colors.blue : Colors.orange) : Colors.grey.shade300,
+                           foregroundColor: Colors.white,
+                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                         ),
+                         child: Text(AppLocalizations(context).of("apply")),
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
-                ],
-              ),
-            );
+                                     SizedBox(height: 8),
+                 ],
+               ),
+             ),
+           );
           },
         );
       },
@@ -257,6 +269,8 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
 
   Widget _buildTab(String label, int idx, void Function(void Function()) setModalState) {
     final isSelected = tabIndex == idx;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return GestureDetector(
       onTap: () {
         setModalState(() {
@@ -268,7 +282,7 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.orange : Colors.grey,
+            color: isSelected ? (isDarkMode ? Colors.blue : Colors.orange) : (isDarkMode ? Colors.grey[400] : Colors.grey),
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
@@ -310,23 +324,23 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildTab('Theo giờ', 0, (fn) => setState(fn)),
+                    _buildTab(AppLocalizations(context).of("by_time"), 0, (fn) => setState(fn)),
                     SizedBox(width: 24),
-                    _buildTab('Theo ngày', 1, (fn) => setState(fn)),
+                    _buildTab(AppLocalizations(context).of("by_date"), 1, (fn) => setState(fn)),
                   ],
                 ),
                 SizedBox(height: 16),
-                // Search box
-                TextField(
-                  onChanged: (value) => setState(() => searchText = value),
-                  decoration: InputDecoration(
-                    hintText: 'Tìm địa điểm, khách sạn',
-                    prefixIcon: Icon(Icons.search),
-                    suffixIcon: Icon(Icons.send, color: Colors.grey),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-                    contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                  ),
-                ),
+                                 // Search box
+                 TextField(
+                   onChanged: (value) => setState(() => searchText = value),
+                   decoration: InputDecoration(
+                     hintText: AppLocalizations(context).of("search_place_hotel"),
+                     prefixIcon: Icon(Icons.search),
+                     suffixIcon: Icon(Icons.send, color: Colors.grey),
+                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                     contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                   ),
+                 ),
                 // Gợi ý tìm kiếm
                 if (searchText.isNotEmpty)
                   FutureBuilder<List<Map<String, dynamic>>>(
@@ -371,14 +385,14 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                       border: Border.all(color: Colors.grey.shade300),
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Row(
-                      children: [
-                        Text('Nhận phòng', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Spacer(),
-                        Text(displayCheckin, style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
-                        Icon(Icons.keyboard_arrow_down, color: Colors.grey),
-                      ],
-                    ),
+                                         child: Row(
+                       children: [
+                         Text(AppLocalizations(context).of("checkin"), style: TextStyle(fontWeight: FontWeight.bold)),
+                         Spacer(),
+                         Text(displayCheckin, style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+                         Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                       ],
+                     ),
                   ),
                 ),
                 SizedBox(height: 16),
@@ -393,7 +407,7 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                       padding: EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: Text('Tìm kiếm', style: TextStyle(fontWeight: FontWeight.bold)),
+                                         child: Text(AppLocalizations(context).of("search"), style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],
@@ -416,7 +430,7 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                 if (hotel['city']?.toLowerCase().contains(q) == true || hotel['district']?.toLowerCase().contains(q) == true) return true;
                 return false;
               }).toList();
-              if (filteredHotels.isEmpty) return Center(child: Text('Không tìm thấy khách sạn phù hợp.'));
+                             if (filteredHotels.isEmpty) return Center(child: Text(AppLocalizations(context).of("no_hotels_found")));
               return ListView.builder(
                 itemCount: filteredHotels.length,
                 itemBuilder: (context, index) {

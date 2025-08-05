@@ -813,5 +813,470 @@
         "text_id": "home_description",
         "en": "You have successfully logged in. This is your home screen.",
         "vi": "Bạn đã đăng nhập thành công. Đây là trang chủ của bạn."
+    },
+    {
+        "text_id": "where_going",
+        "en": "Where are you going?",
+        "vi": "Bạn đang đi đâu?"
+    },
+    {
+        "text_id": "special_offers",
+        "en": "Special Offers",
+        "vi": "Ưu đãi đặc biệt"
+    },
+    {
+        "text_id": "featured_hotels",
+        "en": "Featured Hotels",
+        "vi": "Khách sạn nổi bật"
+    },
+    {
+        "text_id": "booked_rooms",
+        "en": "Booked Rooms",
+        "vi": "Phòng đã đặt"
+    },
+    {
+        "text_id": "account",
+        "en": "Account",
+        "vi": "Tài khoản"
+    },
+    {
+        "text_id": "my_page",
+        "en": "My Page",
+        "vi": "Trang của tôi"
+    },
+    {
+        "text_id": "favorite_hotels",
+        "en": "Favorite Hotels",
+        "vi": "Khách sạn yêu thích"
+    },
+    {
+        "text_id": "settings",
+        "en": "Settings",
+        "vi": "Cài đặt"
+    },
+    {
+        "text_id": "account_settings",
+        "en": "Account Settings",
+        "vi": "Thiết lập tài khoản"
+    },
+    {
+        "text_id": "notifications",
+        "en": "Notifications",
+        "vi": "Thông báo"
+    },
+    {
+        "text_id": "interface",
+        "en": "Interface",
+        "vi": "Giao diện"
+    },
+    {
+        "text_id": "region",
+        "en": "Region",
+        "vi": "Khu vực"
+    },
+    {
+        "text_id": "light_mode",
+        "en": "Light Mode",
+        "vi": "Chế độ sáng"
+    },
+    {
+        "text_id": "dark_mode",
+        "en": "Dark Mode",
+        "vi": "Chế độ tối"
+    },
+    {
+        "text_id": "please_login_to_add_favorite",
+        "en": "Please log in to add to favorite hotels",
+        "vi": "Vui lòng đăng nhập để thêm vào khách sạn yêu thích"
+    },
+    {
+        "text_id": "login_successful",
+        "en": "Login successful!",
+        "vi": "Đăng nhập thành công!"
+    },
+    {
+        "text_id": "email_or_password_incorrect",
+        "en": "Email or password is incorrect",
+        "vi": "Email hoặc mật khẩu không đúng"
+    },
+    {
+        "text_id": "error_occurred",
+        "en": "An error occurred: ",
+        "vi": "Có lỗi xảy ra: "
+    },
+    {
+        "text_id": "old_password",
+        "en": "Old Password",
+        "vi": "Mật khẩu cũ"
+    },
+    {
+        "text_id": "enter_old_password",
+        "en": "Enter old password",
+        "vi": "Nhập mật khẩu cũ"
+    },
+    {
+        "text_id": "old_password_cannot_empty",
+        "en": "Old password cannot be empty",
+        "vi": "Mật khẩu cũ không được để trống"
+    },
+    {
+        "text_id": "old_password_incorrect",
+        "en": "Old password is incorrect",
+        "vi": "Mật khẩu cũ không đúng"
+    },
+    {
+        "text_id": "password_changed_successfully",
+        "en": "Password changed successfully",
+        "vi": "Đổi mật khẩu thành công"
+    },
+    {
+        "text_id": "profile_updated_successfully",
+        "en": "Profile updated successfully",
+        "vi": "Cập nhật hồ sơ thành công"
+    },
+    {
+        "text_id": "name",
+        "en": "Name",
+        "vi": "Tên"
+    },
+    {
+        "text_id": "enter_name",
+        "en": "Enter name",
+        "vi": "Nhập tên"
+    },
+    {
+        "text_id": "name_cannot_empty",
+        "en": "Name cannot be empty",
+        "vi": "Tên không được để trống"
+    },
+    {
+        "text_id": "enter_phone",
+        "en": "Enter phone number",
+        "vi": "Nhập số điện thoại"
+    },
+    {
+        "text_id": "phone_cannot_empty",
+        "en": "Phone number cannot be empty",
+        "vi": "Số điện thoại không được để trống"
+    },
+    {
+        "text_id": "invalid_phone",
+        "en": "Please enter a valid phone number",
+        "vi": "Vui lòng nhập số điện thoại hợp lệ"
+    },
+    {
+        "text_id": "save",
+        "en": "Save",
+        "vi": "Lưu"
+    },
+    {
+        "text_id": "cancel",
+        "en": "Cancel",
+        "vi": "Hủy"
+    },
+    {
+        "text_id": "confirm",
+        "en": "Confirm",
+        "vi": "Xác nhận"
+    },
+    {
+        "text_id": "loading",
+        "en": "Loading...",
+        "vi": "Đang tải..."
+    },
+    {
+        "text_id": "no_favorite_hotels",
+        "en": "No favorite hotels yet",
+        "vi": "Chưa có khách sạn yêu thích"
+    },
+    {
+        "text_id": "remove_from_favorites",
+        "en": "Remove from favorites",
+        "vi": "Xóa khỏi yêu thích"
+    },
+    {
+        "text_id": "removed_from_favorites",
+        "en": "Removed from favorites",
+        "vi": "Đã xóa khỏi yêu thích"
+    },
+    {
+        "text_id": "added_to_favorites",
+        "en": "Added to favorites",
+        "vi": "Đã thêm vào yêu thích"
+    },
+    {
+        "text_id": "confirm_logout",
+        "en": "Are you sure you want to logout?",
+        "vi": "Bạn có chắc chắn muốn đăng xuất?"
+    },
+    {
+        "text_id": "logout",
+        "en": "Logout",
+        "vi": "Đăng xuất"
+    },
+    {
+        "text_id": "language",
+        "en": "Language",
+        "vi": "Ngôn ngữ"
+    },
+    {
+        "text_id": "hotel_amenities",
+        "en": "Hotel Amenities",
+        "vi": "Tiện ích khách sạn"
+    },
+    {
+        "text_id": "ancient_bathtub",
+        "en": "Ancient Bathtub",
+        "vi": "Bồn tắm cổ đại"
+    },
+    {
+        "text_id": "dry_sauna",
+        "en": "Dry Sauna",
+        "vi": "Phòng xông hơi khô"
+    },
+    {
+        "text_id": "shower",
+        "en": "Shower",
+        "vi": "Sen"
+    },
+    {
+        "text_id": "about",
+        "en": "About",
+        "vi": "Giới thiệu"
+    },
+    {
+        "text_id": "hotel_description",
+        "en": "Not a hotel. This is a universe of 39 rooms - 39 separate worlds, where each room has its own story.",
+        "vi": "Không phải khách sạn. Đây là một vũ trụ 39 phòng - 39 thế giới riêng biệt, nơi mỗi căn phòng đều có một câu chuyện riêng"
+    },
+    {
+        "text_id": "checkin_checkout_times",
+        "en": "Check-in/Check-out Times",
+        "vi": "Giờ nhận phòng/trả phòng"
+    },
+    {
+        "text_id": "by_hour",
+        "en": "By Hour",
+        "vi": "Theo giờ"
+    },
+    {
+        "text_id": "overnight",
+        "en": "Overnight",
+        "vi": "Qua đêm"
+    },
+    {
+        "text_id": "by_day",
+        "en": "By Day",
+        "vi": "Theo ngày"
+    },
+    {
+        "text_id": "from_to",
+        "en": "From {start} to {end}",
+        "vi": "Từ {start} tới {end}"
+    },
+    {
+        "text_id": "distance_from_you",
+        "en": "{distance}m from you",
+        "vi": "Cách bạn {distance}m"
+    },
+    {
+        "text_id": "select_room",
+        "en": "Select Room",
+        "vi": "Chọn phòng"
+    },
+    {
+        "text_id": "select_checkin_time",
+        "en": "Select check-in time",
+        "vi": "Chọn giờ nhận phòng"
+    },
+    {
+        "text_id": "hours",
+        "en": "hours",
+        "vi": "giờ"
+    },
+    {
+        "text_id": "select_time",
+        "en": "Select Time",
+        "vi": "Chọn thời gian"
+    },
+    {
+        "text_id": "checkin_date",
+        "en": "Check-in {date}",
+        "vi": "Nhận phòng {date}"
+    },
+    {
+        "text_id": "checkin_time",
+        "en": "Check-in Time",
+        "vi": "Giờ nhận phòng"
+    },
+    {
+        "text_id": "usage_duration",
+        "en": "Usage Duration",
+        "vi": "Số giờ sử dụng"
+    },
+    {
+        "text_id": "hour",
+        "en": "hour",
+        "vi": "giờ"
+    },
+    {
+        "text_id": "by_time",
+        "en": "By Time",
+        "vi": "Theo giờ"
+    },
+    {
+        "text_id": "by_date",
+        "en": "By Date",
+        "vi": "Theo ngày"
+    },
+    {
+        "text_id": "weeks",
+        "en": "weeks",
+        "vi": "tuần"
+    },
+    {
+        "text_id": "no_hotels_in_area",
+        "en": "No hotels in this area.",
+        "vi": "Không có khách sạn nào ở khu vực này."
+    },
+    {
+        "text_id": "go_home",
+        "en": "Go to Home",
+        "vi": "Về trang chủ"
+    },
+    {
+        "text_id": "featured",
+        "en": "Featured",
+        "vi": "Nổi bật"
+    },
+    {
+        "text_id": "reviews_text",
+        "en": "reviews",
+        "vi": "đánh giá"
+    },
+    {
+        "text_id": "per_hour",
+        "en": "/ hour",
+        "vi": "/ giờ"
+    },
+    {
+        "text_id": "per_night",
+        "en": "/ night",
+        "vi": "/ đêm"
+    },
+    {
+        "text_id": "per_day",
+        "en": "/ day",
+        "vi": "/ ngày"
+    },
+    {
+        "text_id": "location_not_found",
+        "en": "Location not found on map.",
+        "vi": "Không tìm được vị trí trên bản đồ."
+    },
+    {
+        "text_id": "any",
+        "en": "Any",
+        "vi": "Bất kỳ"
+    },
+    {
+        "text_id": "search_place_hotel",
+        "en": "Search place, hotel",
+        "vi": "Tìm địa điểm, khách sạn"
+    },
+    {
+        "text_id": "no_hotels_found",
+        "en": "No hotels found.",
+        "vi": "Không tìm thấy khách sạn phù hợp."
+    },
+    {
+        "text_id": "search",
+        "en": "Search",
+        "vi": "Tìm kiếm"
+    },
+    {
+        "text_id": "booked_rooms_title",
+        "en": "Booked Rooms",
+        "vi": "Phòng đã đặt"
+    },
+    {
+        "text_id": "no_booked_rooms",
+        "en": "You don't have any booked rooms yet",
+        "vi": "Bạn chưa có phòng đã đặt nào"
+    },
+    {
+        "text_id": "book_room_to_see_here",
+        "en": "Book a room to see here",
+        "vi": "Hãy đặt phòng để xem ở đây"
+    },
+    {
+        "text_id": "favorite_hotels_title",
+        "en": "Favorite Hotels",
+        "vi": "Khách sạn yêu thích"
+    },
+    {
+        "text_id": "no_favorite_hotels_yet",
+        "en": "No favorite hotels yet",
+        "vi": "Chưa có khách sạn yêu thích"
+    },
+    {
+        "text_id": "can_add_hotels_to_favorites",
+        "en": "You can add hotels to your favorite list",
+        "vi": "Bạn có thể thêm khách sạn vào danh sách yêu thích"
+    },
+    {
+        "text_id": "language_selected",
+        "en": "Language selected: ",
+        "vi": "Đã chọn ngôn ngữ: "
+    },
+    {
+        "text_id": "home_title",
+        "en": "Home",
+        "vi": "Trang chủ"
+    },
+    {
+        "text_id": "account_title",
+        "en": "Account",
+        "vi": "Tài khoản"
+    },
+    {
+        "text_id": "please_login_to_view_bookings",
+        "en": "Please log in to view your booked rooms",
+        "vi": "Vui lòng đăng nhập để xem phòng đã đặt"
+    },
+    {
+        "text_id": "checkin",
+        "en": "Check-in",
+        "vi": "Nhận phòng"
+    },
+    {
+        "text_id": "checkout",
+        "en": "Check-out",
+        "vi": "Trả phòng"
+    },
+    {
+        "text_id": "select_date",
+        "en": "Select Date",
+        "vi": "Chọn ngày"
+    },
+    {
+        "text_id": "clear",
+        "en": "Clear",
+        "vi": "Xóa"
+    },
+    {
+        "text_id": "apply",
+        "en": "Apply",
+        "vi": "Áp dụng"
+    },
+    {
+        "text_id": "weeks",
+        "en": "weeks",
+        "vi": "tuần"
+    },
+    {
+        "text_id": "2_weeks",
+        "en": "2 weeks",
+        "vi": "2 tuần"
     }
 ]

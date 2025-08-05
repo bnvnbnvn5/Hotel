@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/db_helper.dart';
+import 'package:myapp/providers/theme_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import '../../language/appLocalizations.dart';
 
 class BookingListScreen extends StatefulWidget {
   const BookingListScreen({Key? key}) : super(key: key);
@@ -47,25 +50,48 @@ class _BookingListScreenState extends State<BookingListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: Text('Phòng đã đặt'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = !themeProvider.isLightMode;
+    
+    return SafeArea(
+      child: Column(
+        children: [
+          // Custom AppBar
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            color: isDarkMode ? Colors.grey[900] : Colors.white,
+            child: Row(
+              children: [
+                Text(
+                  AppLocalizations(context).of("booked_rooms_title"),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Content
+          Expanded(
+            child: _isLoading
+                ? Center(child: CircularProgressIndicator())
+                : _currentUserId == null
+                    ? _buildLoginPrompt()
+                    : _bookings.isEmpty
+                        ? _buildEmptyState()
+                        : _buildBookingsList(),
+          ),
+        ],
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _currentUserId == null
-              ? _buildLoginPrompt()
-              : _bookings.isEmpty
-                  ? _buildEmptyState()
-                  : _buildBookingsList(),
     );
   }
 
   Widget _buildLoginPrompt() {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final isDarkMode = !themeProvider.isLightMode;
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -73,14 +99,14 @@ class _BookingListScreenState extends State<BookingListScreen> {
           Icon(
             Icons.login,
             size: 64,
-            color: Colors.grey[400],
+            color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
           ),
           SizedBox(height: 16),
           Text(
-            'Vui lòng đăng nhập để xem phòng đã đặt',
+            AppLocalizations(context).of("please_login_to_view_bookings"),
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[600],
+              color: isDarkMode ? Colors.grey[300] : Colors.grey[600],
             ),
           ),
         ],
@@ -89,6 +115,9 @@ class _BookingListScreenState extends State<BookingListScreen> {
   }
 
   Widget _buildEmptyState() {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final isDarkMode = !themeProvider.isLightMode;
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -96,22 +125,22 @@ class _BookingListScreenState extends State<BookingListScreen> {
           Icon(
             Icons.hotel_outlined,
             size: 64,
-            color: Colors.grey[400],
+            color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
           ),
           SizedBox(height: 16),
           Text(
-            'Bạn chưa có phòng đã đặt nào',
+            AppLocalizations(context).of("no_booked_rooms"),
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[600],
+              color: isDarkMode ? Colors.grey[300] : Colors.grey[600],
             ),
           ),
           SizedBox(height: 8),
           Text(
-            'Hãy đặt phòng để xem ở đây',
+            AppLocalizations(context).of("book_room_to_see_here"),
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey[500],
+              color: isDarkMode ? Colors.grey[400] : Colors.grey[500],
             ),
           ),
         ],
@@ -131,6 +160,9 @@ class _BookingListScreenState extends State<BookingListScreen> {
   }
 
   Widget _buildBookingCard(Map<String, dynamic> booking) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final isDarkMode = !themeProvider.isLightMode;
+    
     final hotelName = booking['hotel_name'] ?? 'Khách sạn không xác định';
     final address = booking['address'] ?? 'Địa chỉ không xác định';
     final roomClass = booking['room_class'] ?? 'N/A';
@@ -146,6 +178,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
     return Card(
       margin: EdgeInsets.only(bottom: 16),
       elevation: 2,
+      color: isDarkMode ? Colors.grey[800] : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -156,39 +189,40 @@ class _BookingListScreenState extends State<BookingListScreen> {
           children: [
             Row(
               children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.hotel,
-                    color: Colors.orange,
-                    size: 30,
-                  ),
-                ),
+                                 Container(
+                   width: 60,
+                   height: 60,
+                   decoration: BoxDecoration(
+                     color: isDarkMode ? Colors.grey[700] : Colors.grey[200],
+                     borderRadius: BorderRadius.circular(8),
+                   ),
+                   child: Icon(
+                     Icons.hotel,
+                     color: isDarkMode ? Colors.white : Colors.black,
+                     size: 30,
+                   ),
+                 ),
                 SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        hotelName,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        address,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
+                                             Text(
+                         hotelName,
+                         style: TextStyle(
+                           fontSize: 16,
+                           fontWeight: FontWeight.bold,
+                           color: isDarkMode ? Colors.white : Colors.black,
+                         ),
+                       ),
+                       SizedBox(height: 4),
+                       Text(
+                         address,
+                         style: TextStyle(
+                           fontSize: 14,
+                           color: isDarkMode ? Colors.grey[300] : Colors.grey[600],
+                         ),
+                       ),
                     ],
                   ),
                 ),
@@ -245,6 +279,9 @@ class _BookingListScreenState extends State<BookingListScreen> {
     required String label,
     required String value,
   }) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final isDarkMode = !themeProvider.isLightMode;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -253,14 +290,14 @@ class _BookingListScreenState extends State<BookingListScreen> {
             Icon(
               icon,
               size: 16,
-              color: Colors.grey[600],
+              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
             ),
             SizedBox(width: 4),
             Text(
               label,
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey[600],
+                color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
               ),
             ),
           ],
@@ -271,6 +308,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
+            color: isDarkMode ? Colors.white : Colors.black,
           ),
         ),
       ],
