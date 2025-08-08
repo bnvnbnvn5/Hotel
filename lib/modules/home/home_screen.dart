@@ -59,6 +59,20 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadCurrentUser();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is Map && args['tab'] != null) {
+      final int tab = args['tab'];
+      if (_selectedIndex != tab) {
+        setState(() {
+          _selectedIndex = tab;
+        });
+      }
+    }
+  }
+
   Future<void> _loadCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getInt('current_user_id');

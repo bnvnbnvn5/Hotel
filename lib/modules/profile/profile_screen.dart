@@ -14,8 +14,8 @@ import 'language_screen.dart';
 import 'theme_settings_screen.dart';
 import 'region_screen.dart';
 import 'faq_screen.dart';
-import 'terms_privacy_screen.dart';
 import 'contact_screen.dart';
+import 'terms_privacy_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -299,10 +299,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(height: 24),
                   
                   // Thông tin
-                  _buildSectionTitle('Thông tin', isDarkMode),
+                  _buildSectionTitle(AppLocalizations(context).of('information'), isDarkMode),
                   _buildMenuItem(
                     icon: Icons.help_outline,
-                    title: 'Hỏi đáp',
+                    title: AppLocalizations(context).of('faq'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -315,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   _buildMenuItem(
                     icon: Icons.security,
-                    title: 'Điều khoản & Chính sách bảo mật',
+                    title: AppLocalizations(context).of('terms_privacy'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -328,14 +328,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   _buildMenuItem(
                     icon: Icons.info_outline,
-                    title: 'Phiên bản',
+                    title: AppLocalizations(context).of('version'),
                     subtitle: '15.70.0',
                     onTap: null,
                     isDarkMode: isDarkMode,
                   ),
                   _buildMenuItem(
                     icon: Icons.phone,
-                    title: 'Liên hệ',
+                    title: AppLocalizations(context).of('contact'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -348,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   _buildMenuItem(
                     icon: Icons.logout,
-                    title: 'Đăng xuất',
+                    title: AppLocalizations(context).of('logout'),
                     onTap: _showLogoutDialog,
                     isDarkMode: isDarkMode,
                     textColor: Colors.red,

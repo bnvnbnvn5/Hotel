@@ -14,11 +14,6 @@ class LanguageScreen extends StatefulWidget {
 class _LanguageScreenState extends State<LanguageScreen> {
   String _selectedLanguage = 'Tiếng Việt';
 
-  final List<Map<String, dynamic>> _languages = [
-    {'name': 'Tiếng Việt', 'code': 'vi', 'type': LanguageType.vi},
-    {'name': 'English', 'code': 'en', 'type': LanguageType.en},
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -44,6 +39,11 @@ class _LanguageScreenState extends State<LanguageScreen> {
     // Update selected language based on current theme provider
     _loadCurrentLanguage();
 
+    final List<Map<String, dynamic>> _languages = [
+      {'name': AppLocalizations(context).of('vietnamese'), 'code': 'vi', 'type': LanguageType.vi},
+      {'name': AppLocalizations(context).of('english'), 'code': 'en', 'type': LanguageType.en},
+    ];
+
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
@@ -54,7 +54,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Ngôn ngữ',
+          AppLocalizations(context).of('language'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
@@ -97,7 +97,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Đã chọn ngôn ngữ: ${language['name']}'),
+                    content: Text(AppLocalizations(context).of('language_selected') + language['name']),
                     backgroundColor: Colors.green,
                   ),
                 );

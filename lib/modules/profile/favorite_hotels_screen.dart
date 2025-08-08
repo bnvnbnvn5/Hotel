@@ -52,11 +52,11 @@ class _FavoriteHotelsScreenState extends State<FavoriteHotelsScreen> {
       await DBHelper.removeFromFavorites(_currentUserId!, hotelId);
       await _loadFavoriteHotels(); // Reload danh sách
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đã xóa khỏi danh sách yêu thích')),
+        SnackBar(content: Text(AppLocalizations(context).of('removed_from_favorites'))),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Có lỗi xảy ra: $e')),
+        SnackBar(content: Text(AppLocalizations(context).of('error_occurred') + e.toString())),
       );
     }
   }
@@ -76,7 +76,7 @@ class _FavoriteHotelsScreenState extends State<FavoriteHotelsScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          AppLocalizations(context).of("favorite_hotels_title"),
+          AppLocalizations(context).of('favorite_hotels_title'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
@@ -94,7 +94,7 @@ class _FavoriteHotelsScreenState extends State<FavoriteHotelsScreen> {
                       ),
                       SizedBox(height: 16),
                       Text(
-                        AppLocalizations(context).of("no_favorite_hotels_yet"),
+                        AppLocalizations(context).of('no_favorite_hotels_yet'),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -103,7 +103,7 @@ class _FavoriteHotelsScreenState extends State<FavoriteHotelsScreen> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        AppLocalizations(context).of("can_add_hotels_to_favorites"),
+                        AppLocalizations(context).of('can_add_hotels_to_favorites'),
                         style: TextStyle(
                           color: isDarkMode ? Colors.grey[300] : Colors.grey[600],
                         ),
@@ -160,7 +160,7 @@ class _FavoriteHotelsScreenState extends State<FavoriteHotelsScreen> {
                         ),
                       ),
                       title: Text(
-                        hotel['name'] ?? 'Tên khách sạn',
+                        hotel['name'] ?? AppLocalizations(context).of('name'),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: isDarkMode ? Colors.white : Colors.black,
@@ -171,7 +171,7 @@ class _FavoriteHotelsScreenState extends State<FavoriteHotelsScreen> {
                         children: [
                           SizedBox(height: 4),
                           Text(
-                            hotel['address'] ?? 'Địa chỉ',
+                            hotel['address'] ?? AppLocalizations(context).of('address'),
                             style: TextStyle(
                               color: isDarkMode ? Colors.grey[300] : Colors.grey[600],
                             ),

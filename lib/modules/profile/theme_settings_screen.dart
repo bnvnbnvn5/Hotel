@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
+import '../../language/appLocalizations.dart';
 
 class ThemeSettingsScreen extends StatefulWidget {
   const ThemeSettingsScreen({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class _ThemeSettingsScreenState extends State<ThemeSettingsScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Giao diện',
+          AppLocalizations(context).of('interface'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
@@ -33,8 +34,8 @@ class _ThemeSettingsScreenState extends State<ThemeSettingsScreen> {
         padding: EdgeInsets.all(16),
         children: [
           _buildThemeOption(
-            title: 'Chế độ sáng',
-            subtitle: 'Giao diện sáng',
+            title: AppLocalizations(context).of('light_mode'),
+            subtitle: AppLocalizations(context).of('light_mode_subtitle'),
             icon: Icons.wb_sunny,
             isSelected: themeProvider.isLightMode,
             isDarkMode: isDarkMode,
@@ -42,7 +43,7 @@ class _ThemeSettingsScreenState extends State<ThemeSettingsScreen> {
               themeProvider.setLightMode();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Đã chuyển sang chế độ sáng'),
+                  content: Text(AppLocalizations(context).of('switched_to_light')),
                   backgroundColor: Colors.orange,
                 ),
               );
@@ -52,8 +53,8 @@ class _ThemeSettingsScreenState extends State<ThemeSettingsScreen> {
           SizedBox(height: 12),
           
           _buildThemeOption(
-            title: 'Chế độ tối',
-            subtitle: 'Giao diện tối',
+            title: AppLocalizations(context).of('dark_mode'),
+            subtitle: AppLocalizations(context).of('dark_mode_subtitle'),
             icon: Icons.nightlight_round,
             isSelected: !themeProvider.isLightMode,
             isDarkMode: isDarkMode,
@@ -61,7 +62,7 @@ class _ThemeSettingsScreenState extends State<ThemeSettingsScreen> {
               themeProvider.setDarkMode();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Đã chuyển sang chế độ tối'),
+                  content: Text(AppLocalizations(context).of('switched_to_dark')),
                   backgroundColor: Colors.orange,
                 ),
               );
@@ -80,7 +81,7 @@ class _ThemeSettingsScreenState extends State<ThemeSettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Thông tin',
+                  AppLocalizations(context).of('info'),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -89,7 +90,7 @@ class _ThemeSettingsScreenState extends State<ThemeSettingsScreen> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  'Chế độ sáng/tối sẽ thay đổi toàn bộ giao diện ứng dụng. Bạn có thể chọn chế độ phù hợp với môi trường xung quanh.',
+                  AppLocalizations(context).of('theme_info'),
                   style: TextStyle(
                     color: isDarkMode ? Colors.grey[300] : Colors.grey[600],
                     fontSize: 14,

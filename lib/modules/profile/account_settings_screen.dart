@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
+import '../../language/appLocalizations.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({Key? key}) : super(key: key);
@@ -29,17 +30,17 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Thiết lập tài khoản',
+          AppLocalizations(context).of('account_settings_title'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
         children: [
-          _buildSectionTitle('Thông báo', isDarkMode),
+          _buildSectionTitle(AppLocalizations(context).of('notifications'), isDarkMode),
           _buildSwitchTile(
-            title: 'Thông báo email',
-            subtitle: 'Nhận thông báo qua email',
+            title: AppLocalizations(context).of('notification_email'),
+            subtitle: AppLocalizations(context).of('notification_email_subtitle'),
             value: _emailNotifications,
             onChanged: (value) {
               setState(() {
@@ -49,8 +50,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             isDarkMode: isDarkMode,
           ),
           _buildSwitchTile(
-            title: 'Thông báo đẩy',
-            subtitle: 'Nhận thông báo trên thiết bị',
+            title: AppLocalizations(context).of('notification_push'),
+            subtitle: AppLocalizations(context).of('notification_push_subtitle'),
             value: _pushNotifications,
             onChanged: (value) {
               setState(() {
@@ -60,8 +61,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             isDarkMode: isDarkMode,
           ),
           _buildSwitchTile(
-            title: 'Thông báo SMS',
-            subtitle: 'Nhận thông báo qua SMS',
+            title: AppLocalizations(context).of('notification_sms'),
+            subtitle: AppLocalizations(context).of('notification_sms_subtitle'),
             value: _smsNotifications,
             onChanged: (value) {
               setState(() {
@@ -73,10 +74,10 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
           
           SizedBox(height: 24),
           
-          _buildSectionTitle('Bảo mật', isDarkMode),
+          _buildSectionTitle(AppLocalizations(context).of('security'), isDarkMode),
           _buildMenuItem(
             icon: Icons.lock,
-            title: 'Đổi mật khẩu',
+            title: AppLocalizations(context).of('change_password'),
             onTap: () {
               // TODO: Navigate to change password screen
             },
@@ -84,7 +85,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
           ),
           _buildMenuItem(
             icon: Icons.security,
-            title: 'Xác thực 2 yếu tố',
+            title: AppLocalizations(context).of('two_factor_auth'),
             onTap: () {
               // TODO: Navigate to 2FA screen
             },
@@ -93,20 +94,20 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
           
           SizedBox(height: 24),
           
-          _buildSectionTitle('Dữ liệu', isDarkMode),
+          _buildSectionTitle(AppLocalizations(context).of('data'), isDarkMode),
           _buildMenuItem(
             icon: Icons.download,
-            title: 'Xuất dữ liệu',
+            title: AppLocalizations(context).of('export_data'),
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Tính năng đang phát triển')),
+                SnackBar(content: Text(AppLocalizations(context).of('feature_in_development'))),
               );
             },
             isDarkMode: isDarkMode,
           ),
           _buildMenuItem(
             icon: Icons.delete_forever,
-            title: 'Xóa tài khoản',
+            title: AppLocalizations(context).of('delete_account'),
             onTap: () {
               _showDeleteAccountDialog();
             },
@@ -206,21 +207,21 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Xóa tài khoản'),
-          content: Text('Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác.'),
+          title: Text(AppLocalizations(context).of('delete_account')),
+          content: Text(AppLocalizations(context).of('delete_account_confirm')),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Hủy'),
+              child: Text(AppLocalizations(context).of('cancel')),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Tính năng đang phát triển')),
+                  SnackBar(content: Text(AppLocalizations(context).of('feature_in_development'))),
                 );
               },
-              child: Text('Xóa', style: TextStyle(color: Colors.red)),
+              child: Text(AppLocalizations(context).of('delete'), style: TextStyle(color: Colors.red)),
             ),
           ],
         );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
+import '../../language/appLocalizations.dart';
 
 class TermsPrivacyScreen extends StatefulWidget {
   const TermsPrivacyScreen({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class _TermsPrivacyScreenState extends State<TermsPrivacyScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Điều khoản & Chính sách bảo mật',
+          AppLocalizations(context).of('terms_privacy'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
@@ -35,74 +36,32 @@ class _TermsPrivacyScreenState extends State<TermsPrivacyScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSection(
-              title: 'Điều khoản sử dụng',
-              content: '''
-1. Chấp nhận điều khoản
-Khi sử dụng ứng dụng này, bạn đồng ý tuân thủ các điều khoản và điều kiện được nêu trong tài liệu này.
-
-2. Sử dụng dịch vụ
-- Bạn phải cung cấp thông tin chính xác khi đăng ký
-- Không được sử dụng dịch vụ cho mục đích bất hợp pháp
-- Không được chia sẻ tài khoản với người khác
-
-3. Thanh toán
-- Tất cả giá cả đều được hiển thị bằng VNĐ
-- Thanh toán được thực hiện qua các cổng thanh toán an toàn
-- Chúng tôi không lưu trữ thông tin thẻ tín dụng của bạn
-
-4. Hủy đặt phòng
-- Chính sách hủy phụ thuộc vào từng khách sạn
-- Một số đặt phòng có thể không được hoàn tiền
-- Vui lòng kiểm tra chính sách hủy trước khi đặt phòng
-              ''',
+              title: AppLocalizations(context).of('terms_of_use'),
+              content: AppLocalizations(context).of('terms_of_use_content'),
               isDarkMode: isDarkMode,
             ),
             
             SizedBox(height: 24),
             
             _buildSection(
-              title: 'Chính sách bảo mật',
-              content: '''
-1. Thu thập thông tin
-Chúng tôi thu thập các thông tin sau:
-- Thông tin cá nhân (tên, email, số điện thoại)
-- Thông tin đặt phòng
-- Dữ liệu sử dụng ứng dụng
-
-2. Sử dụng thông tin
-Thông tin được sử dụng để:
-- Cung cấp dịch vụ đặt phòng
-- Gửi thông báo và cập nhật
-- Cải thiện trải nghiệm người dùng
-- Tuân thủ yêu cầu pháp lý
-
-3. Bảo mật dữ liệu
-- Chúng tôi sử dụng mã hóa SSL để bảo vệ dữ liệu
-- Thông tin được lưu trữ an toàn
-- Chỉ nhân viên được ủy quyền mới có thể truy cập
-
-4. Chia sẻ thông tin
-Chúng tôi không bán, trao đổi hoặc chuyển giao thông tin cá nhân của bạn cho bên thứ ba mà không có sự đồng ý của bạn, trừ khi:
-- Được yêu cầu bởi pháp luật
-- Bảo vệ quyền và tài sản của chúng tôi
-- Thực hiện dịch vụ cho bạn
-              ''',
+              title: AppLocalizations(context).of('privacy_policy'),
+              content: AppLocalizations(context).of('privacy_policy_content'),
               isDarkMode: isDarkMode,
             ),
             
             SizedBox(height: 24),
             
             _buildSection(
-              title: 'Liên hệ',
-              content: '''
-Nếu bạn có bất kỳ câu hỏi nào về điều khoản sử dụng hoặc chính sách bảo mật, vui lòng liên hệ với chúng tôi:
-
-Email: support@hotelapp.com
-Điện thoại: 1900-1234
-Địa chỉ: 123 Đường ABC, Quận 1, TP.HCM
-
-Chúng tôi sẽ phản hồi trong vòng 24 giờ làm việc.
-              ''',
+              title: AppLocalizations(context).of('contact'),
+              content: AppLocalizations(context).of('contact_content'),
+              isDarkMode: isDarkMode,
+            ),
+            
+            SizedBox(height: 24),
+            
+            _buildSection(
+              title: AppLocalizations(context).of('cancellation_policy'),
+              content: AppLocalizations(context).of('cancellation_policy_content'),
               isDarkMode: isDarkMode,
             ),
           ],

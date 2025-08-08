@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
+import '../../language/appLocalizations.dart';
 
 class FAQScreen extends StatefulWidget {
   const FAQScreen({Key? key}) : super(key: key);
@@ -10,33 +11,33 @@ class FAQScreen extends StatefulWidget {
 }
 
 class _FAQScreenState extends State<FAQScreen> {
-  final List<Map<String, dynamic>> _faqs = [
-    {
-      'question': 'Làm thế nào để đặt phòng?',
-      'answer': 'Bạn có thể đặt phòng bằng cách tìm kiếm khách sạn, chọn ngày check-in/check-out và thanh toán trực tuyến.',
-    },
-    {
-      'question': 'Có thể hủy đặt phòng không?',
-      'answer': 'Có, bạn có thể hủy đặt phòng trong vòng 24 giờ trước ngày check-in. Một số khách sạn có chính sách hủy khác nhau.',
-    },
-    {
-      'question': 'Thanh toán có an toàn không?',
-      'answer': 'Chúng tôi sử dụng các phương thức thanh toán an toàn và mã hóa SSL để bảo vệ thông tin của bạn.',
-    },
-    {
-      'question': 'Làm thế nào để liên hệ hỗ trợ?',
-      'answer': 'Bạn có thể liên hệ chúng tôi qua hotline, email hoặc chat trực tuyến trong ứng dụng.',
-    },
-    {
-      'question': 'Có thể đặt phòng cho người khác không?',
-      'answer': 'Có, bạn có thể đặt phòng cho người khác bằng cách nhập thông tin của họ trong quá trình đặt phòng.',
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDarkMode = !themeProvider.isLightMode;
+
+    final List<Map<String, dynamic>> _faqs = [
+      {
+        'question': AppLocalizations(context).of('faq_question_1'),
+        'answer': AppLocalizations(context).of('faq_answer_1'),
+      },
+      {
+        'question': AppLocalizations(context).of('faq_question_2'),
+        'answer': AppLocalizations(context).of('faq_answer_2'),
+      },
+      {
+        'question': AppLocalizations(context).of('faq_question_3'),
+        'answer': AppLocalizations(context).of('faq_answer_3'),
+      },
+      {
+        'question': AppLocalizations(context).of('faq_question_4'),
+        'answer': AppLocalizations(context).of('faq_answer_4'),
+      },
+      {
+        'question': AppLocalizations(context).of('faq_question_5'),
+        'answer': AppLocalizations(context).of('faq_answer_5'),
+      },
+    ];
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
@@ -48,7 +49,7 @@ class _FAQScreenState extends State<FAQScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Hỏi đáp',
+          AppLocalizations(context).of('faq'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),

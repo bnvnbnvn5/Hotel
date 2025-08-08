@@ -1025,19 +1025,24 @@
         "vi": "Tiện ích khách sạn"
     },
     {
-        "text_id": "ancient_bathtub",
+        "text_id": "amenity_bon_tam_co_dai",
         "en": "Ancient Bathtub",
         "vi": "Bồn tắm cổ đại"
     },
     {
-        "text_id": "dry_sauna",
+        "text_id": "amenity_phong_xong_hoi_kho",
         "en": "Dry Sauna",
         "vi": "Phòng xông hơi khô"
     },
     {
-        "text_id": "shower",
-        "en": "Shower",
-        "vi": "Sen"
+        "text_id": "amenity_sen_tran",
+        "en": "Rain Shower",
+        "vi": "Sen Trần"
+    },
+    {
+        "text_id": "amenity_guong_ben_giuong",
+        "en": "Bedside Mirror",
+        "vi": "Gương bên giường"
     },
     {
         "text_id": "about",
@@ -1278,5 +1283,595 @@
         "text_id": "2_weeks",
         "en": "2 weeks",
         "vi": "2 tuần"
+    },
+    {
+        "text_id": "vietnamese",
+        "en": "Vietnamese",
+        "vi": "Tiếng Việt"
+    },
+    {
+        "text_id": "english",
+        "en": "English",
+        "vi": "Tiếng Anh"
+    },
+    {
+        "text_id": "hanoi",
+        "en": "Hà Nội",
+        "vi": "Hà Nội"
+    },
+    {
+        "text_id": "hochiminh",
+        "en": "Hồ Chí Minh",
+        "vi": "Hồ Chí Minh"
+    },
+    {
+        "text_id": "danang",
+        "en": "Đà Nẵng",
+        "vi": "Đà Nẵng"
+    },
+    {
+        "text_id": "haiphong",
+        "en": "Hải Phòng",
+        "vi": "Hải Phòng"
+    },
+    {
+        "text_id": "cantho",
+        "en": "Cần Thơ",
+        "vi": "Cần Thơ"
+    },
+    {
+        "text_id": "nhatrang",
+        "en": "Nha Trang",
+        "vi": "Nha Trang"
+    },
+    {
+        "text_id": "phuquoc",
+        "en": "Phú Quốc",
+        "vi": "Phú Quốc"
+    },
+    {
+        "text_id": "sapa",
+        "en": "Sa Pa",
+        "vi": "Sa Pa"
+    },
+    {
+        "text_id": "region_selected",
+        "en": "Region selected: ",
+        "vi": "Đã chọn khu vực: "
+    },
+    {
+        "text_id": "faq",
+        "en": "FAQ",
+        "vi": "Câu hỏi thường gặp"
+    },
+    {
+        "text_id": "faq_question_1",
+        "en": "How do I book a hotel?",
+        "vi": "Làm thế nào để đặt khách sạn?"
+    },
+    {
+        "text_id": "faq_answer_1",
+        "en": "To book a hotel, search for your destination, select a hotel, and follow the booking instructions.",
+        "vi": "Để đặt khách sạn, hãy tìm kiếm điểm đến, chọn khách sạn và làm theo hướng dẫn đặt phòng."
+    },
+    {
+        "text_id": "faq_question_2",
+        "en": "How can I change my booking?",
+        "vi": "Làm thế nào để thay đổi đặt phòng?"
+    },
+    {
+        "text_id": "faq_answer_2",
+        "en": "You can change your booking by going to 'My Bookings' and selecting the booking you want to modify.",
+        "vi": "Bạn có thể thay đổi đặt phòng bằng cách vào 'Phòng đã đặt' và chọn đặt phòng muốn chỉnh sửa."
+    },
+    {
+        "text_id": "faq_question_3",
+        "en": "How do I cancel a reservation?",
+        "vi": "Làm thế nào để hủy đặt phòng?"
+    },
+    {
+        "text_id": "faq_answer_3",
+        "en": "To cancel a reservation, go to 'My Bookings', select the booking, and choose 'Cancel'.",
+        "vi": "Để hủy đặt phòng, vào 'Phòng đã đặt', chọn đặt phòng và nhấn 'Hủy'."
+    },
+    {
+        "text_id": "faq_question_4",
+        "en": "How do I contact customer support?",
+        "vi": "Làm thế nào để liên hệ hỗ trợ khách hàng?"
+    },
+    {
+        "text_id": "faq_answer_4",
+        "en": "You can contact customer support via the 'Contact' section in the app.",
+        "vi": "Bạn có thể liên hệ hỗ trợ khách hàng qua mục 'Liên hệ' trong ứng dụng."
+    },
+    {
+        "text_id": "faq_question_5",
+        "en": "How do I change the app language?",
+        "vi": "Làm thế nào để đổi ngôn ngữ ứng dụng?"
+    },
+    {
+        "text_id": "faq_answer_5",
+        "en": "Go to 'Settings' > 'Language' to change the app language.",
+        "vi": "Vào 'Cài đặt' > 'Ngôn ngữ' để đổi ngôn ngữ ứng dụng."
+    },
+    {
+        "text_id": "notification_type",
+        "en": "Notification Type",
+        "vi": "Loại thông báo"
+    },
+    {
+        "text_id": "booking_notification",
+        "en": "Booking Notifications",
+        "vi": "Thông báo đặt phòng"
+    },
+    {
+        "text_id": "booking_notification_subtitle",
+        "en": "Receive notifications for your bookings",
+        "vi": "Nhận thông báo cho các đặt phòng của bạn"
+    },
+    {
+        "text_id": "promotion_notification",
+        "en": "Promotion Notifications",
+        "vi": "Thông báo khuyến mãi"
+    },
+    {
+        "text_id": "promotion_notification_subtitle",
+        "en": "Get notified about promotions",
+        "vi": "Nhận thông báo về khuyến mãi"
+    },
+    {
+        "text_id": "news_notification",
+        "en": "News Notifications",
+        "vi": "Thông báo tin tức"
+    },
+    {
+        "text_id": "news_notification_subtitle",
+        "en": "Stay updated with the latest news",
+        "vi": "Cập nhật tin tức mới nhất"
+    },
+    {
+        "text_id": "sound_settings",
+        "en": "Sound Settings",
+        "vi": "Cài đặt âm thanh"
+    },
+    {
+        "text_id": "sound",
+        "en": "Sound",
+        "vi": "Âm thanh"
+    },
+    {
+        "text_id": "sound_subtitle",
+        "en": "Enable or disable notification sounds",
+        "vi": "Bật hoặc tắt âm thanh thông báo"
+    },
+    {
+        "text_id": "vibration",
+        "en": "Vibration",
+        "vi": "Rung"
+    },
+    {
+        "text_id": "vibration_subtitle",
+        "en": "Enable or disable vibration",
+        "vi": "Bật hoặc tắt rung"
+    },
+    {
+        "text_id": "recent_notifications",
+        "en": "Recent Notifications",
+        "vi": "Thông báo gần đây"
+    },
+    {
+        "text_id": "success_booking",
+        "en": "Booking Successful",
+        "vi": "Đặt phòng thành công"
+    },
+    {
+        "text_id": "success_booking_subtitle",
+        "en": "Your booking was successful!",
+        "vi": "Bạn đã đặt phòng thành công!"
+    },
+    {
+        "text_id": "hours_ago",
+        "en": "{hours} hours ago",
+        "vi": "{hours} giờ trước"
+    },
+    {
+        "text_id": "promotion_new",
+        "en": "New Promotion",
+        "vi": "Khuyến mãi mới"
+    },
+    {
+        "text_id": "promotion_new_subtitle",
+        "en": "Check out our latest promotion!",
+        "vi": "Xem khuyến mãi mới nhất của chúng tôi!"
+    },
+    {
+        "text_id": "days_ago",
+        "en": "{days} days ago",
+        "vi": "{days} ngày trước"
+    },
+    {
+        "text_id": "app_update",
+        "en": "App Update",
+        "vi": "Cập nhật ứng dụng"
+    },
+    {
+        "text_id": "app_update_subtitle",
+        "en": "A new version of the app is available.",
+        "vi": "Đã có phiên bản ứng dụng mới."
+    },
+    {
+        "text_id": "account_settings_title",
+        "en": "Account Settings",
+        "vi": "Thiết lập tài khoản"
+    },
+    {
+        "text_id": "notification_email",
+        "en": "Email Notifications",
+        "vi": "Thông báo qua Email"
+    },
+    {
+        "text_id": "notification_email_subtitle",
+        "en": "Receive notifications via email",
+        "vi": "Nhận thông báo qua email"
+    },
+    {
+        "text_id": "notification_push",
+        "en": "Push Notifications",
+        "vi": "Thông báo đẩy"
+    },
+    {
+        "text_id": "notification_push_subtitle",
+        "en": "Receive push notifications",
+        "vi": "Nhận thông báo đẩy"
+    },
+    {
+        "text_id": "notification_sms",
+        "en": "SMS Notifications",
+        "vi": "Thông báo SMS"
+    },
+    {
+        "text_id": "notification_sms_subtitle",
+        "en": "Receive notifications via SMS",
+        "vi": "Nhận thông báo qua SMS"
+    },
+    {
+        "text_id": "security",
+        "en": "Security",
+        "vi": "Bảo mật"
+    },
+    {
+        "text_id": "two_factor_auth",
+        "en": "Two-Factor Authentication",
+        "vi": "Xác thực hai lớp"
+    },
+    {
+        "text_id": "data",
+        "en": "Data",
+        "vi": "Dữ liệu"
+    },
+    {
+        "text_id": "export_data",
+        "en": "Export Data",
+        "vi": "Xuất dữ liệu"
+    },
+    {
+        "text_id": "feature_in_development",
+        "en": "This feature is in development.",
+        "vi": "Tính năng này đang được phát triển."
+    },
+    {
+        "text_id": "delete_account",
+        "en": "Delete Account",
+        "vi": "Xóa tài khoản"
+    },
+    {
+        "text_id": "delete_account_confirm",
+        "en": "Are you sure you want to delete your account? This action cannot be undone.",
+        "vi": "Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác."
+    },
+    {
+        "text_id": "delete",
+        "en": "Delete",
+        "vi": "Xóa"
+    },
+    {
+        "text_id": "contact",
+        "en": "Contact",
+        "vi": "Liên hệ"
+    },
+    {
+        "text_id": "direct_contact",
+        "en": "Direct Contact",
+        "vi": "Liên hệ trực tiếp"
+    },
+    {
+        "text_id": "main_office",
+        "en": "Main Office",
+        "vi": "Trụ sở chính"
+    },
+    {
+        "text_id": "other_info",
+        "en": "Other Information",
+        "vi": "Thông tin khác"
+    },
+    {
+        "text_id": "support_time",
+        "en": "Support Time",
+        "vi": "Thời gian hỗ trợ"
+    },
+    {
+        "text_id": "support_time_detail",
+        "en": "8:00 - 18:00 (Monday - Friday)",
+        "vi": "8:00 - 18:00 (Thứ 2 - Thứ 6)"
+    },
+    {
+        "text_id": "cannot_open_link",
+        "en": "Cannot open the link.",
+        "vi": "Không thể mở liên kết."
+    },
+    {
+        "text_id": "information",
+        "en": "Information",
+        "vi": "Thông tin"
+    },
+    {
+        "text_id": "terms_privacy",
+        "en": "Terms & Privacy",
+        "vi": "Điều khoản & Bảo mật"
+    },
+    {
+        "text_id": "version",
+        "en": "Version",
+        "vi": "Phiên bản"
+    },
+    {
+        "text_id": "light_mode_subtitle",
+        "en": "Bright and clear interface for daytime use.",
+        "vi": "Giao diện sáng, rõ ràng cho ban ngày."
+    },
+    {
+        "text_id": "dark_mode_subtitle",
+        "en": "Comfortable for night use, saves battery.",
+        "vi": "Thoải mái cho ban đêm, tiết kiệm pin."
+    },
+    {
+        "text_id": "switched_to_light",
+        "en": "Switched to light mode.",
+        "vi": "Đã chuyển sang chế độ sáng."
+    },
+    {
+        "text_id": "switched_to_dark",
+        "en": "Switched to dark mode.",
+        "vi": "Đã chuyển sang chế độ tối."
+    },
+    {
+        "text_id": "info",
+        "en": "Info",
+        "vi": "Thông tin"
+    },
+    {
+        "text_id": "theme_info",
+        "en": "You can change the app's appearance to suit your preferences.",
+        "vi": "Bạn có thể thay đổi giao diện ứng dụng theo sở thích."
+    },
+    {
+        "text_id": "terms_of_use",
+        "en": "Terms of Use",
+        "vi": "Điều khoản sử dụng"
+    },
+    {
+        "text_id": "terms_of_use_content",
+        "en": "By using this app, you agree to our terms of use. Please read carefully before proceeding.",
+        "vi": "Bằng việc sử dụng ứng dụng này, bạn đồng ý với các điều khoản sử dụng của chúng tôi. Vui lòng đọc kỹ trước khi tiếp tục."
+    },
+    {
+        "text_id": "privacy_policy",
+        "en": "Privacy Policy",
+        "vi": "Chính sách bảo mật"
+    },
+    {
+        "text_id": "privacy_policy_content",
+        "en": "We respect your privacy and are committed to protecting your personal information.",
+        "vi": "Chúng tôi tôn trọng quyền riêng tư và cam kết bảo vệ thông tin cá nhân của bạn."
+    },
+    {
+        "text_id": "contact_content",
+        "en": "For any questions or support, please contact us via the information provided.",
+        "vi": "Mọi thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ với chúng tôi qua thông tin đã cung cấp."
+    },
+    {
+        "text_id": "room_list",
+        "en": "Room List",
+        "vi": "Danh sách phòng"
+    },
+    {
+        "text_id": "change",
+        "en": "Change",
+        "vi": "Thay đổi"
+    },
+    {
+        "text_id": "checkin",
+        "en": "Check-in",
+        "vi": "Nhận phòng"
+    },
+    {
+        "text_id": "checkout",
+        "en": "Check-out",
+        "vi": "Trả phòng"
+    },
+    {
+        "text_id": "confirm_and_pay",
+        "en": "Confirm and Pay",
+        "vi": "Xác nhận và thanh toán"
+    },
+    {
+        "text_id": "your_choice",
+        "en": "Your Choice",
+        "vi": "Lựa chọn của bạn"
+    },
+    {
+        "text_id": "booker_information",
+        "en": "Booker Information",
+        "vi": "Người đặt phòng"
+    },
+    {
+        "text_id": "edit",
+        "en": "Edit",
+        "vi": "Sửa"
+    },
+    {
+        "text_id": "phone_number",
+        "en": "Phone number",
+        "vi": "Số điện thoại"
+    },
+    {
+        "text_id": "full_name",
+        "en": "Full name",
+        "vi": "Họ tên"
+    },
+    {
+        "text_id": "promotions",
+        "en": "Promotions",
+        "vi": "Ưu đãi"
+    },
+    {
+        "text_id": "choose_promotion",
+        "en": "Choose promotion",
+        "vi": "Chọn ưu đãi"
+    },
+    {
+        "text_id": "payment_details",
+        "en": "Payment Details",
+        "vi": "Chi tiết thanh toán"
+    },
+    {
+        "text_id": "room_price",
+        "en": "Room price",
+        "vi": "Tiền phòng"
+    },
+    {
+        "text_id": "total_payment",
+        "en": "Total payment",
+        "vi": "Tổng thanh toán"
+    },
+    {
+        "text_id": "cancellation_policy",
+        "en": "Cancellation Policy",
+        "vi": "Chính sách huỷ phòng"
+    },
+    {
+        "text_id": "flash_sale_cancellation_policy",
+        "en": "Cannot cancel with Flash Sale discounted rooms.",
+        "vi": "Không thể huỷ với phòng có ưu đãi Flash Sale."
+    },
+    {
+        "text_id": "i_agree_with",
+        "en": "I agree with ",
+        "vi": "Tôi đồng ý với "
+    },
+    {
+        "text_id": "terms_and_booking_policy",
+        "en": "Terms and Booking Policy",
+        "vi": "Điều khoản và Chính sách đặt phòng"
+    },
+    {
+        "text_id": "choose_payment_method",
+        "en": "Choose Payment Method",
+        "vi": "Chọn phương thức thanh toán"
+    },
+    {
+        "text_id": "bank_transfer",
+        "en": "Bank Transfer",
+        "vi": "Chuyển khoản ngân hàng"
+    },
+    {
+        "text_id": "cash_payment",
+        "en": "Cash Payment",
+        "vi": "Thanh toán tiền mặt"
+    },
+    {
+        "text_id": "book_room",
+        "en": "Book Room",
+        "vi": "Đặt phòng"
+    },
+    {
+        "text_id": "select_promotion",
+        "en": "Select Promotion",
+        "vi": "Chọn ưu đãi"
+    },
+    {
+        "text_id": "apply",
+        "en": "Apply",
+        "vi": "Áp dụng"
+    },
+    {
+        "text_id": "confirm",
+        "en": "Confirm",
+        "vi": "Xác nhận"
+    },
+    {
+        "text_id": "booking_successful",
+        "en": "Booking successful!",
+        "vi": "Đặt phòng thành công!"
+    },
+    {
+        "text_id": "cancellation_policy_content",
+        "en": "Cancellation Policy:\n\n1. Standard Rooms: Free cancellation up to 24 hours before check-in.\n2. Flash Sale Rooms: No cancellation allowed.\n3. Special Offers: Cancellation fees may apply.\n4. Refunds will be processed within 5-7 business days.\n5. Contact customer service for any cancellation requests.",
+        "vi": "Chính sách huỷ phòng:\n\n1. Phòng tiêu chuẩn: Miễn phí huỷ phòng trước 24 giờ so với giờ nhận phòng.\n2. Phòng Flash Sale: Không được phép huỷ phòng.\n3. Ưu đãi đặc biệt: Có thể áp dụng phí huỷ phòng.\n4. Hoàn tiền sẽ được xử lý trong vòng 5-7 ngày làm việc.\n5. Liên hệ dịch vụ khách hàng để yêu cầu huỷ phòng."
+    },
+    {
+        "text_id": "room_type",
+        "en": "Room type",
+        "vi": "Loại phòng"
+    },
+    {
+        "text_id": "price",
+        "en": "Price",
+        "vi": "Giá"
+    },
+    {
+        "text_id": "checkin",
+        "en": "Check-in",
+        "vi": "Nhận phòng"
+    },
+    {
+        "text_id": "checkout",
+        "en": "Check-out",
+        "vi": "Trả phòng"
+    },
+    {
+        "text_id": "room",
+        "en": "Room",
+        "vi": "Phòng"
+    },
+    {
+        "text_id": "vnd",
+        "en": "VND",
+        "vi": "VNĐ"
+    },
+    {
+        "text_id": "status_booked",
+        "en": "Booked",
+        "vi": "Đã đặt"
+    },
+    {
+        "text_id": "status_confirmed",
+        "en": "Confirmed",
+        "vi": "Đã xác nhận"
+    },
+    {
+        "text_id": "status_cancelled",
+        "en": "Cancelled",
+        "vi": "Đã hủy"
+    },
+    {
+        "text_id": "status_completed",
+        "en": "Completed",
+        "vi": "Hoàn thành"
+    },
+    {
+        "text_id": "status_pending",
+        "en": "Pending",
+        "vi": "Chờ xử lý"
     }
 ]

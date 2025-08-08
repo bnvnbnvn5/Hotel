@@ -15,6 +15,7 @@ import 'modules/splash/introductionScreen.dart';
 import 'modules/splash/splashScreen.dart';
 import 'modules/login/login_Screen.dart';
 import 'modules/home/home_screen.dart';
+import 'modules/home/booking_list_screen.dart';
 
 BuildContext? applicationcontext;
 
@@ -84,6 +85,7 @@ class _MotelAppState extends State<MotelApp> {
       RoutesName.IntroductionScreen: (BuildContext context) => IntroductionScreen(),
       RoutesName.Login: (BuildContext context) => LoginScreen(),
       RoutesName.Home: (BuildContext context) => HomeScreen(),
+      '/bookings': (BuildContext context) => BookingListScreen(),
     };
   }
 

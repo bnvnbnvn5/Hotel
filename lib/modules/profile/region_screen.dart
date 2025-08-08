@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../language/appLocalizations.dart';
 
 class RegionScreen extends StatefulWidget {
   const RegionScreen({Key? key}) : super(key: key);
@@ -12,17 +13,6 @@ class RegionScreen extends StatefulWidget {
 
 class _RegionScreenState extends State<RegionScreen> {
   String _selectedRegion = 'Hà Nội';
-
-  final List<Map<String, String>> _regions = [
-    {'name': 'Hà Nội', 'code': 'HN'},
-    {'name': 'TP. Hồ Chí Minh', 'code': 'HCM'},
-    {'name': 'Đà Nẵng', 'code': 'DN'},
-    {'name': 'Hải Phòng', 'code': 'HP'},
-    {'name': 'Cần Thơ', 'code': 'CT'},
-    {'name': 'Nha Trang', 'code': 'NT'},
-    {'name': 'Phú Quốc', 'code': 'PQ'},
-    {'name': 'Sapa', 'code': 'SP'},
-  ];
 
   @override
   void initState() {
@@ -43,6 +33,17 @@ class _RegionScreenState extends State<RegionScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDarkMode = !themeProvider.isLightMode;
 
+    final List<Map<String, String>> _regions = [
+      {'name': AppLocalizations(context).of('hanoi'), 'code': 'HN'},
+      {'name': AppLocalizations(context).of('hochiminh'), 'code': 'HCM'},
+      {'name': AppLocalizations(context).of('danang'), 'code': 'DN'},
+      {'name': AppLocalizations(context).of('haiphong'), 'code': 'HP'},
+      {'name': AppLocalizations(context).of('cantho'), 'code': 'CT'},
+      {'name': AppLocalizations(context).of('nhatrang'), 'code': 'NT'},
+      {'name': AppLocalizations(context).of('phuquoc'), 'code': 'PQ'},
+      {'name': AppLocalizations(context).of('sapa'), 'code': 'SP'},
+    ];
+
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
@@ -53,7 +54,7 @@ class _RegionScreenState extends State<RegionScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Khu vực',
+          AppLocalizations(context).of('region'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
@@ -97,7 +98,7 @@ class _RegionScreenState extends State<RegionScreen> {
                 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Đã chọn khu vực: ${region['name']}'),
+                    content: Text(AppLocalizations(context).of('region_selected') + region['name']!),
                     backgroundColor: Colors.green,
                   ),
                 );

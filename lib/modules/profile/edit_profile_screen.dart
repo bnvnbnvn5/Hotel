@@ -3,6 +3,7 @@ import 'package:myapp/db_helper.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'change_password_screen.dart';
+import '../../language/appLocalizations.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final Map<String, dynamic>? user;
@@ -30,7 +31,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       // If no user data, show error and go back
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Không tìm thấy thông tin người dùng')),
+          SnackBar(content: Text(AppLocalizations(context).of('user_not_found'))),
         );
         Navigator.pop(context);
       });
@@ -48,14 +49,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _saveProfile() async {
     if (widget.user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Không tìm thấy thông tin người dùng')),
+        SnackBar(content: Text(AppLocalizations(context).of('user_not_found'))),
       );
       return;
     }
 
     if (_nameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Tên không được để trống')),
+        SnackBar(content: Text(AppLocalizations(context).of('name_cannot_empty'))),
       );
       return;
     }
@@ -66,7 +67,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       final userId = widget.user!['id'];
       if (userId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('ID người dùng không hợp lệ')),
+          SnackBar(content: Text(AppLocalizations(context).of('invalid_user_id'))),
         );
         return;
       }
@@ -79,7 +80,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() => _isLoading = false);
       
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Cập nhật thông tin thành công!')),
+        SnackBar(content: Text(AppLocalizations(context).of('profile_updated_successfully'))),
       );
       
       // Return true to indicate successful update
@@ -87,7 +88,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     } catch (e) {
       setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Có lỗi xảy ra: $e')),
+        SnackBar(content: Text(AppLocalizations(context).of('error_occurred') + e.toString())),
       );
     }
   }
@@ -107,7 +108,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Chỉnh sửa thông tin',
+          AppLocalizations(context).of('edit_profile'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
         actions: [
@@ -120,7 +121,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               : Text(
-                  'Lưu',
+                  AppLocalizations(context).of('save'),
                   style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
                 ),
           ),
@@ -153,7 +154,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       // TODO: Implement image picker
                     },
                     child: Text(
-                      'Thay đổi ảnh đại diện',
+                      AppLocalizations(context).of('change_avatar'),
                       style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
                     ),
                   ),
@@ -166,7 +167,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             // Form fields
             _buildTextField(
               controller: _nameController,
-              label: 'Họ tên',
+              label: AppLocalizations(context).of('full_name'),
               icon: Icons.person,
               isDarkMode: isDarkMode,
             ),
@@ -175,7 +176,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             
             _buildTextField(
               controller: _phoneController,
-              label: 'Số điện thoại',
+              label: AppLocalizations(context).of('phone'),
               icon: Icons.phone,
               keyboardType: TextInputType.phone,
               isDarkMode: isDarkMode,
@@ -185,7 +186,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             
             _buildTextField(
               controller: _emailController,
-              label: 'Email',
+              label: AppLocalizations(context).of('email'),
               icon: Icons.email,
               keyboardType: TextInputType.emailAddress,
               isDarkMode: isDarkMode,
@@ -214,7 +215,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
                 child: Text(
-                  'Đổi mật khẩu',
+                  AppLocalizations(context).of('change_password'),
                   style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
                 ),
               ),

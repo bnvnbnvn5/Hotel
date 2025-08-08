@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
+import '../../language/appLocalizations.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({Key? key}) : super(key: key);
@@ -31,17 +32,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Thông báo',
+          AppLocalizations(context).of('notifications'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
         children: [
-          _buildSectionTitle('Loại thông báo', isDarkMode),
+          _buildSectionTitle(AppLocalizations(context).of('notification_type'), isDarkMode),
           _buildSwitchTile(
-            title: 'Đặt phòng',
-            subtitle: 'Thông báo về trạng thái đặt phòng',
+            title: AppLocalizations(context).of('booking_notification'),
+            subtitle: AppLocalizations(context).of('booking_notification_subtitle'),
             value: _bookingNotifications,
             onChanged: (value) {
               setState(() {
@@ -51,8 +52,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             isDarkMode: isDarkMode,
           ),
           _buildSwitchTile(
-            title: 'Khuyến mãi',
-            subtitle: 'Thông báo về ưu đãi và khuyến mãi',
+            title: AppLocalizations(context).of('promotion_notification'),
+            subtitle: AppLocalizations(context).of('promotion_notification_subtitle'),
             value: _promotionNotifications,
             onChanged: (value) {
               setState(() {
@@ -62,8 +63,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             isDarkMode: isDarkMode,
           ),
           _buildSwitchTile(
-            title: 'Tin tức',
-            subtitle: 'Thông báo về tin tức và cập nhật',
+            title: AppLocalizations(context).of('news_notification'),
+            subtitle: AppLocalizations(context).of('news_notification_subtitle'),
             value: _newsNotifications,
             onChanged: (value) {
               setState(() {
@@ -75,10 +76,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           
           SizedBox(height: 24),
           
-          _buildSectionTitle('Cài đặt âm thanh', isDarkMode),
+          _buildSectionTitle(AppLocalizations(context).of('sound_settings'), isDarkMode),
           _buildSwitchTile(
-            title: 'Âm thanh',
-            subtitle: 'Phát âm thanh khi có thông báo',
+            title: AppLocalizations(context).of('sound'),
+            subtitle: AppLocalizations(context).of('sound_subtitle'),
             value: _soundEnabled,
             onChanged: (value) {
               setState(() {
@@ -88,8 +89,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             isDarkMode: isDarkMode,
           ),
           _buildSwitchTile(
-            title: 'Rung',
-            subtitle: 'Rung thiết bị khi có thông báo',
+            title: AppLocalizations(context).of('vibration'),
+            subtitle: AppLocalizations(context).of('vibration_subtitle'),
             value: _vibrationEnabled,
             onChanged: (value) {
               setState(() {
@@ -101,23 +102,23 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           
           SizedBox(height: 24),
           
-          _buildSectionTitle('Thông báo gần đây', isDarkMode),
+          _buildSectionTitle(AppLocalizations(context).of('recent_notifications'), isDarkMode),
           _buildNotificationItem(
-            title: 'Đặt phòng thành công',
-            subtitle: 'Đặt phòng tại Grand Hotel Hanoi đã được xác nhận',
-            time: '2 giờ trước',
+            title: AppLocalizations(context).of('success_booking'),
+            subtitle: AppLocalizations(context).of('success_booking_subtitle'),
+            time: AppLocalizations(context).of('hours_ago').replaceAll('{hours}', '2'),
             isDarkMode: isDarkMode,
           ),
           _buildNotificationItem(
-            title: 'Khuyến mãi mới',
-            subtitle: 'Giảm 20% cho khách sạn tại Đà Nẵng',
-            time: '1 ngày trước',
+            title: AppLocalizations(context).of('promotion_new'),
+            subtitle: AppLocalizations(context).of('promotion_new_subtitle'),
+            time: AppLocalizations(context).of('days_ago').replaceAll('{days}', '1'),
             isDarkMode: isDarkMode,
           ),
           _buildNotificationItem(
-            title: 'Cập nhật ứng dụng',
-            subtitle: 'Phiên bản mới đã có sẵn',
-            time: '2 ngày trước',
+            title: AppLocalizations(context).of('app_update'),
+            subtitle: AppLocalizations(context).of('app_update_subtitle'),
+            time: AppLocalizations(context).of('days_ago').replaceAll('{days}', '2'),
             isDarkMode: isDarkMode,
           ),
         ],

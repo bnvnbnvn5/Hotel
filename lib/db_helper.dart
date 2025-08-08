@@ -35,7 +35,7 @@ class DBHelper {
         await db.execute('''
           CREATE TABLE bookings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            room_id INTEGER, user_id INTEGER, checkin TEXT, checkout TEXT, status TEXT
+            room_id INTEGER, user_id INTEGER, checkin TEXT, checkout TEXT, status TEXT, created_at TEXT
           );
         ''');
         await db.execute('''
@@ -104,7 +104,9 @@ class DBHelper {
   // CRUD cho bookings
   static Future<int> insertBooking(Map<String, dynamic> booking) async {
     final dbClient = await db;
-    return await dbClient.insert('bookings', booking);
+    final data = Map<String, dynamic>.from(booking);
+    data['created_at'] = DateTime.now().toIso8601String();
+    return await dbClient.insert('bookings', data);
   }
   
   static Future<List<Map<String, dynamic>>> getBookings() async {

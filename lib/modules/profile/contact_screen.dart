@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../language/appLocalizations.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({Key? key}) : super(key: key);
@@ -62,7 +63,7 @@ class _ContactScreenState extends State<ContactScreen> {
       await launch(url);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Không thể mở liên kết')),
+        SnackBar(content: Text(AppLocalizations(context).of('cannot_open_link'))),
       );
     }
   }
@@ -82,7 +83,7 @@ class _ContactScreenState extends State<ContactScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Liên hệ',
+          AppLocalizations(context).of('contact'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
@@ -91,7 +92,7 @@ class _ContactScreenState extends State<ContactScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionTitle('Liên hệ trực tiếp', isDarkMode),
+            _buildSectionTitle(AppLocalizations(context).of('direct_contact'), isDarkMode),
             ..._contactMethods.map((method) => _buildContactMethod(
               title: method['title'],
               subtitle: method['subtitle'],
@@ -102,7 +103,7 @@ class _ContactScreenState extends State<ContactScreen> {
             
             SizedBox(height: 24),
             
-            _buildSectionTitle('Văn phòng', isDarkMode),
+            _buildSectionTitle(AppLocalizations(context).of('main_office'), isDarkMode),
             ..._officeInfo.map((office) => _buildOfficeInfo(
               title: office['title'],
               address: office['address'],
@@ -113,7 +114,7 @@ class _ContactScreenState extends State<ContactScreen> {
             
             SizedBox(height: 24),
             
-            _buildSectionTitle('Thông tin khác', isDarkMode),
+            _buildSectionTitle(AppLocalizations(context).of('other_info'), isDarkMode),
             Container(
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -124,7 +125,7 @@ class _ContactScreenState extends State<ContactScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Thời gian hỗ trợ',
+                    AppLocalizations(context).of('support_time'),
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -133,7 +134,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'Thứ 2 - Thứ 6: 8:00 - 18:00\nThứ 7: 8:00 - 12:00\nChủ nhật: Nghỉ',
+                    AppLocalizations(context).of('support_time_detail'),
                     style: TextStyle(
                       color: isDarkMode ? Colors.grey[300] : Colors.grey[600],
                       fontSize: 14,

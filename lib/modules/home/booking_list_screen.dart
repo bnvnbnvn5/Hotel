@@ -235,15 +235,15 @@ class _BookingListScreenState extends State<BookingListScreen> {
                 Expanded(
                   child: _buildInfoItem(
                     icon: Icons.bed,
-                    label: 'Loại phòng',
-                    value: 'Phòng $roomClass',
+                    label: AppLocalizations(context).of("room_type"),
+                    value: AppLocalizations(context).of("room") + ' $roomClass',
                   ),
                 ),
                 Expanded(
                   child: _buildInfoItem(
                     icon: Icons.attach_money,
-                    label: 'Giá',
-                    value: '${NumberFormat('#,###').format(price)} VNĐ',
+                    label: AppLocalizations(context).of("price"),
+                    value: '${NumberFormat('#,###').format(price)} ${AppLocalizations(context).of("vnd")}',
                   ),
                 ),
               ],
@@ -255,14 +255,14 @@ class _BookingListScreenState extends State<BookingListScreen> {
                   Expanded(
                     child: _buildInfoItem(
                       icon: Icons.login,
-                      label: 'Nhận phòng',
+                      label: AppLocalizations(context).of("checkin"),
                       value: DateFormat('dd/MM/yyyy').format(checkin),
                     ),
                   ),
                   Expanded(
                     child: _buildInfoItem(
                       icon: Icons.logout,
-                      label: 'Trả phòng',
+                      label: AppLocalizations(context).of("checkout"),
                       value: DateFormat('dd/MM/yyyy').format(checkout),
                     ),
                   ),
@@ -322,23 +322,23 @@ class _BookingListScreenState extends State<BookingListScreen> {
     switch (status.toLowerCase()) {
       case 'booked':
         color = Colors.green;
-        text = 'Đã đặt';
+        text = AppLocalizations(context).of("status_booked");
         break;
       case 'confirmed':
         color = Colors.blue;
-        text = 'Đã xác nhận';
+        text = AppLocalizations(context).of("status_confirmed");
         break;
       case 'cancelled':
         color = Colors.red;
-        text = 'Đã hủy';
+        text = AppLocalizations(context).of("status_cancelled");
         break;
       case 'completed':
         color = Colors.grey;
-        text = 'Hoàn thành';
+        text = AppLocalizations(context).of("status_completed");
         break;
       default:
         color = Colors.orange;
-        text = 'Chờ xử lý';
+        text = AppLocalizations(context).of("status_pending");
     }
 
     return Container(

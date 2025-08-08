@@ -3,6 +3,7 @@ import 'package:myapp/db_helper.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../language/appLocalizations.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({Key? key}) : super(key: key);
@@ -31,35 +32,35 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Future<void> _changePassword() async {
     if (_oldPasswordController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Vui lòng nhập mật khẩu cũ')),
+        SnackBar(content: Text(AppLocalizations(context).of('please_enter_old_password'))),
       );
       return;
     }
 
     if (_newPasswordController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Vui lòng nhập mật khẩu mới')),
+        SnackBar(content: Text(AppLocalizations(context).of('please_enter_new_password'))),
       );
       return;
     }
 
     if (_confirmPasswordController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Vui lòng xác nhận mật khẩu mới')),
+        SnackBar(content: Text(AppLocalizations(context).of('please_confirm_new_password'))),
       );
       return;
     }
 
     if (_newPasswordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Mật khẩu xác nhận không khớp')),
+        SnackBar(content: Text(AppLocalizations(context).of('passwords_do_not_match'))),
       );
       return;
     }
 
     if (_newPasswordController.text.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Mật khẩu mới phải có ít nhất 6 ký tự')),
+        SnackBar(content: Text(AppLocalizations(context).of('new_password_min_length'))),
       );
       return;
     }
@@ -72,7 +73,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       
       if (userEmail == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Không tìm thấy thông tin người dùng')),
+          SnackBar(content: Text(AppLocalizations(context).of('user_not_found'))),
         );
         return;
       }
@@ -81,7 +82,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       final isValid = await DBHelper.validateUser(userEmail, _oldPasswordController.text);
       if (!isValid) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Mật khẩu cũ không đúng')),
+          SnackBar(content: Text(AppLocalizations(context).of('old_password_incorrect'))),
         );
         return;
       }
@@ -92,14 +93,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       setState(() => _isLoading = false);
       
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đổi mật khẩu thành công!')),
+        SnackBar(content: Text(AppLocalizations(context).of('password_changed_successfully'))),
       );
       
       Navigator.pop(context);
     } catch (e) {
       setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Có lỗi xảy ra: $e')),
+        SnackBar(content: Text(AppLocalizations(context).of('error_occurred') + e.toString())),
       );
     }
   }
@@ -119,7 +120,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Đổi mật khẩu',
+          AppLocalizations(context).of('change_password'),
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
@@ -133,7 +134,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             // Mật khẩu cũ
             _buildPasswordField(
               controller: _oldPasswordController,
-              label: 'Mật khẩu cũ',
+              label: AppLocalizations(context).of('old_password'),
               icon: Icons.lock_outline,
               isDarkMode: isDarkMode,
               obscureText: _obscureOldPassword,
@@ -149,7 +150,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             // Mật khẩu mới
             _buildPasswordField(
               controller: _newPasswordController,
-              label: 'Mật khẩu mới',
+              label: AppLocalizations(context).of('new_password'),
               icon: Icons.lock_outline,
               isDarkMode: isDarkMode,
               obscureText: _obscureNewPassword,
@@ -165,7 +166,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             // Xác nhận mật khẩu mới
             _buildPasswordField(
               controller: _confirmPasswordController,
-              label: 'Xác nhận mật khẩu mới',
+              label: AppLocalizations(context).of('confirm_new_password'),
               icon: Icons.lock_outline,
               isDarkMode: isDarkMode,
               obscureText: _obscureConfirmPassword,
@@ -203,7 +204,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ),
                     )
                   : Text(
-                      'Đổi mật khẩu',
+                      AppLocalizations(context).of('change_password'),
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
               ),
