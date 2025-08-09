@@ -162,7 +162,7 @@ class _HotelCardState extends State<HotelCard> {
                               const SizedBox(width: 6),
                             Flexible(
                               child: Text(
-                                'Chỉ từ ${widget.price}đ',
+'${AppLocalizations(context).of('from_price')} ${widget.price}đ',
                                 style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black, fontSize: 15),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,

@@ -6,7 +6,6 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:myapp/db_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'map_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +13,8 @@ import '../profile/terms_privacy_screen.dart';
 import 'confirm_booking_screen.dart';
 import 'room_list_screen.dart';
 import 'hotel_search_bar_for_booking.dart';
+import 'dart:math';
+import 'image_gallery_screen.dart';
 
 class BookingScreen extends StatefulWidget {
   final Map<String, dynamic> hotel;
@@ -32,6 +33,37 @@ class _BookingScreenState extends State<BookingScreen> {
   DateTimeRange? selectedRange;
   bool isFavorite = false;
   int? currentUserId;
+  
+  // Fixed user location - Vạn Phúc Building
+  static const double userLat = 20.9823;
+  static const double userLng = 105.7817;
+  
+  // Calculate distance between two points (Haversine formula)
+  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const double earthRadius = 6371; // Earth radius in kilometers
+    double dLat = _degreesToRadians(lat2 - lat1);
+    double dLon = _degreesToRadians(lon2 - lon1);
+    
+    double a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_degreesToRadians(lat1)) * cos(_degreesToRadians(lat2)) *
+        sin(dLon / 2) * sin(dLon / 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    double distance = earthRadius * c;
+    
+    return distance * 1000; // Convert to meters
+  }
+  
+  double _degreesToRadians(double degrees) {
+    return degrees * pi / 180;
+  }
+  
+  String _formatDistance(double distanceInMeters) {
+    if (distanceInMeters < 1000) {
+      return '${distanceInMeters.round()}m';
+    } else {
+      return '${(distanceInMeters / 1000).toStringAsFixed(1)}km';
+    }
+  }
 
   @override
   void initState() {
@@ -162,6 +194,8 @@ class _BookingScreenState extends State<BookingScreen> {
             lat: widget.hotel['lat'].toDouble(),
             lng: widget.hotel['lng'].toDouble(),
             hotelName: hotelName,
+            userLat: userLat,
+            userLng: userLng,
           ),
         ),
       );
@@ -176,7 +210,13 @@ class _BookingScreenState extends State<BookingScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => MapScreen(lat: loc.latitude, lng: loc.longitude, hotelName: hotelName),
+              builder: (_) => MapScreen(
+                lat: loc.latitude, 
+                lng: loc.longitude, 
+                hotelName: hotelName,
+                userLat: userLat,
+                userLng: userLng,
+              ),
             ),
           );
         }
@@ -188,47 +228,77 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   String _amenityKey(String name) {
-    // Chuyển tên tiện ích sang key dạng amenity_xxx
-    return 'amenity_' + name.toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll('đ', 'd')
-      .replaceAll('ơ', 'o')
-      .replaceAll('ư', 'u')
-      .replaceAll('ô', 'o')
-      .replaceAll('ă', 'a')
-      .replaceAll('â', 'a')
-      .replaceAll('ê', 'e')
-      .replaceAll('á', 'a')
-      .replaceAll('à', 'a')
-      .replaceAll('ả', 'a')
-      .replaceAll('ã', 'a')
-      .replaceAll('ạ', 'a')
-      .replaceAll('é', 'e')
-      .replaceAll('è', 'e')
-      .replaceAll('ẻ', 'e')
-      .replaceAll('ẽ', 'e')
-      .replaceAll('ẹ', 'e')
-      .replaceAll('í', 'i')
-      .replaceAll('ì', 'i')
-      .replaceAll('ỉ', 'i')
-      .replaceAll('ĩ', 'i')
-      .replaceAll('ị', 'i')
-      .replaceAll('ó', 'o')
-      .replaceAll('ò', 'o')
-      .replaceAll('ỏ', 'o')
-      .replaceAll('õ', 'o')
-      .replaceAll('ọ', 'o')
-      .replaceAll('ú', 'u')
-      .replaceAll('ù', 'u')
-      .replaceAll('ủ', 'u')
-      .replaceAll('ũ', 'u')
-      .replaceAll('ụ', 'u')
-      .replaceAll('ý', 'y')
-      .replaceAll('ỳ', 'y')
-      .replaceAll('ỷ', 'y')
-      .replaceAll('ỹ', 'y')
-      .replaceAll('ỵ', 'y')
-      .replaceAll(RegExp(r'[^a-z0-9_]'), '');
+    // Chuẩn hóa tên (VN/EN) thành key không dấu
+    final normalized = name.toLowerCase()
+        .replaceAll(' ', '_')
+        .replaceAll('đ', 'd')
+        .replaceAll('ơ', 'o')
+        .replaceAll('ư', 'u')
+        .replaceAll('ô', 'o')
+        .replaceAll('ă', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('ê', 'e')
+        .replaceAll('á', 'a')
+        .replaceAll('à', 'a')
+        .replaceAll('ả', 'a')
+        .replaceAll('ã', 'a')
+        .replaceAll('ạ', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('è', 'e')
+        .replaceAll('ẻ', 'e')
+        .replaceAll('ẽ', 'e')
+        .replaceAll('ẹ', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ì', 'i')
+        .replaceAll('ỉ', 'i')
+        .replaceAll('ĩ', 'i')
+        .replaceAll('ị', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ò', 'o')
+        .replaceAll('ỏ', 'o')
+        .replaceAll('õ', 'o')
+        .replaceAll('ọ', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ù', 'u')
+        .replaceAll('ủ', 'u')
+        .replaceAll('ũ', 'u')
+        .replaceAll('ụ', 'u')
+        .replaceAll('ý', 'y')
+        .replaceAll('ỳ', 'y')
+        .replaceAll('ỷ', 'y')
+        .replaceAll('ỹ', 'y')
+        .replaceAll('ỵ', 'y')
+        .replaceAll(RegExp(r'[^a-z0-9_]'), '');
+
+    // Map từ cụm EN/VN đã chuẩn hóa sang key trong language_text.json
+    const Map<String, String> aliasToKey = {
+      // English
+      'dry_sauna': 'amenity_phong_xong_hoi_kho',
+      'rain_shower': 'amenity_sen_tran',
+      'bedside_mirror': 'amenity_guong_ben_giuong',
+      'ancient_bathtub': 'amenity_bon_tam_co_dai',
+      // Vietnamese (không dấu)
+      'phong_xong_hoi_kho': 'amenity_phong_xong_hoi_kho',
+      'sen_tran': 'amenity_sen_tran',
+      'guong_ben_giuong': 'amenity_guong_ben_giuong',
+      'bon_tam_co_dai': 'amenity_bon_tam_co_dai',
+    };
+
+    if (aliasToKey.containsKey(normalized)) {
+      return aliasToKey[normalized]!;
+    }
+
+    // Mặc định: trả về 'amenity_<normalized>'
+    return 'amenity_' + normalized;
+  }
+
+  String _amenityLabel(BuildContext context, String raw) {
+    final key = _amenityKey(raw);
+    final localized = AppLocalizations(context).of(key);
+    if (localized == '#Text not found#') {
+      return raw; // fallback hiển thị nguyên văn nếu chưa có key
+    }
+    return localized;
   }
 
   @override
@@ -248,6 +318,9 @@ class _BookingScreenState extends State<BookingScreen> {
       'Bồn tắm cổ đại', 'Phòng xông hơi khô', 'Sen Trần', 'Gương bên giường'
     ];
     final String description = hotel['description'] ?? 'Không phải khách sạn. Đây là một vũ trụ 39 phòng – 39 thế giới riêng biệt, nơi mỗi căn phòng đều có một câu chuyện riêng';
+    // Hotel coordinates (may be null)
+    final double? hotelLat = hotel['lat'] == null ? null : (hotel['lat'] as num).toDouble();
+    final double? hotelLng = hotel['lng'] == null ? null : (hotel['lng'] as num).toDouble();
 
     String infoText;
     if (selectedRange != null) {
@@ -291,7 +364,7 @@ class _BookingScreenState extends State<BookingScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Ảnh khách sạn nhiều ảnh + số lượng ảnh còn lại
+            // Ảnh khách sạn nhiều ảnh + số lượng ảnh còn lại (tap để mở gallery)
             SizedBox(
               height: 200,
               child: Stack(
@@ -301,37 +374,63 @@ class _BookingScreenState extends State<BookingScreen> {
                     itemCount: images.length > maxShowImages ? maxShowImages : images.length,
                     itemBuilder: (context, index) {
                       if (index == maxShowImages - 1 && images.length > maxShowImages) {
-                        return Stack(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(right: 8),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: Image.asset(images[index], width: 180, height: 200, fit: BoxFit.cover),
-                              ),
-                            ),
-                            Positioned.fill(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(16),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ImageGalleryScreen(
+                                  images: images,
+                                  initialIndex: index,
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    "+${images.length - maxShowImages + 1}",
-                                    style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
+                              ),
+                            );
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(right: 8),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.asset(images[index], width: 180, height: 200, fit: BoxFit.cover),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "+${images.length - maxShowImages + 1}",
+                                      style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         );
                       }
-                      return Container(
-                        margin: EdgeInsets.only(right: 8),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(images[index], width: 180, height: 200, fit: BoxFit.cover),
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ImageGalleryScreen(
+                                images: images,
+                                initialIndex: index,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: 8),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.asset(images[index], width: 180, height: 200, fit: BoxFit.cover),
+                          ),
                         ),
                       );
                     },
@@ -365,7 +464,14 @@ class _BookingScreenState extends State<BookingScreen> {
                         onPressed: () => _openMapScreen(context, address, name),
                       ),
                       SizedBox(width: 4),
-                      Text(AppLocalizations(context).of("distance_from_you").replaceAll("{distance}", "365"), style: TextStyle(color: isDarkMode ? Colors.grey[400] : Colors.grey)),
+                      Text(
+                        (hotelLat != null && hotelLng != null)
+                            ? _formatDistance(
+                                    _calculateDistance(userLat, userLng, hotelLat, hotelLng)) +
+                                " từ bạn"
+                            : "Vạn Phúc Building",
+                        style: TextStyle(color: isDarkMode ? Colors.grey[400] : Colors.grey),
+                      ),
                     ],
                   ),
                   SizedBox(height: 16),
@@ -378,7 +484,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       children: utilities.map((u) => Padding(
                         padding: const EdgeInsets.only(right: 12.0),
                         child: Chip(
-                          label: Text(AppLocalizations(context).of(_amenityKey(u))),
+                          label: Text(_amenityLabel(context, u)),
                           backgroundColor: isDarkMode ? Colors.grey[800] : Colors.grey[100],
                           labelStyle: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
                         ),

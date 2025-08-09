@@ -40,3 +40,4 @@ flutter:
     - assets/images/
     - assets/json/
     - lib/language/lang/language_text.json
+    - assets/map.html

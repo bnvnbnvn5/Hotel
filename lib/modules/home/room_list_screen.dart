@@ -62,12 +62,12 @@ class RoomListScreen extends StatelessWidget {
             margin: EdgeInsets.all(16),
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: isDarkMode ? Colors.grey[700] : Colors.orange.shade50,
+              color: isDarkMode ? Colors.grey[700] : Colors.blue.shade50,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               children: [
-                Icon(Icons.access_time, color: Colors.orange),
+                Icon(Icons.access_time, color: isDarkMode ? Colors.yellow : Colors.blue),
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -79,7 +79,7 @@ class RoomListScreen extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text(AppLocalizations(context).of("change"), style: TextStyle(color: isDarkMode ? Colors.blue : Colors.orange)),
+                  child: Text(AppLocalizations(context).of("change"), style: TextStyle(color: isDarkMode ? Colors.blue : Colors.blue)),
                 ),
               ],
             ),
@@ -121,6 +121,7 @@ class RoomListScreen extends StatelessWidget {
                         final available = snap.data ?? true;
                         return Card(
                           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          color: isDarkMode ? Colors.grey[800] : Colors.white,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -133,13 +134,13 @@ class RoomListScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Class ${room['class']}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                    Text('Class ${room['class']}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
                                     SizedBox(height: 4),
-                                    Text('Phòng loại ${room['class']}'),
+                                    Text('Phòng loại ${room['class']}', style: TextStyle(color: isDarkMode ? Colors.grey[300] : Colors.grey[600])),
                                     SizedBox(height: 8),
                                     Row(
                                       children: [
-                                        Text('${room['price']}đ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange)),
+                                        Text('${room['price']}đ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.yellow : Colors.blue)),
                                         Spacer(),
                                         ElevatedButton(
                                           onPressed: available ? () {
@@ -159,7 +160,8 @@ class RoomListScreen extends StatelessWidget {
                                             );
                                           } : null,
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: available ? Colors.orange : Colors.grey,
+                                            backgroundColor: available ? (isDarkMode ? Colors.blue : Colors.blue) : Colors.grey,
+                                            foregroundColor: Colors.white,
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                                           ),
                                           child: Text(available ? 'Đặt phòng' : 'Hết phòng'),

@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <style>
+    html,body{height:100%;margin:0;padding:0}
+    #map{height:100%;width:100%}
+    #error{position:absolute;left:8px;top:8px;padding:6px;background:rgba(255,255,255,0.9);z-index:999}
+  </style>
+  <script src="https://maps.goong.io/js/api.js?api_key=z6svPeZLdsuIowOpU7NUMsZXzEyHYNNMcA9xPfg3"></script>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="error" style="display:none;color:#900"></div>
+
+  <script>
+    // Hàm được Flutter gọi sau khi trang asset load xong
+    function initMapFromFlutter(lat, lng) {
+      try {
+        if (typeof goongjs === 'undefined') {
+          console.error('goongjs undefined');
+          document.getElementById('error').innerText = 'GoongJS not available';
+          document.getElementById('error').style.display = 'block';
+          return;
+        }
+
+        const center = [parseFloat(lng), parseFloat(lat)];
+        const map = new goongjs.Map({
+          container: 'map',
+          style: 'https://tiles.goong.io/assets/goong_map_web.json',
+          center: center,
+          zoom: 15
+        });
+
+        new goongjs.Marker()
+          .setLngLat(center)
+          .addTo(map);
+
+        console.log('Map initialized at ' + lat + ',' + lng);
+      } catch (e) {
+        console.error('initMapFromFlutter error: ' + e);
+        document.getElementById('error').innerText = 'Map init error';
+        document.getElementById('error').style.display = 'block';
+      }
+    }
+
+    // Notify Flutter (via console) that HTML is loaded
+    console.log('map.html loaded');
+  </script>
+</body>
+</html>

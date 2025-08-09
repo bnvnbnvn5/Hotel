@@ -4,6 +4,7 @@ import 'package:myapp/language/appLocalizations.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'hotel_list_by_area_screen.dart';
+import 'hotel_list_by_category_screen.dart';
 import 'hotel_search_bar.dart';
 import 'hotel_search_screen.dart';
 import 'booking_screen.dart';
@@ -133,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Có lỗi xảy ra: $e')),
+        SnackBar(content: Text('${AppLocalizations(context).of('error_occurred')}: $e')),
       );
     }
   }
@@ -148,9 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
       price: hotel['price'] ?? 0,
       originalPrice: hotel['originalPrice'],
       district: hotel['district'],
-      badge: hotel['isFlashSale'] == true ? 'Nổi bật' : null,
+      badge: hotel['isFlashSale'] == true ? AppLocalizations(context).of('featured') : null,
       discountLabel: hotel['discountLabel'],
-      timeLabel: hotel['timeLabel'] ?? '/ 2 giờ',
+      timeLabel: hotel['timeLabel'] ?? AppLocalizations(context).of('per_2_hours'),
       onTap: () {
         Navigator.push(
           context,
@@ -165,10 +166,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showAreaPicker() async {
     String tempCity = selectedCity;
     String tempDistrict = selectedDistrict;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -185,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Vui lòng chọn khu vực", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                      Text("Vui lòng chọn khu vực", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context); // Đóng modal
@@ -214,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: cityDistricts.keys.map((city) {
                               final isSelected = city == tempCity;
                               return ListTile(
-                                title: Text(city, style: TextStyle(color: isSelected ? Colors.orange : Colors.black)),
+                                title: Text(city, style: TextStyle(color: isSelected ? Colors.orange : (isDarkMode ? Colors.white : Colors.black))),
                                 selected: isSelected,
                                 onTap: () {
                                   setModalState(() {
@@ -233,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: districts.map((district) {
                               final isSelected = district == tempDistrict;
                               return ListTile(
-                                title: Text(district, style: TextStyle(color: isSelected ? Colors.orange : Colors.black)),
+                                title: Text(district, style: TextStyle(color: isSelected ? Colors.orange : (isDarkMode ? Colors.white : Colors.black))),
                                 selected: isSelected,
                                 onTap: () {
                                   setModalState(() {
@@ -405,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     final flashSaleHotels = hotels.where((h) => h['isFlashSale'] == true).toList();
                     final newHotels = hotels.where((h) => h['isNew'] == true).toList();
                     final topRatedHotels = hotels.where((h) => h['isTopRated'] == true).toList();
-                    if (showHotels.isEmpty) return Center(child: Text('Không có khách sạn nào trong hệ thống.'));
+                    if (showHotels.isEmpty) return Center(child: Text(AppLocalizations(context).of('no_hotels_in_system')));
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -416,8 +418,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Ưu đãi đặc biệt', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
-                                TextButton(onPressed: () {}, child: Text('Xem tất cả')),
+                                Text(AppLocalizations(context).of('special_offers'), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => HotelListByCategoryScreen(
+                                          category: 'flash_sale',
+                                          title: AppLocalizations(context).of('special_offers'),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(AppLocalizations(context).of('view_all')),
+                                ),
                               ],
                             ),
                           ),
@@ -472,7 +487,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Khách sạn nổi bật', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
+                              Text(AppLocalizations(context).of('featured_hotels'), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
                               TextButton(
                                 onPressed: () {
                                   Navigator.push(
@@ -485,7 +500,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   );
                                 },
-                                child: Text('Xem tất cả'),
+                                child: Text(AppLocalizations(context).of('view_all')),
                               ),
                             ],
                           ),
@@ -510,8 +525,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Top được bình chọn', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
-                                TextButton(onPressed: () {}, child: Text('Xem tất cả')),
+                                Text(AppLocalizations(context).of('top_rated'), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => HotelListByCategoryScreen(
+                                          category: 'top_rated',
+                                          title: AppLocalizations(context).of('top_rated'),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(AppLocalizations(context).of('view_all')),
+                                ),
                               ],
                             ),
                           ),
@@ -536,8 +564,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Khách sạn mới', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
-                                TextButton(onPressed: () {}, child: Text('Xem tất cả')),
+                                Text(AppLocalizations(context).of('new_hotels'), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black)),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => HotelListByCategoryScreen(
+                                          category: 'new_hotels',
+                                          title: AppLocalizations(context).of('new_hotels'),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(AppLocalizations(context).of('view_all')),
+                                ),
                               ],
                             ),
                           ),

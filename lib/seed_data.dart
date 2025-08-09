@@ -4,7 +4,7 @@ Future<void> seedData() async {
   // Seed users
   final users = [
     {
-      'email': 'admin@example.com',
+      'email': 'admin@example.comw',
       'phone': '0123456789',
       'password': 'Admin123',
       'name': 'Admin User',

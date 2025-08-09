@@ -449,16 +449,7 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                       ),
                       title: Text(hotel['name'] ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
                       subtitle: Text('${hotel['district']}, ${hotel['city']}'),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.location_on, color: Colors.orange),
-                            onPressed: () => _openMap(hotel['address'] ?? ''),
-                          ),
-                          Icon(Icons.chevron_right),
-                        ],
-                      ),
+                      trailing: Icon(Icons.chevron_right),
                       onTap: () {
                         Navigator.push(
                           context,

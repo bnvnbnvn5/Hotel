@@ -830,6 +830,41 @@
         "vi": "Khách sạn nổi bật"
     },
     {
+        "text_id": "top_rated",
+        "en": "Top Rated",
+        "vi": "Top được bình chọn"
+    },
+    {
+        "text_id": "new_hotels", 
+        "en": "New Hotels",
+        "vi": "Khách sạn mới"
+    },
+    {
+        "text_id": "from_price",
+        "en": "From",
+        "vi": "Chỉ từ"
+    },
+    {
+        "text_id": "featured",
+        "en": "Featured",
+        "vi": "Nổi bật"
+    },
+    {
+        "text_id": "per_2_hours",
+        "en": "/ 2 hours",
+        "vi": "/ 2 giờ"
+    },
+    {
+        "text_id": "error_occurred",
+        "en": "An error occurred",
+        "vi": "Có lỗi xảy ra"
+    },
+    {
+        "text_id": "no_hotels_in_system",
+        "en": "No hotels in the system",
+        "vi": "Không có khách sạn nào trong hệ thống"
+    },
+    {
         "text_id": "booked_rooms",
         "en": "Booked Rooms",
         "vi": "Phòng đã đặt"
