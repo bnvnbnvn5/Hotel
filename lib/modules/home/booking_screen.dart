@@ -18,7 +18,19 @@ import 'image_gallery_screen.dart';
 
 class BookingScreen extends StatefulWidget {
   final Map<String, dynamic> hotel;
-  const BookingScreen({Key? key, required this.hotel}) : super(key: key);
+  final DateTime? initialDate;
+  final TimeOfDay? initialTime;
+  final int? initialHour;
+  final DateTimeRange? initialRange;
+  
+  const BookingScreen({
+    Key? key, 
+    required this.hotel,
+    this.initialDate,
+    this.initialTime,
+    this.initialHour,
+    this.initialRange,
+  }) : super(key: key);
 
   @override
   State<BookingScreen> createState() => _BookingScreenState();
@@ -68,6 +80,12 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   void initState() {
     super.initState();
+    // Khởi tạo với giá trị từ tìm kiếm nếu có
+    selectedDate = widget.initialDate;
+    selectedTime = widget.initialTime;
+    selectedHour = widget.initialHour;
+    selectedRange = widget.initialRange;
+    
     images = widget.hotel['images'] ?? [
       widget.hotel['image'] ?? 'assets/images/hotel_placeholder.jpg',
       'assets/images/hotel_2.png',

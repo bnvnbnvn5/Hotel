@@ -116,15 +116,27 @@ class DBHelper {
 
   static Future<bool> isRoomAvailable(int roomId, DateTime checkin, DateTime checkout) async {
     final dbClient = await db;
+    DateTime now = DateTime.now();
+    
     // Lấy các booking trùng phòng và có thời gian giao với khoảng checkin-checkout
+    // Chỉ xem xét các booking có trạng thái active (đang sử dụng hoặc đã đặt)
+    // Loại trừ các booking đã hoàn thành, hủy bỏ hoặc hết hạn
     final result = await dbClient.rawQuery('''
       SELECT * FROM bookings
       WHERE room_id = ?
-        AND status = 'booked'
+        AND status IN ('booked', 'active', 'confirmed')
         AND NOT (
           checkout <= ? OR checkin >= ?
         )
     ''', [roomId, checkin.toIso8601String(), checkout.toIso8601String()]);
+    
+    // Debug: in ra thông tin để kiểm tra
+    print('Checking room $roomId availability for $checkin to $checkout (current time: $now)');
+    print('Found ${result.length} conflicting bookings:');
+    for (var booking in result) {
+      print('  Booking ID: ${booking['id']}, Status: ${booking['status']}, Checkin: ${booking['checkin']}, Checkout: ${booking['checkout']}');
+    }
+    
     return result.isEmpty;
   }
 

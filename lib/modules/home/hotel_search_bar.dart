@@ -22,12 +22,14 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
   String searchText = '';
 
   final List<int> hourOptions = [1, 2, 3, 4];
-  final List<TimeOfDay> timeOptions = [
-    TimeOfDay(hour: 15, minute: 0),
-    TimeOfDay(hour: 16, minute: 0),
-    TimeOfDay(hour: 17, minute: 0),
-    TimeOfDay(hour: 18, minute: 0),
-  ];
+  // Tạo danh sách thời gian từ 6:00 AM đến 10:00 PM
+  List<TimeOfDay> get timeOptions {
+    List<TimeOfDay> options = [];
+    for (int hour = 6; hour <= 22; hour++) {
+      options.add(TimeOfDay(hour: hour, minute: 0));
+    }
+    return options;
+  }
 
   String get displayCheckin {
     if (tabIndex == 0) {
@@ -127,17 +129,28 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                       spacing: 8,
                       children: timeOptions.map((t) {
                         final isSelected = t == tempTime;
+                        final now = DateTime.now();
+                        final selectedDateTime = DateTime(tempDate!.year, tempDate!.month, tempDate!.day, t.hour, t.minute);
+                        final isPastTime = selectedDateTime.isBefore(now);
+                        
                         return ChoiceChip(
                           label: Text(t.format(context)),
                           selected: isSelected,
-                          onSelected: (_) {
+                          onSelected: isPastTime ? null : (_) {
                             setModalState(() {
                               tempTime = t;
                             });
                           },
                           selectedColor: isDarkMode ? Colors.blue.shade100 : Colors.orange.shade100,
-                          labelStyle: TextStyle(color: isSelected ? (isDarkMode ? Colors.blue : Colors.orange) : (isDarkMode ? Colors.white : Colors.black)),
-                          backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
+                          labelStyle: TextStyle(
+                            color: isPastTime 
+                              ? (isDarkMode ? Colors.grey[600] : Colors.grey[400])
+                              : (isSelected ? (isDarkMode ? Colors.blue : Colors.orange) : (isDarkMode ? Colors.white : Colors.black))
+                          ),
+                          backgroundColor: isPastTime 
+                            ? (isDarkMode ? Colors.grey[900] : Colors.grey[200])
+                            : (isDarkMode ? Colors.grey[800] : Colors.white),
+                          disabledColor: isDarkMode ? Colors.grey[900] : Colors.grey[200],
                         );
                       }).toList(),
                     ),
@@ -454,7 +467,13 @@ class _HotelSearchBarState extends State<HotelSearchBar> with SingleTickerProvid
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => BookingScreen(hotel: hotel),
+                            builder: (_) => BookingScreen(
+                              hotel: hotel,
+                              initialDate: selectedDate,
+                              initialTime: selectedTime,
+                              initialHour: selectedHour,
+                              initialRange: selectedRange,
+                            ),
                           ),
                         );
                       },

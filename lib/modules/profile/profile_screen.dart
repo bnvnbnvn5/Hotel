@@ -5,6 +5,7 @@ import 'package:myapp/language/appLocalizations.dart';
 import 'package:myapp/utils/enum.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:myapp/services/user_service.dart';
 
 import 'edit_profile_screen.dart';
 import 'favorite_hotels_screen.dart';
@@ -75,16 +76,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('current_user_id');
-    await prefs.remove('user_email');
-    
-    // Navigate to login screen
-    Navigator.pushNamedAndRemoveUntil(
-      context, 
-      '/login', 
-      (route) => false
-    );
+    try {
+      // Sử dụng UserService để logout đúng cách
+      final userService = UserService();
+      await userService.logout();
+      
+      // Navigate to login screen
+      Navigator.pushNamedAndRemoveUntil(
+        context, 
+        '/login', 
+        (route) => false
+      );
+    } catch (e) {
+      print('Error during logout: $e');
+      // Fallback: xóa thủ công và navigate
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('current_user_id');
+      await prefs.remove('user_email');
+      await prefs.remove('user_session');
+      await prefs.setBool('is_logged_in', false);
+      
+      Navigator.pushNamedAndRemoveUntil(
+        context, 
+        '/login', 
+        (route) => false
+      );
+    }
   }
 
   void _showLogoutDialog() {

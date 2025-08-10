@@ -1,10 +1,10 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:myapp/utils/themes.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:myapp/motel_app.dart';
+import 'package:myapp/services/app_init_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,10 +14,15 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(_setAllProviders());
+  // Khởi tạo app và khôi phục session
+  final appInit = AppInitService();
+  await appInit.initializeApp();
+  bool hasSession = await appInit.restoreUserSession();
+
+  runApp(_setAllProviders(hasSession: hasSession));
 }
 
-Widget _setAllProviders() {
+Widget _setAllProviders({bool hasSession = false}) {
   return MultiProvider(
     providers: [
       ChangeNotifierProvider(
@@ -26,6 +31,6 @@ Widget _setAllProviders() {
         ),
       ),
     ],
-    child: MotelApp(),
+    child: MotelApp(hasSession: hasSession),
   );
 }

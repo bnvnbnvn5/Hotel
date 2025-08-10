@@ -19,20 +19,39 @@ class _HotelSearchBarForBookingState extends State<HotelSearchBarForBooking> {
   TimeOfDay? selectedTime;
   int? selectedHour;
   final List<int> hourOptions = [1, 2, 3, 4];
-  final List<TimeOfDay> timeOptions = [
-    TimeOfDay(hour: 15, minute: 0),
-    TimeOfDay(hour: 16, minute: 0),
-    TimeOfDay(hour: 17, minute: 0),
-    TimeOfDay(hour: 18, minute: 0),
-  ];
+  // Tạo danh sách thời gian từ 6:00 AM đến 10:00 PM
+  List<TimeOfDay> get timeOptions {
+    List<TimeOfDay> options = [];
+    for (int hour = 6; hour <= 22; hour++) {
+      options.add(TimeOfDay(hour: hour, minute: 0));
+    }
+    return options;
+  }
   DateTimeRange? selectedRange;
 
   @override
   void initState() {
     super.initState();
     selectedDate = widget.initialDate ?? DateTime.now();
-    selectedTime = widget.initialTime ?? timeOptions[0];
+    selectedTime = widget.initialTime ?? _getNextAvailableTime();
     selectedHour = widget.initialHour ?? hourOptions[0];
+  }
+
+  // Lấy thời gian khả dụng tiếp theo
+  TimeOfDay _getNextAvailableTime() {
+    final now = DateTime.now();
+    final currentTime = TimeOfDay.fromDateTime(now);
+    
+    // Tìm thời gian khả dụng đầu tiên
+    for (var time in timeOptions) {
+      final timeDateTime = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+      if (timeDateTime.isAfter(now)) {
+        return time;
+      }
+    }
+    
+    // Nếu không có thời gian khả dụng hôm nay, trả về thời gian đầu tiên
+    return timeOptions.first;
   }
 
   @override
@@ -104,17 +123,28 @@ class _HotelSearchBarForBookingState extends State<HotelSearchBarForBooking> {
                   spacing: 8,
                   children: timeOptions.map((t) {
                     final isSelected = t == selectedTime;
+                    final now = DateTime.now();
+                    final selectedDateTime = DateTime(selectedDate!.year, selectedDate!.month, selectedDate!.day, t.hour, t.minute);
+                    final isPastTime = selectedDateTime.isBefore(now);
+                    
                     return ChoiceChip(
                       label: Text(t.format(context)),
                       selected: isSelected,
-                      onSelected: (_) {
+                      onSelected: isPastTime ? null : (_) {
                         setState(() {
                           selectedTime = t;
                         });
                       },
                       selectedColor: isDarkMode ? Colors.blue.shade100 : Colors.orange.shade100,
-                      labelStyle: TextStyle(color: isSelected ? (isDarkMode ? Colors.blue : Colors.orange) : (isDarkMode ? Colors.white : Colors.black)),
-                      backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
+                      labelStyle: TextStyle(
+                        color: isPastTime 
+                          ? (isDarkMode ? Colors.grey[600] : Colors.grey[400])
+                          : (isSelected ? (isDarkMode ? Colors.blue : Colors.orange) : (isDarkMode ? Colors.white : Colors.black))
+                      ),
+                      backgroundColor: isPastTime 
+                        ? (isDarkMode ? Colors.grey[900] : Colors.grey[200])
+                        : (isDarkMode ? Colors.grey[800] : Colors.white),
+                      disabledColor: isDarkMode ? Colors.grey[900] : Colors.grey[200],
                     );
                   }).toList(),
                 ),

@@ -20,6 +20,10 @@ import 'modules/home/booking_list_screen.dart';
 BuildContext? applicationcontext;
 
 class MotelApp extends StatefulWidget {
+  final bool hasSession;
+  
+  const MotelApp({Key? key, this.hasSession = false}) : super(key: key);
+  
   @override
   _MotelAppState createState() => _MotelAppState();
 }

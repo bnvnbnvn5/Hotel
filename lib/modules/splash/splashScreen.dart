@@ -7,9 +7,7 @@ import 'package:myapp/providers/theme_provider.dart';
 import 'package:myapp/routes/route_names.dart';
 import 'package:myapp/widgets/common_button.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'package:myapp/seed_data.dart';
+
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -29,10 +27,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initDbAndSeed() async {
-    final dbPath = await getDatabasesPath();
-    await deleteDatabase(join(dbPath, 'hotel_app.db'));
-    await seedData();
-    print('Database initialized with lat/lng columns');
+    // Không cần xóa và tạo lại database nữa
+    // AppInitService đã xử lý việc này
+    print('Database already initialized by AppInitService');
     setState(() {
       _dbSeeded = true;
     });
@@ -63,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Container(
               foregroundDecoration: !appTheme.isLightMode
                   ? BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.4))
+                  color: Theme.of(context).scaffoldBackgroundColor.withAlpha(102))
                   : null,
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
