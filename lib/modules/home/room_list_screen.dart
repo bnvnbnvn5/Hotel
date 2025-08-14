@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../language/appLocalizations.dart';
 import '../../db_helper.dart';
 import 'package:intl/intl.dart';
+import '../../services/pricing_service.dart';
 import 'confirm_booking_screen.dart';
 
 class RoomListScreen extends StatelessWidget {
@@ -138,9 +139,9 @@ class RoomListScreen extends StatelessWidget {
                                     SizedBox(height: 4),
                                     Text('Phòng loại ${room['class']}', style: TextStyle(color: isDarkMode ? Colors.grey[300] : Colors.grey[600])),
                                     SizedBox(height: 8),
-                                    Row(
+                                      Row(
                                       children: [
-                                        Text('${room['price']}đ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.yellow : Colors.blue)),
+                                        Text('${NumberFormat('#,###').format(_previewPrice(context, hotel, room))}đ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.yellow : Colors.blue)),
                                         Spacer(),
                                         ElevatedButton(
                                           onPressed: available ? () {
@@ -183,6 +184,20 @@ class RoomListScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  int _previewPrice(BuildContext context, Map<String, dynamic> hotel, Map<String, dynamic> room) {
+    // Tính nhanh giá hiển thị trước theo lựa chọn thời gian đã chọn ở màn trước
+    final RouteSettings? settings = ModalRoute.of(context)?.settings;
+    // Không có access trực tiếp selections ở đây, nên dùng tham số của widget
+    return PricingService.calculateTotalPrice(
+      hotel: hotel,
+      room: room,
+      selectedDate: selectedDate,
+      selectedTime: selectedTime,
+      selectedHour: selectedHour,
+      selectedRange: selectedRange,
     );
   }
 } 

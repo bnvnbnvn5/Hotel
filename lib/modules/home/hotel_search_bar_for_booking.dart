@@ -77,6 +77,8 @@ class _HotelSearchBarForBookingState extends State<HotelSearchBarForBooking> {
                 ],
               ),
               SizedBox(height: 8),
+              Divider(height: 1, color: isDarkMode ? Colors.grey[800] : Colors.grey[300]),
+              SizedBox(height: 8),
               if (tabIndex == 0) ...[
                 Center(
                   child: Text(AppLocalizations(context).of("select_time"), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: isDarkMode ? Colors.white : Colors.black)),
@@ -270,7 +272,8 @@ class _HotelSearchBarForBookingState extends State<HotelSearchBarForBooking> {
 
   Widget _buildTab(String label, int idx, void Function(void Function()) setModalState, bool isDarkMode) {
     final isSelected = tabIndex == idx;
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
       onTap: () {
         setModalState(() {
           tabIndex = idx;

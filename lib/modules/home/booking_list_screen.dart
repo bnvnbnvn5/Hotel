@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import '../../language/appLocalizations.dart';
+import '../../services/pricing_service.dart';
 
 class BookingListScreen extends StatefulWidget {
   const BookingListScreen({Key? key}) : super(key: key);
@@ -166,7 +167,6 @@ class _BookingListScreenState extends State<BookingListScreen> {
     final hotelName = booking['hotel_name'] ?? 'Khách sạn không xác định';
     final address = booking['address'] ?? 'Địa chỉ không xác định';
     final roomClass = booking['room_class'] ?? 'N/A';
-    final price = booking['price'] ?? 0;
     final checkin = booking['checkin'] != null 
         ? DateTime.parse(booking['checkin'])
         : null;
@@ -174,6 +174,9 @@ class _BookingListScreenState extends State<BookingListScreen> {
         ? DateTime.parse(booking['checkout'])
         : null;
     final status = booking['status'] ?? 'unknown';
+    
+    // Tính giá thực tế dựa trên thời gian checkin/checkout
+    final int actualPrice = _calculateActualPrice(booking, checkin, checkout);
 
     return Card(
       margin: EdgeInsets.only(bottom: 16),
@@ -243,7 +246,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
                   child: _buildInfoItem(
                     icon: Icons.attach_money,
                     label: AppLocalizations(context).of("price"),
-                    value: '${NumberFormat('#,###').format(price)} ${AppLocalizations(context).of("vnd")}',
+                    value: '${NumberFormat('#,###').format(actualPrice)} ${AppLocalizations(context).of("vnd")}',
                   ),
                 ),
               ],
@@ -357,5 +360,52 @@ class _BookingListScreenState extends State<BookingListScreen> {
         ),
       ),
     );
+  }
+  
+  int _calculateActualPrice(Map<String, dynamic> booking, DateTime? checkin, DateTime? checkout) {
+    if (checkin == null || checkout == null) {
+      return booking['price'] ?? 0; // Fallback về giá cũ nếu không có thời gian
+    }
+    
+    // Tạo dữ liệu hotel và room từ booking
+    final Map<String, dynamic> hotel = {
+      'id': booking['hotel_id'] ?? 1,
+      'name': booking['hotel_name'] ?? '',
+      'address': booking['address'] ?? '',
+    };
+    
+    final Map<String, dynamic> room = {
+      'id': booking['room_id'] ?? 1,
+      'class': booking['room_class'] ?? 'A',
+      'price': booking['price'] ?? 0,
+    };
+    
+    // Tính thời gian sử dụng
+    final Duration duration = checkout.difference(checkin);
+    final int totalHours = duration.inHours;
+    final int totalDays = duration.inDays;
+    
+    // Nếu thời gian >= 24 giờ, tính theo ngày
+    if (totalDays >= 1) {
+      final DateTimeRange selectedRange = DateTimeRange(
+        start: checkin,
+        end: checkout.subtract(Duration(hours: 1)), // Trừ 1 giờ để tính đúng ngày
+      );
+      
+      return PricingService.calculateTotalPrice(
+        hotel: hotel,
+        room: room,
+        selectedRange: selectedRange,
+      );
+    } else {
+      // Tính theo giờ
+      return PricingService.calculateTotalPrice(
+        hotel: hotel,
+        room: room,
+        selectedHour: totalHours > 0 ? totalHours : 1,
+        selectedDate: checkin,
+        selectedTime: TimeOfDay.fromDateTime(checkin),
+      );
+    }
   }
 } 

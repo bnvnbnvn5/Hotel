@@ -58,20 +58,25 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     // seedData(); // Đã seed trong DBHelper, không cần gọi nữa
     _loadCurrentUser();
+    
+    // Handle arguments after the widget is fully built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      if (args is Map && args['tab'] != null) {
+        final int tab = args['tab'];
+        if (_selectedIndex != tab) {
+          setState(() {
+            _selectedIndex = tab;
+          });
+        }
+      }
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments;
-    if (args is Map && args['tab'] != null) {
-      final int tab = args['tab'];
-      if (_selectedIndex != tab) {
-        setState(() {
-          _selectedIndex = tab;
-        });
-      }
-    }
+    // Remove the argument handling from here to avoid conflicts
   }
 
   Future<void> _loadCurrentUser() async {

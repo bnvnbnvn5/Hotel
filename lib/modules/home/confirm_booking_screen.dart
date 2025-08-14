@@ -9,6 +9,8 @@ import 'promotion_dialog.dart';
 import 'payment_method_dialog.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../services/pricing_service.dart';
+import '../home/home_screen.dart'; // Added import for HomeScreen
 
 // ConfirmBookingScreen: giao diện xác nhận và thanh toán
 class ConfirmBookingScreen extends StatefulWidget {
@@ -106,14 +108,18 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
           'checkout': checkout.toIso8601String(),
           'status': 'booked',
         });
+        
+        // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations(context).of("booking_successful", listen: false))),
         );
+        
+        // Navigate to booked rooms tab after successful booking
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/home',
-          (route) => false,
-          arguments: {'tab': 1},
+          (route) => false, // Clear all routes completely
+          arguments: {'tab': 1}, // Tab index 1 = "Phòng đã đặt"
         );
       }
     } catch (e) {
@@ -151,10 +157,17 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
           ? DateFormat('dd/MM/yyyy').format(widget.selectedDate!.add(Duration(hours: widget.selectedHour!)))
           : '');
 
-    // Tính toán giá sau khi áp dụng ưu đãi
-    int originalPrice = widget.room['price'] ?? 300000;
+    // Tính toán giá theo lựa chọn (theo giờ/ngày) và áp dụng ưu đãi
+    final int computedBasePrice = PricingService.calculateTotalPrice(
+      hotel: widget.hotel,
+      room: widget.room,
+      selectedDate: widget.selectedDate,
+      selectedTime: widget.selectedTime,
+      selectedHour: widget.selectedHour,
+      selectedRange: widget.selectedRange,
+    );
     int discountAmount = selectedPromotion != null ? (selectedPromotion!['amount'] ?? 0) : 0;
-    int finalPrice = originalPrice - discountAmount;
+    int finalPrice = (computedBasePrice - discountAmount).clamp(0, 1 << 31);
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
@@ -321,7 +334,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                             Row(
                               children: [
                                 Text(
-                                  '${originalPrice}₫',
+                                  '${computedBasePrice}₫',
                                   style: TextStyle(
                                     color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                                     decoration: TextDecoration.lineThrough,

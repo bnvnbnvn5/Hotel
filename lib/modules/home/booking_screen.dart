@@ -116,15 +116,24 @@ class _BookingScreenState extends State<BookingScreen> {
     final result = await showModalBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.9,
+      ),
       backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: HotelSearchBarForBooking(
-            initialDate: selectedDate,
-            initialTime: selectedTime,
-            initialHour: selectedHour,
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: 8,
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: HotelSearchBarForBooking(
+              initialDate: selectedDate,
+              initialTime: selectedTime,
+              initialHour: selectedHour,
+            ),
           ),
         );
       },

@@ -203,7 +203,7 @@ class DBHelper {
   static Future<List<Map<String, dynamic>>> getUserBookings(int userId) async {
     final dbClient = await db;
     return await dbClient.rawQuery('''
-      SELECT b.*, h.name as hotel_name, h.address, r.class as room_class, r.price
+      SELECT b.*, h.id as hotel_id, h.name as hotel_name, h.address, r.id as room_id, r.class as room_class, r.price
       FROM bookings b
       JOIN rooms r ON b.room_id = r.id
       JOIN hotels h ON r.hotel_id = h.id
