@@ -4,4 +4,5 @@ class RoutesName {
   static const String Login = '/login';
   static const String Home = '/home';
   static const String TabScreen = "/bottomTab/bottomTabScreen";
+  static const String ChangePassword = '/change_password';
 }

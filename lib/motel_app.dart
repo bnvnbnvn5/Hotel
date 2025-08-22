@@ -16,6 +16,7 @@ import 'modules/splash/splashScreen.dart';
 import 'modules/login/login_Screen.dart';
 import 'modules/home/home_screen.dart';
 import 'modules/home/booking_list_screen.dart';
+import 'modules/profile/change_password_screen.dart';
 
 BuildContext? applicationcontext;
 
@@ -90,6 +91,7 @@ class _MotelAppState extends State<MotelApp> {
       RoutesName.Login: (BuildContext context) => LoginScreen(),
       RoutesName.Home: (BuildContext context) => HomeScreen(),
       '/bookings': (BuildContext context) => BookingListScreen(),
+      RoutesName.ChangePassword: (BuildContext context) => ChangePasswordScreen(),
     };
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import '../../language/appLocalizations.dart';
+import '../../routes/routes.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({Key? key}) : super(key: key);
@@ -79,7 +80,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             icon: Icons.lock,
             title: AppLocalizations(context).of('change_password'),
             onTap: () {
-              // TODO: Navigate to change password screen
+              Navigator.pushNamed(context, RoutesName.ChangePassword);
             },
             isDarkMode: isDarkMode,
           ),

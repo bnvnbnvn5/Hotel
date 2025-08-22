@@ -28,9 +28,12 @@ class NavigationServies {
   Future<dynamic> gotoLoginScreen() async {
     return await _pushMaterialPageRoute(LoginScreen());
   }
-  
-  void gotoHomeScreen() {
-    Navigator.pushNamedAndRemoveUntil(context, RoutesName.Home,
-        (Route<dynamic> route) => false);
+
+  void gotoHomeScreen({int? tab}) {
+    Navigator.pushNamed(
+      context,
+      RoutesName.Home,
+      arguments: tab != null ? {'tab': tab} : null,
+    );
   }
 }

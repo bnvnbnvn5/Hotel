@@ -425,6 +425,11 @@
         "vi": "Điện thoại"
     },
     {
+        "text_id": "change_avatar",
+        "en": "Change Avatar",
+        "vi": "Thay đổi ảnh đại diện"
+    },
+    {
         "text_id": "date_of_birth",
         "en": "Date of Birth",
         "vi": "Ngày sinh"
@@ -1908,5 +1913,45 @@
         "text_id": "status_pending",
         "en": "Pending",
         "vi": "Chờ xử lý"
+    },
+    {
+        "text_id": "please_enter_old_password",
+        "en": "Please enter your old password",
+        "vi": "Vui lòng nhập mật khẩu cũ"
+    },
+    {
+        "text_id": "please_enter_new_password",
+        "en": "Please enter your new password",
+        "vi": "Vui lòng nhập mật khẩu mới"
+    },
+    {
+        "text_id": "please_confirm_new_password",
+        "en": "Please confirm your new password",
+        "vi": "Vui lòng xác nhận mật khẩu mới"
+    },
+    {
+        "text_id": "passwords_do_not_match",
+        "en": "Passwords do not match",
+        "vi": "Mật khẩu không khớp"
+    },
+    {
+        "text_id": "new_password_min_length",
+        "en": "New password must be at least 6 characters",
+        "vi": "Mật khẩu mới phải có ít nhất 6 ký tự"
+    },
+    {
+        "text_id": "user_not_found",
+        "en": "User not found",
+        "vi": "Không tìm thấy người dùng"
+    },
+    {
+        "text_id": "success",
+        "en": "Success",
+        "vi": "Thành công"
+    },
+    {
+        "text_id": "ok",
+        "en": "OK",
+        "vi": "Đồng ý"
     }
 ]

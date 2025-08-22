@@ -92,11 +92,57 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
       setState(() => _isLoading = false);
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations(context).of('password_changed_successfully'))),
+      // Hiển thị dialog thành công
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          final themeProvider = Provider.of<ThemeProvider>(context);
+          final isDarkMode = !themeProvider.isLightMode;
+          return AlertDialog(
+            backgroundColor: isDarkMode ? Colors.grey[800] : Colors.white,
+            title: Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 28,
+                ),
+                SizedBox(width: 12),
+                Text(
+                  AppLocalizations(context).of('success'),
+                  style: TextStyle(
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            content: Text(
+              AppLocalizations(context).of('password_changed_successfully'),
+              style: TextStyle(
+                color: isDarkMode ? Colors.white : Colors.black,
+                fontSize: 16,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Đóng dialog
+                  Navigator.pop(context); // Quay lại màn hình trước
+                },
+                child: Text(
+                  AppLocalizations(context).of('ok'),
+                  style: TextStyle(
+                    color: isDarkMode ? Colors.white : Colors.blue,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       );
-      
-      Navigator.pop(context);
     } catch (e) {
       setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -166,7 +212,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             // Xác nhận mật khẩu mới
             _buildPasswordField(
               controller: _confirmPasswordController,
-              label: AppLocalizations(context).of('confirm_new_password'),
+              label: AppLocalizations(context).of('confirm_password'),
               icon: Icons.lock_outline,
               isDarkMode: isDarkMode,
               obscureText: _obscureConfirmPassword,

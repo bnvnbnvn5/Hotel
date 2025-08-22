@@ -186,7 +186,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             
             _buildTextField(
               controller: _emailController,
-              label: AppLocalizations(context).of('email'),
+              label: AppLocalizations(context).of('mail_text'),
               icon: Icons.email,
               keyboardType: TextInputType.emailAddress,
               isDarkMode: isDarkMode,
