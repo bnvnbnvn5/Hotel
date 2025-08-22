@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../language/appLocalizations.dart';
 import '../../routes/routes.dart';
 
+// 🎯 STATEFULWIDGET - Component có trạng thái có thể thay đổi
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({Key? key}) : super(key: key);
 
@@ -18,16 +19,20 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 🎯 PROVIDER - Lấy dữ liệu từ state management
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDarkMode = !themeProvider.isLightMode;
 
+    // 🎯 SCAFFOLD - Cấu trúc trang cơ bản
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
+      // 🎯 APPBAR - Thanh ứng dụng ở đầu trang
       appBar: AppBar(
         backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: isDarkMode ? Colors.white : Colors.black),
+          // 🎯 NAVIGATOR - Điều hướng quay lại trang trước
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -35,6 +40,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
           style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
+      // 🎯 LISTVIEW - Danh sách có thể cuộn
       body: ListView(
         padding: EdgeInsets.all(16),
         children: [
@@ -44,6 +50,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             subtitle: AppLocalizations(context).of('notification_email_subtitle'),
             value: _emailNotifications,
             onChanged: (value) {
+              // 🎯 SETSTATE - Cập nhật trạng thái và build lại UI
               setState(() {
                 _emailNotifications = value;
               });
@@ -80,6 +87,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             icon: Icons.lock,
             title: AppLocalizations(context).of('change_password'),
             onTap: () {
+              // 🎯 ROUTES + NAVIGATOR - Điều hướng đến trang đổi mật khẩu
               Navigator.pushNamed(context, RoutesName.ChangePassword);
             },
             isDarkMode: isDarkMode,
@@ -100,6 +108,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             icon: Icons.download,
             title: AppLocalizations(context).of('export_data'),
             onTap: () {
+              // 🎯 SNACKBAR - Hiển thị thông báo ngắn
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(AppLocalizations(context).of('feature_in_development'))),
               );
@@ -203,6 +212,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     );
   }
 
+  // 🎯 DIALOG - Hiển thị hộp thoại popup
   void _showDeleteAccountDialog() {
     showDialog(
       context: context,

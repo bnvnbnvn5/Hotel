@@ -1,0 +1,102 @@
+==========================================
+HỆ THỐNG ĐIỀU HƯỚNG FLUTTER - GIẢI THÍCH CHI TIẾT
+==========================================
+
+🎯 CÁC FILE ĐIỀU HƯỚNG TRONG DỰ ÁN:
+
+1. 📁 lib/routes/routes.dart
+   - Định nghĩa tên các đường dẫn (route names)
+   - Giống như "bảng chỉ đường" chứa địa chỉ các trang
+   - Ví dụ: RoutesName.Home = '/home'
+
+2. 📁 lib/routes/route_names.dart  
+   - Chứa tên các route (có thể trống hoặc chưa sử dụng)
+   - Dùng để tổ chức và quản lý route names
+
+3. 📁 lib/motel_app.dart
+   - Thiết lập hệ thống điều hướng chính
+   - Kết nối tên đường dẫn với trang thực tế
+   - Chứa hàm _buildRoutes() để map routes
+
+4. 📁 lib/main.dart
+   - Khởi tạo toàn bộ hệ thống điều hướng
+   - Là "cổng vào" của ứng dụng
+
+==========================================
+CÁCH HOẠT ĐỘNG:
+==========================================
+
+Bước 1: Định nghĩa đường dẫn trong routes.dart
+Bước 2: Kết nối với trang trong motel_app.dart  
+Bước 3: Sử dụng Navigator.pushNamed() để điều hướng
+
+==========================================
+VÍ DỤ THỰC TẾ:
+==========================================
+
+Khi muốn đi đến trang đổi mật khẩu:
+1. App tìm RoutesName.ChangePassword → '/change_password'
+2. Tra cứu trong _buildRoutes() → ChangePasswordScreen()
+3. Hiển thị trang ChangePasswordScreen
+
+==========================================
+LỢI ÍCH:
+==========================================
+
+✅ Dễ quản lý: Tất cả đường dẫn ở một nơi
+✅ Dễ sửa đổi: Thay đổi tên trang ở một chỗ  
+✅ Tránh lỗi: Không bị gõ sai tên trang
+✅ Dễ bảo trì: Code sạch và có tổ chức
+
+==========================================
+CÁCH THÊM TRANG MỚI:
+==========================================
+
+Bước 1: Thêm tên trong routes.dart
+   static const String Profile = '/profile';
+
+Bước 2: Kết nối trong motel_app.dart
+   RoutesName.Profile: (context) => ProfileScreen(),
+
+Bước 3: Sử dụng trong code
+   Navigator.pushNamed(context, RoutesName.Profile);
+
+==========================================
+🚨 VẤN ĐỀ CÒN THIẾU:
+==========================================
+
+❌ THIẾU: lib/services/navigation_service.dart
+
+Đây là service quan trọng để:
+- Quản lý điều hướng tập trung
+- Xử lý logic điều hướng phức tạp
+- Quản lý navigation stack
+- Xử lý deep linking
+- Quản lý authentication flow
+
+==========================================
+CẤU TRÚC ĐỀ XUẤT CHO NAVIGATION_SERVICE:
+==========================================
+
+class NavigationService {
+  static final NavigationService _instance = NavigationService._internal();
+  factory NavigationService() => _instance;
+  
+  // Quản lý navigation stack
+  // Xử lý deep linking  
+  // Quản lý authentication flow
+  // Xử lý back navigation
+  // Quản lý route guards
+}
+
+==========================================
+KẾT LUẬN:
+==========================================
+
+Hệ thống điều hướng hiện tại hoạt động tốt nhưng còn thiếu:
+- NavigationService để quản lý tập trung
+- Route guards để bảo mật
+- Deep linking support
+- Navigation state management
+
+Cần bổ sung NavigationService để hoàn thiện hệ thống điều hướng.

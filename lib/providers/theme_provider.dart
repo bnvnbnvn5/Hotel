@@ -4,6 +4,7 @@ import 'package:myapp/utils/themes.dart';
 import 'package:myapp/utils/enum.dart';
 import 'package:myapp/motel_app.dart';
 
+// 🎯 CHANGENOTIFIER - Lớp cơ sở để thông báo thay đổi trạng thái
 class ThemeProvider extends ChangeNotifier {
   ThemeProvider({required ThemeData state}) : super();
 
@@ -50,6 +51,7 @@ class ThemeProvider extends ChangeNotifier {
     if (_isLightMode != _theLightTheme) {
       _isLightMode = _theLightTheme;
       _themeData = AppTheme.getThemeData;
+      // 🎯 NOTIFYLISTENERS - Thông báo cho các listener biết trạng thái đã thay đổi
       notifyListeners();
     }
   }

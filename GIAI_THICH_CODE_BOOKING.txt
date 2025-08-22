@@ -1,0 +1,693 @@
+===========================================
+GIẢI THÍCH CHI TIẾT CODE HỆ THỐNG ĐẶT PHÒNG KHÁCH SẠN
+===========================================
+
+📁 CẤU TRÚC THƯ MỤC VÀ FILE:
+- lib/modules/home/: Chứa tất cả các trang liên quan đến đặt phòng
+- lib/services/: Chứa các dịch vụ hỗ trợ
+- lib/utils/: Chứa các tiện ích và hằng số
+- lib/providers/: Quản lý trạng thái ứng dụng
+
+===========================================
+1. BOOKING_SCREEN.DART - TRANG ĐẶT PHÒNG CHÍNH
+===========================================
+
+🔧 IMPORTS VÀ DEPENDENCIES:
+```dart
+import 'package:flutter/material.dart';           // Framework Flutter cơ bản
+import 'package:table_calendar/table_calendar.dart'; // Lịch chọn ngày
+import 'package:intl/intl.dart';                  // Định dạng ngày tháng
+import 'package:shared_preferences/shared_preferences.dart'; // Lưu trữ local
+import 'package:geocoding/geocoding.dart';        // Chuyển đổi địa chỉ thành tọa độ
+import 'package:url_launcher/url_launcher.dart';  // Mở URL bên ngoài
+```
+
+📱 CLASS VÀ STATE:
+```dart
+class BookingScreen extends StatefulWidget {
+  final Map<String, dynamic> hotel;        // Thông tin khách sạn từ trang trước
+  final DateTime? initialDate;             // Ngày ban đầu (có thể null)
+  final TimeOfDay? initialTime;            // Giờ ban đầu (có thể null)
+  final int? initialHour;                  // Số giờ sử dụng ban đầu
+  final DateTimeRange? initialRange;       // Khoảng thời gian ban đầu
+  
+  const BookingScreen({...});              // Constructor với tham số bắt buộc
+}
+
+class _BookingScreenState extends State<BookingScreen> {
+  DateTime? selectedDate;                  // Ngày đã chọn
+  TimeOfDay? selectedTime;                 // Giờ đã chọn
+  int? selectedHour;                       // Số giờ sử dụng
+  DateTimeRange? selectedRange;            // Khoảng thời gian
+  bool isFavorite = false;                 // Trạng thái yêu thích
+  int? currentUserId;                      // ID người dùng hiện tại
+}
+```
+
+🌍 TÍNH TOÁN KHOẢNG CÁCH:
+```dart
+// Vị trí cố định của người dùng - Tòa Vạn Phúc
+static const double userLat = 20.9823;     // Vĩ độ
+static const double userLng = 105.7817;    // Kinh độ
+
+// Công thức Haversine tính khoảng cách giữa 2 điểm
+double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  const double earthRadius = 6371;         // Bán kính Trái Đất (km)
+  double dLat = _degreesToRadians(lat2 - lat1);    // Chênh lệch vĩ độ
+  double dLon = _degreesToRadians(lon2 - lon1);    // Chênh lệch kinh độ
+  
+  // Công thức tính khoảng cách
+  double a = sin(dLat / 2) * sin(dLat / 2) +
+      cos(_degreesToRadians(lat1)) * cos(_degreesToRadians(lat2)) *
+      sin(dLon / 2) * sin(dLon / 2);
+  double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+  double distance = earthRadius * c;
+  
+  return distance * 1000;                  // Chuyển đổi sang mét
+}
+
+// Chuyển đổi độ sang radian
+double _degreesToRadians(double degrees) {
+  return degrees * pi / 180;               // pi = 3.14159...
+}
+```
+
+📅 QUẢN LÝ THỜI GIAN:
+```dart
+void _showTimePickerSheet() async {        // Hiển thị sheet chọn thời gian
+  final result = await showModalBottomSheet<Map<String, dynamic>>(
+    context: context,                      // Context của widget
+    isScrollControlled: true,              // Có thể scroll
+    useSafeArea: true,                     // Sử dụng safe area
+    constraints: BoxConstraints(            // Giới hạn kích thước
+      maxHeight: MediaQuery.of(context).size.height * 0.9,
+    ),
+    backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white, // Màu nền
+    shape: RoundedRectangleBorder(         // Bo góc
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16))
+    ),
+    builder: (context) {                   // Builder function
+      return SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 8,
+            bottom: MediaQuery.of(context).viewInsets.bottom, // Padding bottom
+          ),
+          child: HotelSearchBarForBooking(  // Widget chọn thời gian
+            initialDate: selectedDate,
+            initialTime: selectedTime,
+            initialHour: selectedHour,
+          ),
+        ),
+      );
+    },
+  );
+  
+  if (result != null) {                    // Nếu có kết quả
+    setState(() {                          // Cập nhật state
+      if (result['range'] != null) {       // Nếu chọn khoảng thời gian
+        selectedRange = result['range'];
+        selectedDate = null;               // Reset các giá trị khác
+        selectedTime = null;
+        selectedHour = null;
+      } else {                             // Nếu chọn thời gian cụ thể
+        selectedDate = result['date'];
+        selectedTime = result['time'];
+        selectedHour = result['hour'];
+        selectedRange = null;
+      }
+    });
+  }
+}
+```
+
+❤️ CHỨC NĂNG YÊU THÍCH:
+```dart
+Future<void> _toggleFavorite() async {     // Chuyển đổi trạng thái yêu thích
+  if (currentUserId == null) {             // Kiểm tra đã đăng nhập chưa
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Vui lòng đăng nhập để thêm yêu thích")),
+    );
+    return;
+  }
+
+  try {
+    if (isFavorite) {                      // Nếu đã yêu thích
+      await DBHelper.removeFromFavorites(currentUserId!, widget.hotel['id']);
+      setState(() {
+        isFavorite = false;                // Cập nhật trạng thái
+      });
+      // Hiển thị thông báo
+    } else {                               // Nếu chưa yêu thích
+      await DBHelper.addToFavorites(currentUserId!, widget.hotel['id']);
+      setState(() {
+        isFavorite = true;                 // Cập nhật trạng thái
+      });
+      // Hiển thị thông báo
+    }
+  } catch (e) {                            // Xử lý lỗi
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Có lỗi xảy ra: $e')),
+    );
+  }
+}
+```
+
+🗺️ CHỨC NĂNG BẢN ĐỒ:
+```dart
+void _openMapScreen(BuildContext context, String address, String? hotelName) async {
+  // Kiểm tra xem khách sạn có tọa độ không
+  if (widget.hotel['lat'] != null && widget.hotel['lng'] != null) {
+    // Sử dụng tọa độ từ database
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MapScreen(
+          lat: widget.hotel['lat'].toDouble(),      // Vĩ độ
+          lng: widget.hotel['lng'].toDouble(),     // Kinh độ
+          hotelName: hotelName,                    // Tên khách sạn
+          userLat: userLat,                        // Vĩ độ người dùng
+          userLng: userLng,                        // Kinh độ người dùng
+        ),
+      ),
+    );
+  } else {
+    // Fallback: dùng geocoding nếu không có tọa độ
+    try {
+      List<Location> locations = await locationFromAddress(address);
+      if (locations.isNotEmpty) {
+        final loc = locations.first;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => MapScreen(
+              lat: loc.latitude, 
+              lng: loc.longitude, 
+              hotelName: hotelName,
+              userLat: userLat,
+              userLng: userLng,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      // Xử lý lỗi geocoding
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Không tìm thấy vị trí"))
+      );
+    }
+  }
+}
+```
+
+===========================================
+2. ROOM_LIST_SCREEN.DART - TRANG DANH SÁCH PHÒNG
+===========================================
+
+📋 HIỂN THỊ THÔNG TIN THỜI GIAN:
+```dart
+String infoText;
+if (selectedRange != null) {               // Nếu chọn khoảng thời gian
+  int days = selectedRange!.end.difference(selectedRange!.start).inDays + 1;
+  String start = DateFormat('dd/MM/yyyy').format(selectedRange!.start);
+  String end = DateFormat('dd/MM/yyyy').format(selectedRange!.end);
+  infoText = '$days ngày | $start - $end';
+} else {                                   // Nếu chọn thời gian cụ thể
+  String hourText = selectedHour != null ? '${selectedHour.toString().padLeft(2, '0')} giờ' : '02 giờ';
+  String timeText = (selectedTime != null && selectedDate != null)
+      ? '${selectedTime!.format(context)}, ${DateFormat('dd/MM/yyyy').format(selectedDate!)}'
+      : 'Chọn giờ nhận phòng';
+  infoText = '$hourText | $timeText';
+}
+```
+
+🏨 KIỂM TRA TÍNH KHẢ DỤNG PHÒNG:
+```dart
+FutureBuilder<bool>(
+  future: (checkin != null && checkout != null)
+    ? DBHelper.isRoomAvailable(room['id'], checkin!, checkout!)  // Kiểm tra phòng có sẵn
+    : Future.value(true),                                       // Mặc định có sẵn
+  builder: (context, snap) {
+    final available = snap.data ?? true;                        // Lấy kết quả
+    return Card(
+      // ... UI của phòng
+      ElevatedButton(
+        onPressed: available ? () {                             // Chỉ cho phép nếu có sẵn
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ConfirmBookingScreen(
+                hotel: hotel,
+                room: room,
+                selectedDate: selectedDate,
+                selectedTime: selectedTime,
+                selectedHour: selectedHour,
+                selectedRange: selectedRange,
+              ),
+            ),
+          );
+        } : null,                                               // Disable nếu không có sẵn
+        child: Text(available ? 'Đặt phòng' : 'Hết phòng'),
+      ),
+    );
+  },
+)
+```
+
+💰 TÍNH GIÁ PHÒNG:
+```dart
+int _previewPrice(BuildContext context, Map<String, dynamic> hotel, Map<String, dynamic> room) {
+  return PricingService.calculateTotalPrice(    // Sử dụng service tính giá
+    hotel: hotel,
+    room: room,
+    selectedDate: selectedDate,
+    selectedTime: selectedTime,
+    selectedHour: selectedHour,
+    selectedRange: selectedRange,
+  );
+}
+```
+
+===========================================
+3. CONFIRM_BOOKING_SCREEN.DART - TRANG XÁC NHẬN
+===========================================
+
+💳 XỬ LÝ THANH TOÁN:
+```dart
+Future<void> _processBooking(BuildContext context) async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final currentUserId = prefs.getInt('current_user_id');
+    
+    DateTime? checkin;
+    DateTime? checkout;
+    
+    if (widget.selectedRange != null) {     // Nếu chọn khoảng thời gian
+      checkin = widget.selectedRange!.start;
+      checkout = widget.selectedRange!.end.add(const Duration(days: 1));
+    } else if (widget.selectedDate != null && widget.selectedHour != null && widget.selectedTime != null) {
+      // Nếu chọn thời gian cụ thể
+      checkin = DateTime(
+        widget.selectedDate!.year, 
+        widget.selectedDate!.month, 
+        widget.selectedDate!.day, 
+        widget.selectedTime!.hour, 
+        widget.selectedTime!.minute
+      );
+      checkout = checkin.add(Duration(hours: widget.selectedHour!));
+    }
+    
+    if (checkin != null && checkout != null) {
+      // Lưu đặt phòng vào database
+      await DBHelper.insertBooking({
+        'room_id': widget.room['id'],
+        'user_id': currentUserId ?? 1,
+        'checkin': checkin.toIso8601String(),    // Chuyển đổi sang string
+        'checkout': checkout.toIso8601String(),
+        'status': 'booked',
+      });
+      
+      // Hiển thị thông báo thành công
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Đặt phòng thành công")),
+      );
+      
+      // Chuyển đến tab phòng đã đặt
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/home',
+        (route) => false,                     // Xóa tất cả routes
+        arguments: {'tab': 1},                // Tab index 1 = "Phòng đã đặt"
+      );
+    }
+  } catch (e) {
+    // Xử lý lỗi
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Lỗi: $e')),
+    );
+  }
+}
+```
+
+🎁 HỘP THOẠI ƯU ĐÃI:
+```dart
+void _showPromotionsDialog(BuildContext context) {
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,                // Có thể scroll
+    backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16))
+    ),
+    builder: (context) => PromotionDialog(
+      selectedPromotion: selectedPromotion,  // Ưu đãi đã chọn
+      isDarkMode: isDarkMode,                // Chế độ tối
+      onPromotionSelected: (promo) {         // Callback khi chọn ưu đãi
+        setState(() {
+          selectedPromotion = promo;
+        });
+      },
+    ),
+  );
+}
+```
+
+💳 HỘP THOẠI PHƯƠNG THỨC THANH TOÁN:
+```dart
+void _showPaymentMethodDialog(BuildContext context) {
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16))
+    ),
+    builder: (context) => PaymentMethodDialog(
+      selectedPaymentMethod: selectedPaymentMethod,  // Phương thức đã chọn
+      isDarkMode: isDarkMode,
+      onPaymentMethodSelected: (method) {            // Callback khi chọn
+        setState(() {
+          selectedPaymentMethod = method;
+        });
+      },
+    ),
+  );
+}
+```
+
+===========================================
+4. BOOKING_LIST_SCREEN.DART - TRANG DANH SÁCH ĐẶT PHÒNG
+===========================================
+
+📊 LOAD DỮ LIỆU ĐẶT PHÒNG:
+```dart
+Future<void> _loadBookings() async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getInt('current_user_id');
+    
+    if (userId != null) {
+      _currentUserId = userId;
+      final bookings = await DBHelper.getUserBookings(userId);  // Lấy đặt phòng từ DB
+      setState(() {
+        _bookings = bookings;
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  } catch (e) {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+}
+```
+
+🎨 GIAO DIỆN THEME:
+```dart
+@override
+Widget build(BuildContext context) {
+  final themeProvider = Provider.of<ThemeProvider>(context);
+  final isDarkMode = !themeProvider.isLightMode;    // Lấy trạng thái theme
+  
+  return SafeArea(
+    child: Column(
+      children: [
+        // Custom AppBar với theme
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          color: isDarkMode ? Colors.grey[900] : Colors.white,  // Màu nền theo theme
+          child: Row(
+            children: [
+              Text(
+                "Phòng đã đặt",                    // Tiêu đề
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: isDarkMode ? Colors.white : Colors.black,  // Màu chữ theo theme
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Nội dung
+        Expanded(
+          child: _isLoading
+              ? Center(child: CircularProgressIndicator())  // Loading
+              : _currentUserId == null
+                  ? _buildLoginPrompt()                     // Yêu cầu đăng nhập
+                  : _bookings.isEmpty
+                      ? _buildEmptyState()                  // Trạng thái trống
+                      : _buildBookingsList(),               // Danh sách đặt phòng
+        ),
+      ],
+    ),
+  );
+}
+```
+
+===========================================
+5. CÁC DỊCH VỤ HỖ TRỢ (SERVICES)
+===========================================
+
+💰 PRICING_SERVICE.DART - TÍNH GIÁ:
+```dart
+class PricingService {
+  static int calculateTotalPrice({
+    required Map<String, dynamic> hotel,
+    required Map<String, dynamic> room,
+    DateTime? selectedDate,
+    TimeOfDay? selectedTime,
+    int? selectedHour,
+    DateTimeRange? selectedRange,
+  }) {
+    int basePrice = room['price'] ?? 0;    // Giá cơ bản của phòng
+    
+    if (selectedRange != null) {
+      // Tính theo ngày
+      int days = selectedRange.end.difference(selectedRange.start).inDays + 1;
+      return basePrice * days;
+    } else if (selectedHour != null) {
+      // Tính theo giờ
+      return (basePrice / 24 * selectedHour).round();
+    }
+    
+    return basePrice;
+  }
+}
+```
+
+🗄️ DB_HELPER.DART - QUẢN LÝ CƠ SỞ DỮ LIỆU:
+```dart
+class DBHelper {
+  // Kiểm tra phòng có sẵn
+  static Future<bool> isRoomAvailable(int roomId, DateTime checkin, DateTime checkout) async {
+    // Logic kiểm tra phòng có sẵn trong khoảng thời gian
+  }
+  
+  // Lấy danh sách phòng theo khách sạn
+  static Future<List<Map<String, dynamic>>> getRoomsByHotel(int hotelId) async {
+    // Logic lấy phòng từ database
+  }
+  
+  // Lấy đặt phòng của người dùng
+  static Future<List<Map<String, dynamic>>> getUserBookings(int userId) async {
+    // Logic lấy lịch sử đặt phòng
+  }
+  
+  // Thêm đặt phòng mới
+  static Future<void> insertBooking(Map<String, dynamic> booking) async {
+    // Logic lưu đặt phòng vào database
+  }
+}
+```
+
+===========================================
+6. CÁC WIDGET VÀ COMPONENTS
+===========================================
+
+🔍 HOTEL_SEARCH_BAR_FOR_BOOKING.DART:
+```dart
+class HotelSearchBarForBooking extends StatefulWidget {
+  final DateTime? initialDate;
+  final TimeOfDay? initialTime;
+  final int? initialHour;
+  
+  // Widget tùy chỉnh để chọn thời gian đặt phòng
+  // Bao gồm:
+  // - Date picker
+  // - Time picker  
+  // - Hour selector
+  // - Range picker
+}
+```
+
+🎁 PROMOTION_DIALOG.DART:
+```dart
+class PromotionDialog extends StatelessWidget {
+  final Map<String, dynamic>? selectedPromotion;
+  final bool isDarkMode;
+  final Function(Map<String, dynamic>) onPromotionSelected;
+  
+  // Hiển thị danh sách ưu đãi có sẵn
+  // Cho phép người dùng chọn
+  // Gọi callback khi chọn
+}
+```
+
+💳 PAYMENT_METHOD_DIALOG.DART:
+```dart
+class PaymentMethodDialog extends StatelessWidget {
+  final String selectedPaymentMethod;
+  final bool isDarkMode;
+  final Function(String) onPaymentMethodSelected;
+  
+  // Hiển thị các phương thức thanh toán
+  // - Chuyển khoản ngân hàng
+  // - Tiền mặt
+  // Gọi callback khi chọn
+}
+```
+
+===========================================
+7. QUẢN LÝ TRẠNG THÁI VÀ THEME
+===========================================
+
+🌓 THEME_PROVIDER.DART:
+```dart
+class ThemeProvider with ChangeNotifier {
+  bool _isLightMode = true;
+  
+  bool get isLightMode => _isLightMode;
+  
+  void toggleTheme() {
+    _isLightMode = !_isLightMode;
+    notifyListeners();                      // Thông báo thay đổi
+  }
+  
+  ThemeData get themeData {
+    return _isLightMode ? lightTheme : darkTheme;  // Trả về theme tương ứng
+  }
+}
+```
+
+🌍 APP_LOCALIZATIONS.DART:
+```dart
+class AppLocalizations {
+  final BuildContext context;
+  
+  AppLocalizations(this.context);
+  
+  String of(String key, {bool listen = true}) {
+    // Lấy text theo ngôn ngữ hiện tại
+    // Hỗ trợ tiếng Việt và tiếng Anh
+    // Sử dụng language_text.json
+  }
+}
+```
+
+===========================================
+8. CÁC THUẬT TOÁN VÀ LOGIC QUAN TRỌNG
+===========================================
+
+📏 TÍNH KHOẢNG CÁCH HAVERSINE:
+```dart
+// Công thức tính khoảng cách giữa 2 điểm trên Trái Đất
+// Sử dụng tọa độ vĩ độ và kinh độ
+// Kết quả trả về đơn vị mét
+```
+
+⏰ XỬ LÝ THỜI GIAN:
+```dart
+// Chuyển đổi giữa các định dạng thời gian
+// - DateTime: Ngày giờ đầy đủ
+// - TimeOfDay: Chỉ giờ phút
+// - DateTimeRange: Khoảng thời gian
+// - ISO 8601 string: Định dạng chuẩn cho database
+```
+
+💾 QUẢN LÝ STATE:
+```dart
+// Sử dụng setState() để cập nhật UI
+// Sử dụng Provider để quản lý theme
+// Sử dụng SharedPreferences để lưu trữ local
+// Sử dụng FutureBuilder để xử lý async data
+```
+
+===========================================
+9. CÁC PATTERN VÀ KIẾN TRÚC SỬ DỤNG
+===========================================
+
+🏗️ ARCHITECTURE PATTERNS:
+- **MVC Pattern**: Tách biệt Model, View, Controller
+- **Provider Pattern**: Quản lý state và dependency injection
+- **Repository Pattern**: Tách biệt logic database
+- **Service Pattern**: Tách biệt business logic
+
+📱 UI PATTERNS:
+- **Bottom Sheet**: Hiển thị form chọn thời gian
+- **Modal Dialog**: Hiển thị ưu đãi và thanh toán
+- **Card Layout**: Hiển thị thông tin phòng và khách sạn
+- **List View**: Hiển thị danh sách phòng và đặt phòng
+
+🔄 NAVIGATION PATTERNS:
+- **Named Routes**: Định nghĩa routes trong route_names.dart
+- **MaterialPageRoute**: Chuyển trang với animation
+- **pushNamedAndRemoveUntil**: Xóa stack navigation
+
+===========================================
+10. XỬ LÝ LỖI VÀ VALIDATION
+===========================================
+
+⚠️ ERROR HANDLING:
+```dart
+try {
+  // Thực hiện operation
+} catch (e) {
+  // Hiển thị thông báo lỗi
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('Lỗi: $e')),
+  );
+}
+```
+
+✅ VALIDATION:
+```dart
+// Kiểm tra người dùng đã đăng nhập
+if (currentUserId == null) {
+  // Hiển thị yêu cầu đăng nhập
+  return;
+}
+
+// Kiểm tra dữ liệu hợp lệ
+if (checkin != null && checkout != null) {
+  // Tiếp tục xử lý
+} else {
+  // Hiển thị lỗi
+}
+```
+
+===========================================
+KẾT LUẬN
+===========================================
+
+Hệ thống đặt phòng này được xây dựng với:
+- ✅ Kiến trúc rõ ràng, dễ bảo trì
+- ✅ Xử lý lỗi toàn diện
+- ✅ UI/UX thân thiện người dùng
+- ✅ Hỗ trợ đa ngôn ngữ và theme
+- ✅ Tối ưu hiệu suất với async/await
+- ✅ Sử dụng các Flutter best practices
+
+Code được viết theo chuẩn Flutter với:
+- Tên biến và hàm rõ ràng, dễ hiểu
+- Comment đầy đủ cho các logic phức tạp
+- Tách biệt rõ ràng giữa các layer
+- Sử dụng const constructor khi có thể
+- Xử lý null safety đầy đủ
+

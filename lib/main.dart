@@ -22,9 +22,11 @@ void main() async {
   runApp(_setAllProviders(hasSession: hasSession));
 }
 
+// 🎯 MULTIPROVIDER - Thiết lập nhiều provider cho ứng dụng
 Widget _setAllProviders({bool hasSession = false}) {
   return MultiProvider(
     providers: [
+      // 🎯 CHANGENOTIFIERPROVIDER - Provider cho state management
       ChangeNotifierProvider(
         create: (_) => ThemeProvider(
           state: AppTheme.getThemeData,

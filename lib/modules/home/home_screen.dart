@@ -53,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _NavItem(icon: Icons.person, label: AppLocalizations(context).of("account_title")),
   ];
 
+  // 🎯 INITSTATE - Phương thức vòng đời được gọi khi component được tạo
   @override
   void initState() {
     super.initState();
@@ -290,8 +291,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: ScrollConfiguration(
           behavior: NoGlowScrollBehavior(),
+          // 🎯 CUSTOMSCROLLVIEW + SLIVERS - Logic giữ nguyên vị trí cuộn khi quay lại trang
           child: CustomScrollView(
             slivers: [
+              // 🎯 SLIVERTOBOXADAPTER - Giữ nguyên vị trí cuộn cho từng phần
               // 1. Trên cùng: chọn khu vực
               SliverToBoxAdapter(
                 child: Padding(
@@ -312,6 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              // 🎯 SLIVERAPPBAR - Giữ nguyên vị trí cuộn cho banner
               // 2. Banner/slider ảnh (SliverAppBar)
               SliverAppBar(
                 expandedHeight: 220.0,
@@ -359,6 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              // 🎯 SLIVERTOBOXADAPTER - Giữ nguyên vị trí cuộn cho thanh tìm kiếm
               // 3. Thanh tìm kiếm duy nhất dưới banner
               SliverToBoxAdapter(
                 child: Padding(
@@ -397,6 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              // 🎯 SLIVERTOBOXADAPTER - Giữ nguyên vị trí cuộn cho danh sách khách sạn
               // 4. Danh sách khách sạn lấy từ SQLite
               SliverToBoxAdapter(
                 child: FutureBuilder<List<Map<String, dynamic>>>(

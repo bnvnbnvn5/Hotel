@@ -32,10 +32,13 @@ class MotelApp extends StatefulWidget {
 class _MotelAppState extends State<MotelApp> {
   @override
   Widget build(BuildContext context) {
+    // 🎯 CONSUMER - Lắng nghe thay đổi từ Provider
     return Consumer<ThemeProvider>(builder: (_, provider, child) {
       applicationcontext = context;
       final ThemeData _theme = provider.themeData;
+      // 🎯 MATERIALAPP - Component gốc của ứng dụng
       return MaterialApp(
+        // 🎯 LOCALIZATION - Cấu hình đa ngôn ngữ
         localizationsDelegates: [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -50,6 +53,7 @@ class _MotelAppState extends State<MotelApp> {
         title: 'Motel',
         debugShowCheckedModeBanner: false,
         theme: _theme,
+        // 🎯 ROUTES - Cấu hình các đường dẫn điều hướng
         routes: _buildRoutes(),
         builder: (BuildContext context, Widget? child) {
           _setFirstTimeSomeData(context, _theme);

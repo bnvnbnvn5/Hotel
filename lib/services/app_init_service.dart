@@ -4,6 +4,7 @@ import 'booking_service.dart';
 import '../db_helper.dart';
 import '../seed_data.dart';
 
+// 🎯 SINGLETON PATTERN - Mẫu thiết kế singleton cho service
 class AppInitService {
   static final AppInitService _instance = AppInitService._internal();
   factory AppInitService() => _instance;
